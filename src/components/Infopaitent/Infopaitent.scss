@@ -1,0 +1,17 @@
+@import "../../styles/common.scss";
+.InfoContainer{
+    width: 100%;
+    height: 100vh;
+    // background-color: red;
+    display: flex;
+    flex-direction: column;
+}
+.headerds{
+    width: 100%;
+    height: 10%; 
+    background-color: $colormain;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    border: 1px solid white;
+}

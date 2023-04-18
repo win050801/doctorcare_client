@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import Menu from '../Menu/Navbar';
 class ProductManage extends Component {
 
     state = {
@@ -13,7 +14,10 @@ class ProductManage extends Component {
 
     render() {
         return (
-            <div className="text-center" >Manage products</div>
+            <div className="text-center" >
+                
+            </div>
+
         )
     }
 
@@ -26,6 +30,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+       
     };
 };
 

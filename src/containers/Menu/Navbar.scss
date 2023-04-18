@@ -1,0 +1,22 @@
+@import "../../styles/common.scss";
+.navbar{
+    display: flex;
+    // justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 1px;
+    width: 25vh;
+    height: 100vh;
+    background-color: $colormain;
+}
+.submenu{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 25vh;
+    height: 50px;
+    // background-color: black;
+}
+.submenu:hover{
+    background-color: darken($colormain, 5);
+    cursor: pointer;
+}

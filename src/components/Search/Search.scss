@@ -1,0 +1,19 @@
+@import "../../styles/common.scss";
+.search{
+    width: 35vh;
+    height: 100vh;
+    background-color:  #EEEEEE;
+    display: flex;
+    justify-content: center;
+    // align-items: center
+}
+.container{
+    padding-top: 15px;
+    margin: 10px;
+    width: 99%;
+    height: 90%;
+    background-color: white;
+    // border-top-color: "red";
+    border-top: $colormain solid 5px;
+    border-radius: 3px;
+}
