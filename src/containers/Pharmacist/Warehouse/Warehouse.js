@@ -2,7 +2,7 @@ import React, { Component,useState } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
-import { Input, Table, Button } from 'antd'
+import { Input, Table, Button,Select } from 'antd'
 
 
 import { connect } from "react-redux";
@@ -169,56 +169,57 @@ function  Warehouse(){
 
     const dataSource = [
       {
-          key: '1',
-          stt: '1',
-          hoten: "Mạnh Đức",
-          gt:"Nam",
-          tuoi: 32,
-          kk: "Tiêu hóa",
+        key: '1',
+        name: 'John Brown',
+        stt: '1',
+        age: 32,
+        address: 'New York No. 1 Lake Park',
+        actions: (
+          <span>
+            <Button onClick={() => console.log('Edit John Brown')}>Edit</Button>
+            <Button onClick={() => console.log('Delete John Brown')}>Delete</Button>
+          </span>
+        ),
+      },
+    ];
+
+    const columns = [
+      {
+        title: 'STT',
+        dataIndex: 'stt',
+        key: 'stt',
       },
       {
-          key: '2',
-          stt: '2',
-          hoten: "Đào Cao Thắng",
-          gt:"Nam",
-          tuoi: 42,
-          kk: "<div></div>",
-      },
-      // {
-      //   key: '2',
-      //   stt: '2',
-      //   age: 42,
-      //   address: '10 Downing Street',
-      // },
-  ];
-  const columns = [
-      {
-          title: 'STT',
-          dataIndex: 'stt',
-          key: 'stt',
+        title: 'Tên thuốc',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
-          title: 'Họ Tên',
-          dataIndex: 'hoten',
-          key: 'hoten',
+        title: 'Ngày hết hạn',
+        dataIndex: 'age',
+        key: 'age',
       },
       {
-          title: 'Giới Tính',
-          dataIndex: 'gt',
-          key: 'gt',
+        title: 'Giá vốn',
+        dataIndex: 'address',
+        key: 'address',
       },
       {
-          title: 'Tuổi',
-          dataIndex: 'tuoi',
-          key: 'tuoi',
+        title: 'Giá bán',
+        dataIndex: 'address',
+        key: 'address',
       },
       {
-          title: 'Khoa Khám',
-          dataIndex: 'kk',
-          key: 'kk',
+        title: 'Đơn vị lưu kho',
+        dataIndex: 'address',
+        key: 'address',
       },
-     
-  ];
+      {
+        title: 'Tác vụ',
+        dataIndex: 'actions',
+        key: 'actions',
+      },
+    ];
 
     const handleViewMedicineDetail = () =>{
       console.log("check");
@@ -237,20 +238,29 @@ function  Warehouse(){
                         </div>
                         <div className="form-warehouse">
                             <div className="box-header">
-                                <div className="col-md-12 justify-content-between">
-                                    <h4 className="box-title">
-                                    <Button variant="primary" onClick={() => setModalShow(true)}>
-                                        Thêm thuốc mơi
+                                <div className="btn-action justify-content-between">
+                                  
+                                    <Button className="btn btn-add" variant="info" onClick={() => setModalShow(true)}>
+                                        Thêm thuốc mới
                                     </Button>
                                     <MyVerticallyCenteredModal
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                     />
-                                    <a href="" className="btn btn-danger">Đang cảnh báo</a>
-                                    <a href="" className="btn btn-success">Lập báo cáo</a>
-                                    <a href="" className="btn btn-info">Xuất kho</a>
-                                    <a href="" className="btn btn-info">Nhập kho</a>
-                                    </h4>
+                                    <Button className="btn btn-warning" variant="info" >
+                                        Đang cảnh báo
+                                    </Button>
+                                    <Button className="btn btn-report" variant="info" >
+                                        Lập báo cáo
+                                    </Button>
+                                    <Button className="btn btn-import" variant="info" >
+                                        Nhập kho
+                                    </Button>
+                                    <Button className="btn btn-export" variant="info" >
+                                        Xuất kho
+                                    </Button>
+                                    
+                                   
                                 </div>
                             </div>
                             {/* body */}
@@ -259,39 +269,40 @@ function  Warehouse(){
                                         <div className="search-content">
                                             <div>
                                                 <h5>Từ khóa </h5>
-                                                <input type="text" className="inputSearch" placeholder="Tìm kiếm thuốc"></input>
+                                                <Input type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
                                             </div>
                                             <div>
                                                 <h5>Loại thuốc </h5>
-                                                <select className="inputSearch " id="cars">
+                                                <Select className="input-search-type" id="cars"  placeholder="Tất cả">
                                                     <option value="volvo">Nam</option>
                                                     <option value="saab">Nữ</option>
-                                                    
-                                                </select>
+                              
+                                                </Select>
                                             </div>
                                             <div>
                                                 <h5>Bắt đầu </h5>
-                                                <select className="inputSearch" id="cars">
+                                                <Select className="input-search start" id="cars" placeholder="Tất cả">
                                                     <option value="volvo">Nam</option>
                                                     <option value="saab">Nữ</option>
-                                                </select>
+                                                </Select>
                                             </div>
                                             <div>
                                                 <h5>Sắp xếp theo </h5>
-                                                <select className="inputSearch" id="cars">
+                                                <Select className="input-search sort" id="cars" placeholder="Chọn">
                                                     <option value="volvo">Nam</option>
                                                     <option value="saab">Nữ</option>
-                                                </select>
+                                                </Select>
                                             </div>
                                             <div>
-                                             <Button color="info">Nhập kho</Button>
+                                                <h5 className="text-hidden">a</h5>
+                                                <Button className="btn-see" >Xem</Button>
                                             </div>
                                             
                                         </div>
                                         <div className="table-content">
-                                            {/* <Table responsive  dataSource={dataSource} columns={columns}  >
+                                            <Table responsive  dataSource={dataSource} columns={columns}  >
                                                 
-                                            </Table> */}
+                                            </Table>
                                         </div>
                                 </div>
                             </div>
