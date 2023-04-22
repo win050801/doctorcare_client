@@ -8,6 +8,7 @@ import { Input, Table, Button,Select } from 'antd'
 import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import './Warehouse.scss'
+import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
 
 function MyVerticallyCenteredModal(props) {
     return (
@@ -166,6 +167,14 @@ function  Warehouse(){
 
     const [startDate, setStartDate] = useState(new Date());
     const [modalShow, setModalShow] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const handleOpenModal = () => {
+      setOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setOpen(false);
+    };
 
     const dataSource = [
       {
@@ -176,8 +185,14 @@ function  Warehouse(){
         address: 'New York No. 1 Lake Park',
         actions: (
           <span>
-            <Button onClick={() => console.log('Edit John Brown')}>Edit</Button>
-            <Button onClick={() => console.log('Delete John Brown')}>Delete</Button>
+            <Link to="/medicine/detail"> 
+                <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
+                        onClick={() => handleViewMedicineDetail()}
+                >
+                  Chi tiết</Button>
+            </Link>
+            <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
+            <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
           </span>
         ),
       },
@@ -222,7 +237,7 @@ function  Warehouse(){
     ];
 
     const handleViewMedicineDetail = () =>{
-      console.log("check");
+        
     }
 
   let handleColor = (time) => {
@@ -253,9 +268,10 @@ function  Warehouse(){
                                     <Button className="btn btn-report" variant="info" >
                                         Lập báo cáo
                                     </Button>
-                                    <Button className="btn btn-import" variant="info" >
+                                    {/* <Button  onClick={() => setOpen(true)} className="btn btn-import" variant="info" >
                                         Nhập kho
-                                    </Button>
+                                    </Button> */}
+                                    <ImportWarehouseModal/>
                                     <Button className="btn btn-export" variant="info" >
                                         Xuất kho
                                     </Button>

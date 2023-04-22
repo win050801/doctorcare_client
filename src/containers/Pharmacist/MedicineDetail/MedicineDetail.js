@@ -1,7 +1,8 @@
 import React, { Component,useState } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
-import './MedicineDetail.scss'
+import './MedicineDetail.scss';
+import { Input, Table,Select } from 'antd'
 
 
 function  MedicineDetail(){
@@ -24,26 +25,26 @@ function  MedicineDetail(){
                           <div className="row">
                             <div className="col-lg-5 col-md-6 mb-4">
                               <div className="form-group">
-                                <label htmlFor="name" className="inputSearch">
+                                <label htmlFor="name" className="input-search">
                                   Tên thuốc
                                 </label>
-                                <input type="text" className="form-control" id="name" />
+                                <Input type="text" className="form-control" id="name" placeholder="Tên thuốc"/>
                               </div>
                             </div>
                             <div className="col-lg-3 col-md-6 mb-4">
                               <div className="form-group">
-                                <label htmlFor="genericName" className="inputSearch">
+                                <label htmlFor="genericName" className="input-search">
                                   Tên gốc
                                 </label>
-                                <input type="text" className="form-control" id="genericName" />
+                                <Input type="text" className="form-control" id="genericName" />
                               </div>
                             </div>
                             <div className="col-lg-4 col-md-6 mb-4">
                               <div className="form-group">
-                                <label htmlFor="storageUnit" className="inputSearch">
+                                <label htmlFor="storageUnit" className="input-search">
                                   Đơn vị lưu kho
                                 </label>
-                                <input type="text" className="form-control" id="storageUnit" />
+                                <Input type="text" className="form-control" id="storageUnit" />
                               </div>
                             </div>
                           
@@ -52,34 +53,34 @@ function  MedicineDetail(){
                           <div className="row mb-4">
                             <div className="col-lg-3">
                               <div className="form-group">
-                                <label htmlFor="name" className="inputSearch">
+                                <label htmlFor="name" className="input-search">
                                   Đơn vị sử dụng/ lần
                                 </label>
-                                <input type="text" className="form-control" id="name" />
+                                <Input type="text" className="form-control" id="name" />
                               </div>
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="genericName" className="inputSearch">
+                                <label htmlFor="genericName" className="input-search">
                                   Phương thức
                                 </label>
-                                <input type="text" className="form-control" id="genericName" />
+                                <Input type="text" className="form-control" id="genericName" />
                               </div>
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="storageUnit" className="inputSearch">
+                                <label htmlFor="storageUnit" className="input-search">
                                   Đơn vị lưu kho
                                 </label>
-                                <input type="text" className="form-control" id="storageUnit" />
+                                <Input type="text" className="form-control" id="storageUnit" />
                               </div>
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="storageUnit" className="inputSearch">
+                                <label htmlFor="storageUnit" className="input-search">
                                   Số lượng tồn
                                 </label>
-                                <input type="text" className="form-control" id="storageUnit" />
+                                <Input type="text" className="form-control" id="storageUnit" />
                               </div>
                             </div>
                           </div>
@@ -87,26 +88,26 @@ function  MedicineDetail(){
                           <div className="row mb-4 justify-content-between">
                             <div className="col-lg-4">
                               <div className="form-group">
-                                <label htmlFor="name" className="inputSearch">
+                                <label htmlFor="name" className="input-search">
                                   Đơn giá vốn
                                 </label>
-                                <input type="text" className="form-control" id="name" />
+                                <Input type="text" className="form-control" id="name" />
                               </div>
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="genericName" className="inputSearch">
+                                <label htmlFor="genericName" className="input-search">
                                   Đơn giá bán
                                 </label>
-                                <input type="text" className="form-control" id="genericName" />
+                                <Input type="text" className="form-control" id="genericName" />
                               </div>
                             </div>
                             <div className="col-lg-4 ">
                               <div className="form-group">
-                                <label htmlFor="storageUnit" className="inputSearch">
+                                <label htmlFor="storageUnit" className="input-search">
                                   Số lượng tồn
                                 </label>
-                                <input type="text" className="form-control" id="storageUnit" />
+                                <Input type="text" className="form-control" id="storageUnit" />
                               </div>
                             </div>
                             
@@ -115,43 +116,43 @@ function  MedicineDetail(){
                           <div className="row mb-4 justify-content-between">
                             <div className="col-lg-4">
                               <div className="form-group">
-                                <label htmlFor="name" className="inputSearch">
+                                <label htmlFor="name" className="input-search">
                                   Thông báo khi SL tồn nhỏ hơn
                                 </label>
-                                <input type="text" className="form-control" id="name" />
+                                <Input type="text" className="form-control" id="name" />
                               </div>
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="genericName" className="inputSearch">
+                                <label htmlFor="genericName" className="input-search">
                                   Ngày hết hạn
                                 </label>
-                                <input type="text" className="form-control" id="genericName" />
+                                <Input type="text" className="form-control" id="genericName" />
                               </div>
                             </div>
                             <div className="col-lg-4 ">
                               <div className="form-group">
-                                <label htmlFor="storageUnit" className="inputSearch">
+                                <label htmlFor="storageUnit" className="input-search">
                                   Thông báo khi số ngày sử
                                 </label>
-                                <input type="text" className="form-control" id="storageUnit" />
+                                <Input type="text" className="form-control" id="storageUnit" />
                               </div>
                             </div>
                           </div>
                           <div className="row">
                               <div className="col-lg-12">
                                 <div className="form-group">
-                                  <label htmlFor="name" className="inputSearch">
+                                  <label htmlFor="name" className="input-search">
                                     Ghi chú
                                   </label>
-                                  <input type="text" className="form-control" id="name" />
+                                  <Input type="text" className="form-control" id="name" />
                                 </div>
                               </div>
                           </div>
                           <div className="button-even justify-content-between " >
-                              <Button color="info" className="btn ">Cập nhập</Button>
-                              <Button color="warning" className="btn ">Quay về kho thuốc</Button>
-                              <Button color="success" className="btn ">Lịch sử dùng thuốc</Button>
+                              <Button  color="info" className="btn ">Cập nhập</Button>
+                              <Button  color="warning" className="btn ">Quay về kho thuốc</Button>
+                              <Button  color="success" className="btn ">Lịch sử dùng thuốc</Button>
                           </div>
                       </form>
                       </div>
