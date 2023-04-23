@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Input, Modal,Table } from 'antd';
 import './ImportWarehouseModal.scss'
-import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ImportTable from './ImportTable';
 
