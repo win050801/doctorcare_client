@@ -1,0 +1,46 @@
+
+.medicine-detail{
+    width: 100%;
+    height: 95vh;
+    background-color:  #EEEEEE;
+    display: flex;
+    justify-content: center;
+    .medicine-detail-container{
+         padding-top: 15px;
+         margin: 10px;
+         width: 99%;
+         height: 90%;
+         background-color: white;
+         // border-top-color: "red";
+         border-top: #0071ba solid 5px;
+         border-radius: 3px;
+         display: flex;
+         .form-medicine-detail{
+               margin-left: 15px;
+               margin-right: 15px;
+               height: 100%;
+               width: 100%;
+         }
+    }
+}
+.button-even{
+   width: 550px;
+   display: flex;
+   margin-top: 30px;
+   .btn{
+      height: 36px;
+      width: 140px;
+      color: white;
+   }
+}
+
+.info{
+    width: 100%;
+    height: 200px;
+    // background-color: aqua;
+}
+.inputinfo{
+    height: 25px;
+    border: #AAAAAA solid 1px;
+    border-radius: 5px;
+}
