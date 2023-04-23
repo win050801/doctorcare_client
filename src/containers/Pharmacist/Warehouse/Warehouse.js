@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import DatePicker from "react-datepicker";
 import './Warehouse.scss'
 import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
+import ExportWarehouseModal from "../Modal/ExportWarehouseModal";
 
 function MyVerticallyCenteredModal(props) {
     return (
@@ -272,9 +273,10 @@ function  Warehouse(){
                                         Nhập kho
                                     </Button> */}
                                     <ImportWarehouseModal/>
-                                    <Button className="btn btn-export" variant="info" >
+                                    {/* <Button className="btn btn-export" variant="info" >
                                         Xuất kho
-                                    </Button>
+                                    </Button> */}
+                                    <ExportWarehouseModal/>
                                     
                                    
                                 </div>

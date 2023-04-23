@@ -3,6 +3,7 @@ import { Button, Input, Modal,Table } from 'antd';
 import './ImportWarehouseModal.scss'
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
+import ImportTable from './ImportTable';
 
 const ImportWarehouse = () =>{
    const [open, setOpen] = useState(false);
@@ -34,26 +35,31 @@ const ImportWarehouse = () =>{
         title: 'STT',
         dataIndex: 'stt',
         key: 'stt',
+        editable: true,
       },
       {
         title: 'Tên thuốc',
         dataIndex: 'name',
         key: 'name',
+        editable: true,
       },
       {
         title: 'Số lượng',
         dataIndex: 'age',
         key: 'age',
+        editable: true,
       },
       {
         title: 'Đơn vị lưu kho',
         dataIndex: 'address',
         key: 'address',
+        editable: true,
       },
       {
         title: 'Hạn sử dụng',
         dataIndex: 'address',
         key: 'address',
+        editable: true,
       }
       
     ];
@@ -63,7 +69,7 @@ const ImportWarehouse = () =>{
       <Button className="btn btn-import" type="primary" onClick={() => setOpen(true)}>
         Nhập kho
       </Button>
-            <Modal
+      <Modal
             title="Phiếu nhập kho"
             centered
             open={open}
@@ -88,24 +94,12 @@ const ImportWarehouse = () =>{
                         </div>
                   </div>
                   <div className='table-container'>
-                        <div>
-                           <Button
-                              // onClick={handleAdd}
-                              type="primary"
-                              style={{
-                                 marginBottom: 16,
-                              }}
-                           >
-                           Add a row
-                           </Button>
-                           <Table
-                              // components={components}
-                              // rowClassName={() => 'editable-row'}
-                              bordered
-                              dataSource={dataSource}
-                              columns={columns}
-                           />
+                        <div className='' style={{marginBottom: 16}}>
+                          
+                            
                         </div>
+                        <h5>Thêm thông tin thuốc</h5>
+                        <ImportTable/>
                   </div>
                </div>
       </Modal>
