@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Input, Button, Popconfirm, Form } from 'antd';
-import Example from './ExportWarehouseModal';
+
 
 const ExportTable = () => {
   const [form] = Form.useForm();
