@@ -2,10 +2,14 @@ import React, { useRef, useState } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal } from 'antd';
 import './ImportWarehouseModal.scss'
 import './ExportWarehouseModal.scss'
+
+<<<<<<< HEAD
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ExportTable from './ExportTable';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
+=======
+>>>>>>> 97187d13bc04d2d6f7172567e13d6f57dcdf9a97
 
 
 const ExportWarehouse = () =>{
