@@ -1,0 +1,16 @@
+.medicine-warning-container{
+   height: 702px;
+   width: 100%;
+   background-color: #ecf0f5;
+   .search-content.medicine-warning{
+      display: flex;
+                              justify-content: space-between;
+                              display: flex;
+                              align-items: center;
+                              flex-direction: row;
+                              height: 70px;
+                              width: 80%;
+                              background-color: red;
+                              padding-left: 25px;
+   }
+}

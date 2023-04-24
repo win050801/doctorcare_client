@@ -2,7 +2,7 @@ import React, { Component,useState } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
-import { Input, Table, Button,Select } from 'antd'
+import { Input, Table, Button,Select } from 'antd';
 
 
 import { connect } from "react-redux";
@@ -266,9 +266,12 @@ function  Warehouse(){
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                     />
-                                    <Button className="btn btn-warning" variant="info" >
-                                        Đang cảnh báo
-                                    </Button>
+                                    <Link to="/medicine/warning">
+                                      <Button className="btn btn-warning" variant="info" >
+                                          Đang cảnh báo
+                                      </Button>
+                                    </Link>
+                                    
                                     <Button className="btn btn-report" variant="info" >
                                         Lập báo cáo
                                     </Button>
