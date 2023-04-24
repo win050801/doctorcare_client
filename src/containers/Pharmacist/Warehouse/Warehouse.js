@@ -192,7 +192,10 @@ function  Warehouse(){
                 >
                   Chi tiết</Button>
             </Link>
-            <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
+            <Link to="/medicine/history">
+                <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
+            </Link>
+            
             <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
           </span>
         ),
