@@ -266,9 +266,12 @@ function  Warehouse(){
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                     />
-                                    <Button className="btn btn-warning" variant="info" >
-                                        Đang cảnh báo
-                                    </Button>
+                                    <Link to="/medicine/warning">
+                                      <Button className="btn btn-warning" variant="info" >
+                                          Đang cảnh báo
+                                      </Button>
+                                    </Link>
+                                    
                                     <Button className="btn btn-report" variant="info" >
                                         Lập báo cáo
                                     </Button>

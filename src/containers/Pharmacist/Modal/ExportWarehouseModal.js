@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal } from 'antd';
 import './ImportWarehouseModal.scss'
 import './ExportWarehouseModal.scss'
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ExportTable from './ExportTable';
-import ReactToPrint from 'react-to-print';
+import ReactToPrint, { useReactToPrint } from 'react-to-print';
 
 
 const ExportWarehouse = () =>{
-   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const componentRef = useRef();
 
-   const [form] = Form.useForm();
+  const handlePrint = useReactToPrint({
+      content: () => componentRef.current,
+      documentTitle: 'test',
+      onAfterPrint: () => alert('Print success')
+  })
+
+  const [form] = Form.useForm();
   const [data, setData] = useState([
     {
       key: '1',
@@ -127,20 +134,16 @@ const ExportWarehouse = () =>{
             footer={
               <div>
                 <Button >Thoát</Button>
-                {/* <ReactToPrint trigger={() =>{
-                      return <Button>Lưu và in</Button>
-                }}
-                content = {() => this.componentRef}
-                documentTitle = 'New document'
-                pageStyle='print'
-                /> */}
+              
+                <Button onClick={handlePrint}>Lưu và in</Button>
+               
                 <Button >Lưu</Button>
               </div>
             }
             >
                <div className='export-warehouse-container'>
                   <div style={{height:'50%', width:'55%',display:'flex', alignItems:'center'}}>
-                     <div className='info-info-detail'>
+                     <div className='info-info-detail' >
                            <h5>Thông tin khách hàng</h5>
 
                            <div className='customer customer-name'>
@@ -218,12 +221,52 @@ const ExportWarehouse = () =>{
                <div  className='table-container'>
                     
                     <Table
+                        ref= {componentRef}
                        bordered
                        dataSource={data}
                        columns={columns}
                        pagination={false}
                        />
               </div>
+              <h1>Phiếu xuất hàng</h1>
+    <div>
+      <h2>Thông tin khách hàng</h2>
+      <p>Tên khách hàng: </p>
+      <p>Địa chỉ: </p>
+      <p>Số điện thoại: </p>
+    </div>
+    <div>
+      <h2>Thông tin đơn hàng</h2>
+      <p>Số đơn hàng: </p>
+      <p>Ngày xuất hàng: </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* {danh_sach_san_pham.map((san_pham) => ( */}
+          {/* <tr key={san_pham.id}> */}
+            <tr >
+              <td>TÊn sản phẩn</td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+          {/* ))} */}
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h2>Thông tin nhân viên</h2>
+      <p>Tên nhân viên xuất hàng: </p>
+      <p>Chữ ký nhân viên:</p>
+      <img src="{chu_ky_nhan_vien}" alt="Chữ ký nhân viên" />
+    </div>
       </Modal>
     </>
   );
