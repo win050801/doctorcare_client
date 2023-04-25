@@ -1,0 +1,25 @@
+.import-warehouse-container{
+   height: 100%;
+   width: 100%;
+   .btn-add-drug{
+      height: 40px;
+      width: 100%;
+      .btn{
+         float: right;
+         height: 36px;
+         width: 120px;
+         color: white;
+      }
+   }
+   .search-container{
+      height: 70px;
+      width: 100%;
+      display: flex;
+      .input{
+         font-family: inherit;
+         font-size: inherit;
+         line-height: inherit;
+         height: 36px;
+      }
+   }
+}
