@@ -83,7 +83,7 @@ export default function Infopaitent() {
             <div className="headerds">
                 <h3 style={{fontSize:24,fontWeight:'bold',color:"White"}}>Danh sách bệnh nhân</h3>
             </div>
-            <Table dataSource={dataSource} columns={columns} />;
+            <Table dataSource={dataSource} columns={columns} size="small" />;
         </div>
     )
 }
