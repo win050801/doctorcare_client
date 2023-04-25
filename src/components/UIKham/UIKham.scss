@@ -1,0 +1,47 @@
+@import "../../styles/common.scss";
+
+.UIKhamcontainer{
+    width: 100%;
+    height: 100%;
+    background-color:  #EEEEEE;
+}
+.UIKham{
+    width: 98%;
+    height: 87.2%;
+    margin-top: 10px;
+    background-color: white;
+    border-top: $colormain solid 5px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+.font-label{
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+}
+.input1{
+    margin-left: 10px;
+    
+    border: #AAAAAA solid 1px;
+    border-radius: 2px;
+    height: 20px;
+}
+.input2{
+    margin-left: 10px;
+    height: 25px;
+    border: #AAAAAA solid 1px;
+    border-radius: 2px;
+    height: 20px;
+    width: 70px;
+}
+.input3{
+    margin-left: 10px;
+    width: 80px;
+    border: #AAAAAA solid 1px;
+    border-radius: 2px;
+    height: 20px;
+}
+.btn{
+    height: 20px;
+}

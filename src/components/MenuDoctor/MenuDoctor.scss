@@ -1,0 +1,15 @@
+@import "../../styles/common.scss";
+.MenuDoctorContainer{
+    width: 40vh;
+    height: 90vh;
+    display: flex;
+    background-color:  #EEEEEE;
+    justify-content: center;
+    align-items: center;
+}
+.MenuDoctor{
+    border-top: $colormain solid 5px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
