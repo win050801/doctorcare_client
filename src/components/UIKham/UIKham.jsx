@@ -54,10 +54,44 @@ export default function UIKham() {
         },
        
     ];
+    const columnssearch = [
+        {
+            title: 'Tên thuốc',
+            dataIndex: 'stt',
+            key: 'stt',
+        },
+        {
+            title: 'ĐVT',
+            dataIndex: 'hoten',
+            key: 'hoten',
+        },
+        {
+            title: 'ĐVSD',
+            dataIndex: 'gt',
+            key: 'gt',
+        },
+        {
+            title: 'P.Thức',
+            dataIndex: 'tuoi',
+            key: 'tuoi',
+        },
+        {
+            title: 'Đơn giá',
+            dataIndex: 'kk',
+            key: 'kk',
+        },
+        {
+            title: 'Ghi chú',
+            dataIndex: 'kk',
+            key: 'kk',
+        },
+        
+       
+    ];
     return (
         <div className="UIKhamcontainer">
             <div className="UIKham">
-                <div style={{ display: "flex", flex: 0.25, width: "100%", height: "100%", flexDirection: "column" }}>
+                <div style={{ display: "flex", flex: 1, width: "100%", height: "100%", flexDirection: "column" }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ fontSize: 15, fontWeight: "bold", color: "red", margin: 15 }}>Thông tin bệnh nhân</span>
                         <div style={{ display: "flex", justifyContent: "space-between", flex: 0.23, paddingRight: 15, alignItems: "center" }}>
@@ -105,10 +139,10 @@ export default function UIKham() {
 
                 </div>
                 <hr></hr>
-                <div style={{ display: "flex", flex: 0.4, width: "100%", height: "100%", alignItems: "center", flexDirection: "column" }}>
+                <div style={{ display: "flex", flex: 0.25, width: "100%", height: "100%", alignItems: "center", flexDirection: "column" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", width: "100%", flex: 0.2 }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ fontSize: 15, fontWeight: "bold", color: "red", margin: 15 }}>Đơn thuốc</span>
+                            <span style={{ fontSize: 15, fontWeight: "bold", color: "red", marginLeft: 15 }}>Đơn thuốc</span>
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", flex: 0.22, paddingRight: 15, alignItems: "center" }}>
                             <label className="font-label">Số ngày thuốc</label>
@@ -130,8 +164,21 @@ export default function UIKham() {
 
                 </div>
                 <hr></hr>
-                <div style={{ display: "flex", flex: 0.3, width: "100%", height: "100%", alignItems: "center", flexDirection: "column" }}>
-                    
+                <div style={{ display: "flex", flex: 0.25, width: "100%", height: "100%", alignItems: "center", flexDirection: "column" }}>
+                    <div style={{display:"flex",flex:0.2    ,width:"100%",height:"100%",flexDirection:"row"}}>
+                        <div className="bordersearch" style={{display:"flex",width:"60%",height:"100%"}}>
+                            <input className="inputserch" type="text" placeholder="Nhập từ khóa tìm kiếm thuốc"></input>
+                        </div>
+                        <div className="btntt">
+                            <div className="btn2" style={{display:"flex",width:"50%",height:"100%",justifyContent:"center",alignItems:"center"}}>
+                                <span style={{fontSize:13,fontWeight:"initial",color:"white"}}>Thêm vào toa</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style={{width:"100%",height:"100%",display:"flex"}}>
+                        <Table style={{width:"100%",padding:10}} size="small" dataSource={dataSource} columns={columnssearch}></Table>
+                    </div>
                 </div>
             </div>
         </div>
