@@ -1,4 +1,4 @@
-import React, { Component,useState } from "react";
+import React, { Component,useEffect,useState } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
@@ -10,165 +10,191 @@ import DatePicker from "react-datepicker";
 import './Warehouse.scss'
 import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
 import ExportWarehouseModal from "../Modal/ExportWarehouseModal";
+import { getMedicines } from "../../../routes/APIRoutes/APIMedicine";
+import axios from "../../../axios";
+import { useHistory } from 'react-router-dom';
 
 function MyVerticallyCenteredModal(props) {
-    return (
-      <Modal
-      {...props}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        <form className="p-4 bg-white rounded-lg shadow-md">
-          <h2 className="mb-4 text-2xl font-medium">Thêm thuốc</h2>
-          <div className="row">
-            <div className="col-lg-5 col-md-6 mb-4">
-              <div className="form-group">
-                <label htmlFor="name" className="inputSearch">
-                  Tên thuốc
-                </label>
-                <input type="text" className="form-control" id="name" />
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-4">
-              <div className="form-group">
-                <label htmlFor="genericName" className="inputSearch">
-                  Tên gốc
-                </label>
-                <input type="text" className="form-control" id="genericName" />
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="form-group">
-                <label htmlFor="storageUnit" className="inputSearch">
-                  Đơn vị lưu kho
-                </label>
-                <input type="text" className="form-control" id="storageUnit" />
-              </div>
-            </div>
+
+  
+
+  return (
+    <Modal
+    {...props}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
           
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+      <form className="p-4 bg-white rounded-lg shadow-md">
+        <h2 className="mb-4 text-2xl font-medium">Thêm thuốc</h2>
+        <div className="row">
+          <div className="col-lg-5 col-md-6 mb-4">
+            <div className="form-group">
+              <label htmlFor="name" className="inputSearch">
+                Tên thuốc
+              </label>
+              <input type="text" className="form-control" id="name" />
+            </div>
           </div>
+          <div className="col-lg-3 col-md-6 mb-4">
+            <div className="form-group">
+              <label htmlFor="genericName" className="inputSearch">
+                Tên gốc
+              </label>
+              <input type="text" className="form-control" id="genericName" />
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6 mb-4">
+            <div className="form-group">
+              <label htmlFor="storageUnit" className="inputSearch">
+                Đơn vị lưu kho
+              </label>
+              <input type="text" className="form-control" id="storageUnit" />
+            </div>
+          </div>
+        
+        </div>
 
-          <div className="row mb-4">
-            <div className="col-lg-3">
-              <div className="form-group">
-                <label htmlFor="name" className="inputSearch">
-                  Đơn vị sử dụng/ lần
-                </label>
-                <input type="text" className="form-control" id="name" />
-              </div>
-            </div>
-            <div className="col-lg-3 ">
-              <div className="form-group">
-                <label htmlFor="genericName" className="inputSearch">
-                  Phương thức
-                </label>
-                <input type="text" className="form-control" id="genericName" />
-              </div>
-            </div>
-            <div className="col-lg-3 ">
-              <div className="form-group">
-                <label htmlFor="storageUnit" className="inputSearch">
-                  Đơn vị lưu kho
-                </label>
-                <input type="text" className="form-control" id="storageUnit" />
-              </div>
-            </div>
-            <div className="col-lg-3 ">
-              <div className="form-group">
-                <label htmlFor="storageUnit" className="inputSearch">
-                  Số lượng tồn
-                </label>
-                <input type="text" className="form-control" id="storageUnit" />
-              </div>
+        <div className="row mb-4">
+          <div className="col-lg-3">
+            <div className="form-group">
+              <label htmlFor="name" className="inputSearch">
+                Đơn vị sử dụng/ lần
+              </label>
+              <input type="text" className="form-control" id="name" />
             </div>
           </div>
- 
-          <div className="row mb-4 justify-content-between">
-            <div className="col-lg-4">
-              <div className="form-group">
-                <label htmlFor="name" className="inputSearch">
-                  Đơn giá vốn
-                </label>
-                <input type="text" className="form-control" id="name" />
-              </div>
+          <div className="col-lg-3 ">
+            <div className="form-group">
+              <label htmlFor="genericName" className="inputSearch">
+                Phương thức
+              </label>
+              <input type="text" className="form-control" id="genericName" />
             </div>
-            <div className="col-lg-3 ">
-              <div className="form-group">
-                <label htmlFor="genericName" className="inputSearch">
-                  Đơn giá bán
-                </label>
-                <input type="text" className="form-control" id="genericName" />
-              </div>
-            </div>
-            <div className="col-lg-4 ">
-              <div className="form-group">
-                <label htmlFor="storageUnit" className="inputSearch">
-                  Số lượng tồn
-                </label>
-                <input type="text" className="form-control" id="storageUnit" />
-              </div>
-            </div>
-            
           </div>
+          <div className="col-lg-3 ">
+            <div className="form-group">
+              <label htmlFor="storageUnit" className="inputSearch">
+                Đơn vị lưu kho
+              </label>
+              <input type="text" className="form-control" id="storageUnit" />
+            </div>
+          </div>
+          <div className="col-lg-3 ">
+            <div className="form-group">
+              <label htmlFor="storageUnit" className="inputSearch">
+                Số lượng tồn
+              </label>
+              <input type="text" className="form-control" id="storageUnit" />
+            </div>
+          </div>
+        </div>
 
-          <div className="row mb-4 justify-content-between">
-            <div className="col-lg-4">
+        <div className="row mb-4 justify-content-between">
+          <div className="col-lg-4">
+            <div className="form-group">
+              <label htmlFor="name" className="inputSearch">
+                Đơn giá vốn
+              </label>
+              <input type="text" className="form-control" id="name" />
+            </div>
+          </div>
+          <div className="col-lg-3 ">
+            <div className="form-group">
+              <label htmlFor="genericName" className="inputSearch">
+                Đơn giá bán
+              </label>
+              <input type="text" className="form-control" id="genericName" />
+            </div>
+          </div>
+          <div className="col-lg-4 ">
+            <div className="form-group">
+              <label htmlFor="storageUnit" className="inputSearch">
+                Số lượng tồn
+              </label>
+              <input type="text" className="form-control" id="storageUnit" />
+            </div>
+          </div>
+          
+        </div>
+
+        <div className="row mb-4 justify-content-between">
+          <div className="col-lg-4">
+            <div className="form-group">
+              <label htmlFor="name" className="inputSearch">
+                Thông báo khi SL tồn nhỏ hơn
+              </label>
+              <input type="text" className="form-control" id="name" />
+            </div>
+          </div>
+          <div className="col-lg-3 ">
+            <div className="form-group">
+              <label htmlFor="genericName" className="inputSearch">
+                Ngày hết hạn
+              </label>
+              <input type="text" className="form-control" id="genericName" />
+            </div>
+          </div>
+          <div className="col-lg-4 ">
+            <div className="form-group">
+              <label htmlFor="storageUnit" className="inputSearch">
+                Thông báo khi số ngày sử
+              </label>
+              <input type="text" className="form-control" id="storageUnit" />
+            </div>
+          </div>
+        </div>
+        <div className="row">
+            <div className="col-lg-12">
               <div className="form-group">
                 <label htmlFor="name" className="inputSearch">
-                  Thông báo khi SL tồn nhỏ hơn
+                  Ghi chú
                 </label>
                 <input type="text" className="form-control" id="name" />
               </div>
             </div>
-            <div className="col-lg-3 ">
-              <div className="form-group">
-                <label htmlFor="genericName" className="inputSearch">
-                  Ngày hết hạn
-                </label>
-                <input type="text" className="form-control" id="genericName" />
-              </div>
-            </div>
-            <div className="col-lg-4 ">
-              <div className="form-group">
-                <label htmlFor="storageUnit" className="inputSearch">
-                  Thông báo khi số ngày sử
-                </label>
-                <input type="text" className="form-control" id="storageUnit" />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-              <div className="col-lg-12">
-                <div className="form-group">
-                  <label htmlFor="name" className="inputSearch">
-                    Ghi chú
-                  </label>
-                  <input type="text" className="form-control" id="name" />
-                </div>
-              </div>
-          </div>
-      </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={props.onHide}>Close</Button>
-          <Button color="info" onClick={props.onHide}>Thêm thuốc</Button>
-        </Modal.Footer>
-      </Modal>
-    );
+        </div>
+    </form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={props.onHide}>Close</Button>
+        <Button color="info">Thêm thuốc</Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
 
 function  Warehouse(){
 
     const [startDate, setStartDate] = useState(new Date());
+
     const [modalShow, setModalShow] = React.useState(false);
+
     const [open, setOpen] = useState(false);
+
+    const [selectedId, setSelectedId] = useState(null);
+
+    const [data, setData] = useState([]);
+
+    const history = useHistory();
+
+    useEffect( async ()=>{
+          const response = await axios.get("http://localhost:9000/api/medicines/", {
+            category_id: 1,
+            medicine_id: -1,
+            key_search:"",
+            status: 1
+        }).then(response => setData(response.data))
+          .catch(error => console.error(error));
+      },[]
+    )
+
     const handleOpenModal = () => {
       setOpen(true);
     };
@@ -188,7 +214,7 @@ function  Warehouse(){
           <span>
             <Link to="/medicine/detail"> 
                 <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
-                        onClick={() => handleViewMedicineDetail()}
+                      
                 >
                   Chi tiết</Button>
             </Link>
@@ -215,34 +241,49 @@ function  Warehouse(){
       },
       {
         title: 'Ngày hết hạn',
-        dataIndex: 'age',
-        key: 'age',
+        dataIndex: 'expiry_date',
+        key: 'expiry_date',
       },
       {
         title: 'Giá vốn',
-        dataIndex: 'address',
-        key: 'address',
+        dataIndex: 'cost_price',
+        key: 'cost_price',
       },
       {
         title: 'Giá bán',
-        dataIndex: 'address',
-        key: 'address',
+        dataIndex: 'retail_price',
+        key: 'retail_price',
       },
       {
         title: 'Đơn vị lưu kho',
-        dataIndex: 'address',
-        key: 'address',
+        dataIndex: 'storage_unit',
+        key: 'storage_unit',
       },
       {
         title: 'Tác vụ',
         dataIndex: 'actions',
         key: 'actions',
+        render: (_, record) => {
+          return(
+            <span>
+              <Link to={`/medicine/detail/${record.id}`}> 
+                  <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
+                         
+                  >
+                    Chi tiết</Button>
+              </Link>
+              <Link to={`/medicine/${record.id}/history/`}> 
+                  <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
+              </Link>
+              
+              <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
+            </span>
+          );
+        }
+    
       },
     ];
 
-    const handleViewMedicineDetail = () =>{
-        
-    }
 
   let handleColor = (time) => {
     return time.getHours() > 12 ? "text-success" : "text-error";
@@ -324,7 +365,7 @@ function  Warehouse(){
                                             
                                         </div>
                                         <div className="table-content">
-                                            <Table responsive  dataSource={dataSource} columns={columns}  >
+                                            <Table responsive  dataSource={data} columns={columns}  >
                                                 
                                             </Table>
                                         </div>
