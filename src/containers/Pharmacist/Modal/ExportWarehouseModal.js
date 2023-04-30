@@ -2,17 +2,24 @@ import React, { useRef, useState } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal } from 'antd';
 import './ImportWarehouseModal.scss'
 import './ExportWarehouseModal.scss'
+<<<<<<< HEAD
 
 <<<<<<< HEAD
+=======
+>>>>>>> master
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ExportTable from './ExportTable';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
-=======
->>>>>>> 97187d13bc04d2d6f7172567e13d6f57dcdf9a97
-
 
 const ExportWarehouse = () =>{
+
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 2 });
+
+  const handleChange = (page, pageSize) => {
+    setPagination({ current: page, pageSize });
+  };
+  
   const [open, setOpen] = useState(false);
   const componentRef = useRef();
 
@@ -29,6 +36,30 @@ const ExportWarehouse = () =>{
       name: 'John Brown',
       age: 32,
       address: 'New York No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
     },
     {
       key: '2',
@@ -149,15 +180,23 @@ const ExportWarehouse = () =>{
                   <div style={{height:'50%', width:'55%',display:'flex', alignItems:'center'}}>
                      <div className='info-info-detail' >
                            <h5>Thông tin khách hàng</h5>
-
+                        <Form form={form} onFinish={onFinish}>
                            <div className='customer customer-name'>
                               <div className='number-1-name'>
                                  <label className='label customer-name'>Tên khách hàng</label>
-                                 <Input className='input customer-name'></Input>
+
+                                 <Form.Item name="customer-name" rules={[{ required: true }]}>
+                                    <Input className='input customer-name'></Input>
+                                 </Form.Item>
+                                
                               </div>
                               <div className='number-1-birth-year'>
                                  <label className='label birth-year'>Năm sinh</label>
-                                 <Input className='input birth-year'></Input>
+                                
+
+                                 <Form.Item name="name" rules={[{ required: true }]}>
+                                    <Input className='input birth-year'></Input>
+                                  </Form.Item>
                               </div>
                            </div>
                            <div className='customer customer-info'>
@@ -173,7 +212,11 @@ const ExportWarehouse = () =>{
                            <div className='customer customer-info'>
                               <div className='number-3-name-employee'>
                                  <label className='label name-employee'>Tên nhân viên</label>
-                                 <Input className='input name-employee'></Input>
+
+                                 <Form.Item name="Tên nhân viên" rules={[{ required: true }]}>
+                                    <Input className='input name-employee'></Input>
+                                 </Form.Item>
+                                 
                               </div>
                               <div className='number-3-percent-discount'>
                                  <label className='label percent-discount'>Giảm giá(%)</label>
@@ -187,10 +230,13 @@ const ExportWarehouse = () =>{
                            <div className='customer customer-info'>
                               <div className='number-4-note'>
                                  <label className='label note'>Ghi chú</label>
-                                 <Input className='input note'></Input>
+                                
+                                 <Form.Item name="name" rules={[{ required: true }]}>
+                                    <Input className='input note'></Input>
+                                  </Form.Item>
                               </div>
                            </div>
-                           
+                          </Form>
                      </div>
                      
                   </div>
@@ -205,13 +251,13 @@ const ExportWarehouse = () =>{
                                           </Button>
                                        </div>
                                        <div style={{alignItems:'center',flex:'row'}}>
-                                          <Form.Item name="name" rules={[{ required: true }]}>
+                                          <Form.Item name="Tên thuốc" rules={[{ required: true }]}>
                                              <Input className='input-1' placeholder="Name" />
                                           </Form.Item>
-                                          <Form.Item name="age" rules={[{ required: true }]}>
+                                          <Form.Item name="Số lượng" rules={[{ required: true }]}>
                                              <Input className='input' placeholder="Age" />
                                           </Form.Item>
-                                          <Form.Item name="address" rules={[{ required: true }]}>
+                                          <Form.Item name="Đơn vị" rules={[{ required: true }]}>
                                              <Input className='input' placeholder="Address" />
                                           </Form.Item>
                                        </div>
@@ -226,51 +272,23 @@ const ExportWarehouse = () =>{
                     
                     <Table
                         ref= {componentRef}
-                       bordered
-                       dataSource={data}
-                       columns={columns}
-                       pagination={false}
-                       />
+                        bordered
+                        dataSource={data}
+                        columns={columns}
+                        pagination={pagination}
+                        onChange={handleChange}
+                    />
               </div>
-              <h1>Phiếu xuất hàng</h1>
-    <div>
-      <h2>Thông tin khách hàng</h2>
-      <p>Tên khách hàng: </p>
-      <p>Địa chỉ: </p>
-      <p>Số điện thoại: </p>
-    </div>
-    <div>
-      <h2>Thông tin đơn hàng</h2>
-      <p>Số đơn hàng: </p>
-      <p>Ngày xuất hàng: </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Sản phẩm</th>
-            <th>Số lượng</th>
-            <th>Đơn giá</th>
-            <th>Thành tiền</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* {danh_sach_san_pham.map((san_pham) => ( */}
-          {/* <tr key={san_pham.id}> */}
-            <tr >
-              <td>TÊn sản phẩn</td>
-              <td>1</td>
-              <td>1</td>
-              <td>1</td>
-            </tr>
-          {/* ))} */}
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <h2>Thông tin nhân viên</h2>
-      <p>Tên nhân viên xuất hàng: </p>
-      <p>Chữ ký nhân viên:</p>
-      <img src="{chu_ky_nhan_vien}" alt="Chữ ký nhân viên" />
-    </div>
+              <div style={{display:"none"}}>
+              <Table
+                        ref= {componentRef} 
+                        bordered
+                        dataSource={data}
+                        columns={columns}
+                        pagination={pagination}
+                        onChange={handleChange}
+                    />
+              </div>
       </Modal>
     </>
   );

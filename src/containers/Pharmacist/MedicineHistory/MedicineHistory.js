@@ -1,15 +1,38 @@
-import React, { Component,useState } from "react";
+import React, { Component,useState,useEffect } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
 import './MedicineHistory.scss';
 import { Link } from 'react-router-dom';
 
 import { Input, Table,Select,DatePicker } from 'antd';
+import { useParams } from 'react-router-dom';
+// import axios from "../../../axios";
+import axios from "axios";
 
 const MedicineHistory = () =>{
+
+      const { id } = useParams();
+
+      const [medicineData, setMedicineData] = useState({});
+
+      useEffect(() => {
+            const fetchMedicineData = async () => {
+              const response = await axios.get(`http://localhost:9000/api/medicines/1/history`, {
+                  from_date: "",
+                  to_date: "",
+              });
+              setMedicineData(response.data);
+              console.log(response.data);
+            };
+            fetchMedicineData();
+      }, []);
+
       const onChange =(date, dateString) => {
-            console.log(date, dateString);
+            // console.log(medicineData);
       }
+
+      // console.log(medicineData);
+      // console.log(id);
 
       const dataSource = [
             {
@@ -35,29 +58,29 @@ const MedicineHistory = () =>{
             },
           ];
       
-          const columns = [
-            {
-              title: 'STT',
-              dataIndex: 'stt',
-              key: 'stt',
-            },
-            {
-              title: 'Ngày thực hiện',
-              dataIndex: 'name',
-              key: 'name',
-            },
-            {
-              title: 'Hoạt động',
-              dataIndex: 'age',
-              key: 'age',
-            },
-            {
-              title: "Chi tiết",
-              dataIndex: 'address',
-              key: 'address',
-            },
-            
-          ];
+      const columns = [
+      {
+            title: 'STT',
+            dataIndex: 'stt',
+            key: 'stt',
+      },
+      {
+            title: 'Ngày thực hiện',
+            dataIndex: 'name',
+            key: 'name',
+      },
+      {
+            title: 'Hoạt động',
+            dataIndex: 'warehouse_session_status',
+            key: 'age',
+      },
+      {
+            title: "Chi tiết",
+            dataIndex: 'address',
+            key: 'address',
+      },
+      
+      ];
 
       return(
          <>

@@ -18,6 +18,8 @@ import System from '../routes/System';
 import { CustomToastCloseButton } from '../components/CustomToast';
 import Pharmacist from './Pharmacist/Pharmacist';
 import MedicineDetail from './Pharmacist/MedicineDetail/MedicineDetail';
+import MedicineHistory from './Pharmacist/MedicineHistory/MedicineHistory';
+import MedicineWarning from './Pharmacist/MedicineWarning/MedicineWarning';
 
 class App extends Component {
 
@@ -53,7 +55,9 @@ class App extends Component {
                                 <Route path={path.LOGIN} component={userIsNotAuthenticated(Login)} />
                                 <Route path={path.SYSTEM} component={userIsAuthenticated(System)} />
                                 <Route path={path.PHARMACIST} component={(Pharmacist)} />
-                                <Route path="/medicine/detail" component={(MedicineDetail)} />
+                                <Route path="/medicine/detail/:id" component={(MedicineDetail)} />
+                                <Route path="/medicine/:id/history" component={(MedicineHistory)} />
+                                <Route path="/medicine/warning" component={(MedicineWarning)} />
                             </Switch>
                         </span>
 

@@ -61,7 +61,7 @@ export default function Listwait()
                 <span style={{color:"red",fontSize:14,fontWeight:"bold"}}>Danh sách bệnh nhân đang chờ</span>
             </div>
             <div style={{display:"flex",flex:0.9,width:"100%",height:"100%",padding:20}}>
-                <Table style={{width:"100%",height:"100%"}} dataSource={dataSource} columns={columns} />
+                <Table style={{width:"100%",height:"100%"}} dataSource={dataSource} columns={columns} size="small" />
             </div>
         </div>
     )
