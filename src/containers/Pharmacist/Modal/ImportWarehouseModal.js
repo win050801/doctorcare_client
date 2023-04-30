@@ -17,7 +17,6 @@ const ImportWarehouse = () =>{
           <span>
             <Link to="/medicine/detail"> 
                 <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
-                        
                 >
                   Chi tiết</Button>
             </Link>

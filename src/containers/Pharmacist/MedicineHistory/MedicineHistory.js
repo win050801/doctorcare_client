@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 
 import { Input, Table,Select,DatePicker } from 'antd';
 import { useParams } from 'react-router-dom';
-import axios from "../../../axios";
+// import axios from "../../../axios";
+import axios from "axios";
 
 const MedicineHistory = () =>{
 
@@ -21,16 +22,17 @@ const MedicineHistory = () =>{
                   to_date: "",
               });
               setMedicineData(response.data);
+              console.log(response.data);
             };
             fetchMedicineData();
-      }, [id]);
+      }, []);
 
       const onChange =(date, dateString) => {
             // console.log(medicineData);
       }
 
-      console.log(medicineData);
-      console.log(id);
+      // console.log(medicineData);
+      // console.log(id);
 
       const dataSource = [
             {
@@ -107,7 +109,7 @@ const MedicineHistory = () =>{
                                                       <Button className="btn-see" >Xem</Button>
                                                 </div>
                                                 <div className="medicine-history-table">
-                                                      <Table responsive  dataSource={medicineData} columns={columns}  >
+                                                      <Table responsive  dataSource={dataSource} columns={columns}  >
                                                       </Table>
                                                 </div>
                                           </div>

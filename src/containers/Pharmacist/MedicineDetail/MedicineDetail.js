@@ -4,7 +4,8 @@ import Navbar from "../../Menu/Navbar";
 import './MedicineDetail.scss';
 import { Input, Table,Select } from 'antd';
 import { useParams } from 'react-router-dom';
-import axios from "../../../axios";
+// import axios from "../../../axios";
+import axios from "axios";
 
 
 function  MedicineDetail(){
