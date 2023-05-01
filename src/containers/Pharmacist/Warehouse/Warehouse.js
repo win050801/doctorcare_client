@@ -27,7 +27,7 @@ function MyVerticallyCenteredModal(props) {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [categoryId, setcategoryId] = useState(1);
+  const [categoryId, setCategoryId] = useState(1);
 
   const checkQuantity = (_, value) => {
     if (value <= 0) {
@@ -62,7 +62,7 @@ function MyVerticallyCenteredModal(props) {
   };
 
   const handleSelectChange = (value) => {
-    setcategoryId(`${value}`)
+    setCategoryId(`${value}`)
   }
 
 
@@ -79,7 +79,7 @@ function MyVerticallyCenteredModal(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(categoryId);
+   
     const response = await axios.post(`http://localhost:9000/api/medicines/create`, {
         category_id: categoryId,
         name: formValues.name,
@@ -260,9 +260,17 @@ function  Warehouse(){
 
     const [modalShow, setModalShow] = React.useState(false);
 
+    const [categoryData,setCategoryData] = useState([]);
+
     const [open, setOpen] = useState(false);
 
     const [data, setData] = useState([]);
+
+    const [categoryId, setCategoryId] = useState(-1);
+
+    const [status, setStatus] = useState(-1);
+
+    const [sortBy, setSortBy] = useState(0);
 
     const [search,setSearch] = useState({
       categoryId: -1,
@@ -277,16 +285,37 @@ function  Warehouse(){
       setSearch({ ...search, [name]: value });
     };
 
-    useEffect( async ()=>{
+    useEffect(() => {
+      const fetchMedicineData = async () => {
+        const response = await axios.get(`http://localhost:9000/api/categories/`, {});
+        setCategoryData(response.data);
+      };
+      fetchMedicineData();
+    }, []);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
           const response = await axios.get("http://localhost:9000/api/medicines/", {
-            category_id: search.categoryId,
-            medicine_id: search.medicineId,
-            key_search: search.keySearch,
-            status: search.status
-        }).then(response => setData(response.data))
-          .catch(error => console.error(error));
-      },[search]
-    )
+              params: {
+                category_id: categoryId,
+                medicine_id: search.medicineId,
+                key_search: search.keySearch,
+                status: search.status,
+                sort_by: search.sortBy,
+              }
+          });
+    
+          setData(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    
+      fetchData();
+    }, [search]);
+    
+  
 
     const handleOpenModal = () => {
       setOpen(true);
@@ -354,6 +383,22 @@ function  Warehouse(){
       },
     ];
 
+    const handleSelectChangeCategory = (value) => {
+      setCategoryId(`${value}`)
+      setSearch({ ...search, categoryId: value });
+    }
+
+    const handleSelectChangeStatus = (value) => {
+      setStatus(`${value}`)
+      setSearch({ ...search, status: value });
+    }
+
+    const handleSelectChangeSortBy = (value) => {
+      setSortBy(`${value}`)
+      setSearch({ ...search, sortBy: value });
+    }
+
+
 
   let handleColor = (time) => {
     return time.getHours() > 12 ? "text-success" : "text-error";
@@ -384,7 +429,7 @@ function  Warehouse(){
                                     </Link>
                                     
                                     <Button className="btn btn-report" variant="info" >
-                                        Lập báo cáo
+                                        Lịch sử
                                     </Button>
                                     {/* <Button  onClick={() => setOpen(true)} className="btn btn-import" variant="info" >
                                         Nhập kho
@@ -408,23 +453,25 @@ function  Warehouse(){
                                             </div>
                                             <div>
                                                 <h5>Danh mục thuốc </h5>
-                                                <Select onChange={handleInputChange} name="categoryId"  className="input-search-type" id="cars"  placeholder="Tất cả">
-                                                    <option value="volvo">Nam</option>
-                                                    <option value="saab">Nữ</option>
-                              
+                                                <Select onChange={handleSelectChangeCategory} name="categoryId"  className="input-search-type" id="cars"  placeholder="Tất cả">
+                                                  {categoryData.map(option => (
+                                                    <option key={option.id} value={option.id}>
+                                                      {option.name}
+                                                    </option>
+                                                  ))}
                                                 </Select>
                                             </div>
                                             <div>
                                                 <h5>Trạng thái </h5>
-                                                <Select onChange={handleInputChange} name="status" style={{width:"160px"}} className="input-search start" id="cars" placeholder="Tất cả">
-                                                    <option value="saab">Tất cả</option>
-                                                    <option value="volvo">Đang hoạt động</option>
-                                                    <option value="saab">Không còn sử dụng</option>
+                                                <Select onChange={handleSelectChangeStatus} name="status" style={{width:"160px"}} className="input-search start" id="cars" placeholder="Tất cả">
+                                                    <option value="-1">Tất cả</option>
+                                                    <option value="1">Đang hoạt động</option>
+                                                    <option value="0">Không còn sử dụng</option>
                                                 </Select>
                                             </div>
                                             <div>
                                                 <h5>Sắp xếp theo </h5>
-                                                <Select onChange={handleInputChange} name="sortBy"  className="input-search sort" id="cars" placeholder="Chọn">
+                                                <Select onChange={handleSelectChangeSortBy} name="sortBy"  className="input-search sort" id="cars" placeholder="Chọn">
                                                     <option value="0">Tất cả</option>
                                                     <option value="1">Tên thuốc (Tăng dần)</option>
                                                     <option value="2">Tên thuốc (giảm dần)</option>

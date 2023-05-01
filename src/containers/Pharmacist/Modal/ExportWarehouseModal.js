@@ -2,11 +2,11 @@ import React, { useRef, useState } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal } from 'antd';
 import './ImportWarehouseModal.scss'
 import './ExportWarehouseModal.scss'
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-=======
->>>>>>> master
+
+
+
+
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ExportTable from './ExportTable';

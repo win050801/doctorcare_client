@@ -6,33 +6,52 @@ import { Link } from 'react-router-dom';
 
 import { Input, Table,Select,DatePicker } from 'antd';
 import { useParams } from 'react-router-dom';
-// import axios from "../../../axios";
-import axios from "axios";
+import axios from "../../../axios";
+// import axios from "axios";
 
 const MedicineHistory = () =>{
 
       const { id } = useParams();
 
-      const [medicineData, setMedicineData] = useState({});
+      const [medicineData, setMedicineData] = useState([]);
+
+      const [fromDate, setFromDate] = useState("");
+
+      const [toDate, setToDate] = useState("");
+
+      const [search, setSearch] = useState({
+            fromDate: "",
+            toDate: "",
+            status: 1
+      });
 
       useEffect(() => {
             const fetchMedicineData = async () => {
-              const response = await axios.get(`http://localhost:9000/api/medicines/1/history`, {
-                  from_date: "",
-                  to_date: "",
-              });
-              setMedicineData(response.data);
-              console.log(response.data);
+                  const response = await axios.get(`http://localhost:9000/api/medicines/history`, {
+                  params:{
+                  medicine_id: id,
+                  status: search.status,
+                  key_search: "",
+                  from_date: search.fromDate,
+                  to_date: search.toDate,
+                  }
+                  });
+                  setMedicineData(response.data);
+                  console.log(response);
             };
-            fetchMedicineData();
-      }, []);
+      
+      fetchMedicineData();
+      }, [search]);
+          
+      const onChangeFromDate = (date, dateString) => {
+            setSearch({ ...search, fromDate: dateString });
+      };
+      
+      const onChangeToDate = (date, dateString) => {
+            setSearch({ ...search, toDate: dateString });
+      };
+        
 
-      const onChange =(date, dateString) => {
-            // console.log(medicineData);
-      }
-
-      // console.log(medicineData);
-      // console.log(id);
 
       const dataSource = [
             {
@@ -75,9 +94,14 @@ const MedicineHistory = () =>{
             key: 'age',
       },
       {
+            title: 'Số lượng',
+            dataIndex: 'warehouse_session_status',
+            key: 'age',
+      },
+      {
             title: "Chi tiết",
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: 'description',
+            key: 'description',
       },
       
       ];
@@ -100,16 +124,16 @@ const MedicineHistory = () =>{
                                                 <div style={{display:'flex', marginTop: '20px' }}>
                                                       <div>
                                                             <label><h5>Từ: </h5></label>
-                                                            <DatePicker onChange={onChange} />
+                                                            <DatePicker onChange={onChangeFromDate} />
                                                       </div>
                                                       <div style={{marginLeft:'20px'}}>
                                                             <label><h5>Đến: </h5></label>
-                                                            <DatePicker onChange={onChange} />
+                                                            <DatePicker onChange={onChangeToDate} />
                                                       </div>
                                                       <Button className="btn-see" >Xem</Button>
                                                 </div>
                                                 <div className="medicine-history-table">
-                                                      <Table responsive  dataSource={dataSource} columns={columns}  >
+                                                      <Table responsive  dataSource={medicineData} columns={columns}  >
                                                       </Table>
                                                 </div>
                                           </div>
