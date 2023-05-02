@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm } from 'antd';
+import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message } from 'antd';
 import './ImportWarehouseModal.scss'
 import { Link } from 'react-router-dom';
 import ImportTable from './ImportTable';
@@ -17,6 +17,10 @@ const ImportWarehouse = () =>{
    const [employeeId, setEmployeeId] = useState([]);
 
    const [note, setNote] = useState("");
+
+   const [isEditing, setIsEditing] = useState(false);
+
+   const [editingIndex, setEditingIndex] = useState(-1);
 
    useEffect(() => {
     const fetchCategoryData = async () => {
@@ -47,16 +51,29 @@ const ImportWarehouse = () =>{
   };
 
   const handleImportMedicine = async () =>{
-    const response = await axios.post(`http://localhost:9000/api/medicines/create-warehouse`, {
+    if(data.length === 0){
+      message.error('Bạn cần chọn thuốc để nhập kho');
+      return;
+    }
+    if (!employeeId || !note) {
+      message.error('Bạn phải chọn tên nhân viên và nhập ghi chú');
+      return;
+    }
+    if (expiry_date === null || expiry_date === "") {
+      message.error('Vui lòng chọn ngày hết hạn lại lần nữa');
+      return;
+    }
+      const response = await axios.post(`http://localhost:9000/api/medicines/create-warehouse`, {
         employee_id: employeeId,
         discount_percent: 0,
         type: 0,
         discount_amount: 0,
         description : note,
         warehouse_session_request:  data
-    });
-    console.log(response);
-
+      });
+      message.success("Thêm phiếu nhập kho thành công");
+      setOpen(false);
+      form.resetFields();
   }
 
   const [form] = Form.useForm();
@@ -73,8 +90,11 @@ const ImportWarehouse = () =>{
 
   const [quantity, setQuantity] = useState(0);
 
-  const [data, setData] = useState([
-  ]);
+  const [defaultValueDate, setDefaultValueDate] = useState(null);
+
+
+  const [data, setData] = useState([]);
+
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -101,7 +121,14 @@ const ImportWarehouse = () =>{
   
 
   const onEdit = (record) => {
+    setEditingIndex(record.key - 1);
+    setIsEditing(true);
     form.setFieldsValue(record);
+    const { expiry_date } = record;
+    form.setFieldsValue({
+      ...record,
+      expiry_date: moment(expiry_date),
+    });
   };
 
   const onDelete = (record) => {
@@ -186,32 +213,49 @@ const ImportWarehouse = () =>{
       unit,
       expiry_date,
     };
-
-    // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-    const existingProductIndex = data.findIndex((product) => product.name === name);
-
-    if (existingProductIndex !== -1) {
-      // Sản phẩm đã tồn tại trong danh sách, cộng thêm quantity cho sản phẩm này
-      const existingProduct = data[existingProductIndex];
-      const updatedProduct = {
-        ...existingProduct,
-        quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
-      };
+  
+    if (isEditing) {
+      // Cập nhật thông tin sản phẩm đã có trong danh sách
+      const updatedProduct = { ...newProduct, key: editingIndex + 1 };
       setData([
-        ...data.slice(0, existingProductIndex),
+        ...data.slice(0, editingIndex),
         updatedProduct,
-        ...data.slice(existingProductIndex + 1),
+        ...data.slice(editingIndex + 1),
       ]);
+      setIsEditing(false);
     } else {
-      // Sản phẩm chưa tồn tại trong danh sách, thêm sản phẩm mới vào danh sách
-      setData([...data, { ...newProduct, key: data.length + 1 }]);
+      // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
+      const existingProductIndex = data.findIndex((product) => product.name === name);
+  
+      if (existingProductIndex !== -1) {
+        // Sản phẩm đã tồn tại trong danh sách, cộng thêm quantity cho sản phẩm này
+        const existingProduct = data[existingProductIndex];
+        const updatedProduct = {
+          ...existingProduct,
+          quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
+        };
+        setData([
+          ...data.slice(0, existingProductIndex),
+          updatedProduct,
+          ...data.slice(existingProductIndex + 1),
+        ]);
+      } else {
+        // Sản phẩm chưa tồn tại trong danh sách, thêm sản phẩm mới vào danh sách
+        setData([...data, { ...newProduct, key: data.length + 1 }]);
+      }
     }
-
+  
     setSearchMedicine("");
-    setExpiryDate(null);
     form.resetFields();
-    
-   
+  };
+  
+
+  const checkQuantity = (_, value) => {
+    if (value <= 0) {
+      return Promise.reject("Lớn hơn 0");
+    } else {
+      return Promise.resolve();
+    }
   };
 
 
@@ -233,6 +277,12 @@ const ImportWarehouse = () =>{
    
   };
 
+  const disabledDate = (current) => {
+    const today = moment().startOf('day');
+    // Nếu ngày được chọn nhỏ hơn hoặc bằng ngày hiện tại, disable nó
+    return current && current <= today;
+  }
+
   return (
     <>
       <Button className="btn btn-import" type="primary" onClick={() => setOpen(true)}>
@@ -242,7 +292,9 @@ const ImportWarehouse = () =>{
             title="Phiếu nhập kho"
             centered
             open={open}
-            onOk={() => setOpen(false)}
+            closable={true}
+            okButtonProps={{ style: { display: 'none' } }}
+            cancelButtonProps  ={{ style: { display: 'none' } }}
             onCancel={() => setOpen(false)}
             width={1000}
             >
@@ -280,7 +332,7 @@ const ImportWarehouse = () =>{
                             <div>
                   <Form form={form} onFinish={onFinish} style ={{display: 'flex'}}>
                     <Form.Item name="name" style={{ width:'30%', backgroundColor:''}}  rules={[{ required: true }]}>
-                      <Select onChange={handleSelectChangeName}  showSearch className='input name' >
+                      <Select onChange={handleSelectChangeName} placeholder= "Tên thuốc"  showSearch className='input name' >
                           {medicineData.map(option => (
                               <option key={option.id} value={option.name}>
                                 {option.name}
@@ -288,17 +340,19 @@ const ImportWarehouse = () =>{
                           ))}
                       </Select>
                     </Form.Item>
-                    <Form.Item name="quantity" style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}>
-                      <Input  type="number" name ="quantity" onChange={handleChangeQuantity} placeholder="Số lượng" />
+                    <Form.Item name="quantity" style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }, { validator: checkQuantity }]}>
+                      <Input type="number" min={0}  name ="quantity" onChange={handleChangeQuantity} placeholder="Số lượng" />
                     </Form.Item>
                     <Form.Item name="unit"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}>
                       <Input placeholder="Đơn vị" />
                     </Form.Item>
                     {/* <Form.Item  name="expiryDate"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}> */}
-                      <DatePicker defaultValue={reset ? null : moment()} onChange={handleSelectChangeExpiryDate}  style={{ height:"32px",width:'15%',marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng" > </DatePicker>
+                      {/* <DatePicker value={expiry_date} onChange={handleSelectChangeExpiryDate}  style={{ height:"32px",width:'15%',marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng" > </DatePicker> */}
                       {/* <Input placeholder="Hạn sử dụng" /> */}
+                      <DatePicker disabledDate= {disabledDate} onChange={handleSelectChangeExpiryDate} style={{ height:"32px", width:'15%', marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng"/>
+
                     {/* </Form.Item> */}
-                    <Button ononClick={handleReset}  style={{ width:'15%',marginLeft:'5%', marginTop:"5px"}} type="primary" htmlType="submit">
+                    <Button onClick={handleReset}  style={{ width:'15%',marginLeft:'5%', marginTop:"5px"}} type="primary" htmlType="submit">
                       Thêm thuốc
                     </Button>
                   

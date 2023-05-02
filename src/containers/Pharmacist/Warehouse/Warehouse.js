@@ -12,6 +12,7 @@ import ExportWarehouseModal from "../Modal/ExportWarehouseModal";
 import { getMedicines } from "../../../routes/APIRoutes/APIMedicine";
 import axios from "../../../axios";
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 
 
@@ -23,11 +24,11 @@ function MyVerticallyCenteredModal(props) {
 
   const [formValues, setFormValues] = useState({});
 
-  const [expiryDate, setExpiryDate] = useState(null);
+  const [expiryDate, setExpiryDate] = useState("2022-05-05");
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [categoryId, setCategoryId] = useState(1);
+  const [categoryId, setCategoryId] = useState(-1);
 
   const checkQuantity = (_, value) => {
     if (value <= 0) {
@@ -78,7 +79,7 @@ function MyVerticallyCenteredModal(props) {
 
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
    
     const response = await axios.post(`http://localhost:9000/api/medicines/create`, {
         category_id: categoryId,
@@ -92,7 +93,14 @@ function MyVerticallyCenteredModal(props) {
         out_expiry_date_alert: formValues.out_expiry_date_alert,
         note: formValues.note,
         method_of_use: formValues.method_of_use
-    }).catch(error => console.error(error));;
+    }).catch(error => console.error(error));
+    console.log(response.status);
+    if(response.status === 400 ){
+        message.error("Thêm thuốc thất bại");
+        return;
+    }
+    message.success("Thêm thuốc thành công");
+    setIsModalVisible(false);
   };
 
   return (
@@ -114,7 +122,7 @@ function MyVerticallyCenteredModal(props) {
    
         <div style={{display:"flex"}}>
           <h2 className="mb-4 text-2xl font-medium">Thêm thuốc</h2>
-          <Form.Item style={{marginLeft: "30px"}} name="Danh mục thuốc" rules={[{ required: true }]}>
+          <Form.Item style={{marginLeft: "30px"}} name="Danh mục thuốc" rules={[{ required: true , message:"Bạn cần chọn danh mục"}]}>
 
             <Select onChange={handleSelectChange} getPopupContainer={(trigger) => trigger.parentElement}  placeholder="Danh mục"  style={{ width: "160px"}}>
                 {/* <option value="volvo">Nam</option>
@@ -135,7 +143,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="name" className="inputSearch">
                 Tên thuốc
               </label>
-              <Form.Item name="name" rules={[{ required: true }]}>
+              <Form.Item name="name" rules={[{ required: true ,message:"Bạn cần nhập tên thuốc"}]}>
                   <Input name="name" onChange={handleInputChange} placeholder="Tên thuốc"></Input>
               </Form.Item>
               {/* <input type="text" className="form-control" id="name" /> */}
@@ -146,7 +154,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="genericName" className="inputSearch">
                 Tên gốc
               </label>
-              <Form.Item name="Tên gốc" rules={[{ required: true }]}>
+              <Form.Item name="Tên gốc" rules={[{ required: true,message:"Bạn cần nhập tên gốc" }]}>
                     <Input name="original_name" onChange={handleInputChange} placeholder="Tên gốc"></Input>
               </Form.Item>
             </div>
@@ -156,7 +164,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="storageUnit" className="inputSearch">
                 Đơn vị lưu kho
               </label>
-              <Form.Item name="Đơn vị lưu kho" rules={[{ required: true }]}>
+              <Form.Item name="Đơn vị lưu kho" rules={[{ required: true ,message:"Bạn cần nhập đơn vị lưu" }]}>
                       <Input name= "storage_unit" onChange={handleInputChange} placeholder="Đơn vị lưu kho"></Input>
               </Form.Item>
             </div>
@@ -170,7 +178,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="name" className="inputSearch">
                 Đơn giá vốn
               </label>
-              <Form.Item name="Đơn giá vốn" rules={[{ required: true } , { validator: checkQuantity }]}>
+              <Form.Item name="Đơn giá vốn" rules={[{ required: true ,message:"Bạn cần nhập giá vốn" } , { validator: checkQuantity }]}>
                     <Input type="number" min={0} name = "cost_price" onChange={handleInputChange} placeholder="Đơn giá vốn"></Input>
               </Form.Item>
               {/* <input type="text" className="form-control" id="name" /> */}
@@ -181,7 +189,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="genericName" className="inputSearch">
                 Đơn giá bán
               </label>
-              <Form.Item name="Đơn giá bán" rules={[{ required: true } , { validator: checkQuantity }]}>
+              <Form.Item name="Đơn giá bán" rules={[{ required: true,message:"Bạn cần nhập giá bán" } , { validator: checkQuantity }]}>
                 <Input type="number" min={0} name ="retail_price" onChange={handleInputChange} onBlur={handleBlur} placeholder="Đơn giá bán"></Input>
               </Form.Item>
             </div>
@@ -191,7 +199,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="storageUnit" className="inputSearch">
                 Phương thức sử dụng
               </label>
-              <Form.Item name="Phương thức" rules={[{ required: true }]}>
+              <Form.Item name="Phương thức" rules={[{ required: true ,message:"Bạn cần nhập phương thức sử dụng" }]}>
                 <Input name ="method_of_use" onChange={handleInputChange} onBlur={handleBlur} placeholder="Phương thức sử dụng"></Input>
               </Form.Item>
             </div>
@@ -205,7 +213,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="name" className="inputSearch">
                 Thông báo khi SL tồn nhỏ hơn
               </label>
-              <Form.Item name="Thông báo khi SL tồn nhỏ hơn" rules={[{ required: true } , { validator: checkQuantity }]}>
+              <Form.Item name="Thông báo khi SL tồn nhỏ hơn" rules={[{ required: true ,message:"Bạn cần nhập trường này" } , { validator: checkQuantity }]}>
                 <Input type="number" min={0} name = "out_stock_alert_quantity" onChange={handleInputChange} onBlur={handleBlur} placeholder="Số lượng tồn nhỏ hơn"></Input>
               </Form.Item>
             </div>
@@ -215,8 +223,8 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="genericName" className="inputSearch">
                 Ngày hết hạn
               </label>
-              <Form.Item name="Ngày hết hạn" rules={[{ required: true }]}>
-                <DatePicker className="date-picker"  getPopupContainer={(trigger) => trigger.parentElement} name = "expiry_date"  onChange={handleDatePickerChange}  />
+              <Form.Item name="Ngày hết hạn">
+                <DatePicker defaultValue={moment()} disabled ={true} className="date-picker"  getPopupContainer={(trigger) => trigger.parentElement} name = "expiry_date"  onChange={handleDatePickerChange}  />
               </Form.Item>
               {/* <input type="text" className="form-control" id="genericName" /> */}
             </div>
@@ -226,7 +234,7 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="storageUnit" className="inputSearch">
                 Thông báo số ngày sử dụng dưới
               </label>
-              <Form.Item name="Thông báo số ngày sử dụng dưới" rules={[{ required: true } , { validator: checkQuantity },]}>
+              <Form.Item name="Thông báo số ngày sử dụng dưới" rules={[{ required: true ,message:"Bạn cần nhập trường này" } , { validator: checkQuantity },]}>
                 <Input type="number" min={0} name = "out_expiry_date_alert" onChange={handleInputChange} onBlur={handleBlur}  getPopupContainer={(trigger) => trigger.parentElement} placeholder="Ngày sử dụng dưới"></Input>
               </Form.Item>
             </div>
@@ -397,12 +405,6 @@ function  Warehouse(){
       setSortBy(`${value}`)
       setSearch({ ...search, sortBy: value });
     }
-
-
-
-  let handleColor = (time) => {
-    return time.getHours() > 12 ? "text-success" : "text-error";
-  };
 
     return (
             <React.Fragment>

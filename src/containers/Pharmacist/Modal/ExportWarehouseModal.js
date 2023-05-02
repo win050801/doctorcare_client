@@ -1,12 +1,8 @@
-import React, { useRef, useState } from 'react';
-import { Table, Input, Button, Popconfirm, Form ,Modal } from 'antd';
-import './ImportWarehouseModal.scss'
-import './ExportWarehouseModal.scss'
-
-
-
-
-
+import React, { useRef, useState, useEffect } from 'react';
+import { Table, Input, Button, Popconfirm, Form ,Modal, Select, message } from 'antd';
+import './ImportWarehouseModal.scss';
+import './ExportWarehouseModal.scss';
+import axios from 'axios';
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ExportTable from './ExportTable';
@@ -15,6 +11,100 @@ import ReactToPrint, { useReactToPrint } from 'react-to-print';
 const ExportWarehouse = () =>{
 
   const [pagination, setPagination] = useState({ current: 1, pageSize: 2 });
+
+  const [isDiscountAmount, setIsDiscountAmount] = useState(false);
+
+  const [isDiscountPercent, setIsDiscountPercent] = useState(false);
+
+  const [medicineData, setMedicineData] = useState([]);
+
+  const [searchMedicine, setSearchMedicine] = useState("");
+
+  const [medicine_id, setMedicineId] = useState(0);
+
+  const [quantity, setQuantity] = useState(0);
+
+  const [editingIndex, setEditingIndex] = useState(-1);
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [retailPrice, setRetailPrice] = useState(0);
+
+  const [employeeId, setEmployeeId] = useState([]);
+
+  const [note, setNote] = useState("");
+
+  const [discountPercent, setDiscountPercent] = useState(0);
+
+  const [discountAmount, setDiscountAmount] = useState(0);
+
+  useEffect(() => {
+    const check = async () => {
+      const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
+      const currentId = medicine ? medicine.id : 0;
+      const currentInventory = medicine ? medicine.inventory_quantity : 0;
+      const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
+        params:{
+          medicine_id: currentId,
+          quantity: parseFloat(quantity)
+        }
+      });
+      console.log(response.data.status);
+      if(response.data.status === 400){
+        message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+      }
+  };
+    
+    check();
+  }, [quantity]);
+
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      const response = await axios.get(`http://localhost:9000/api/medicines/`, {
+            params:{
+              category_id: -1,
+              medicine_id: -1,
+              key_search: searchMedicine,
+              status: 1,
+              sort_by: 0
+            }
+        });
+        setMedicineData(response.data.data);
+      };
+      fetchCategoryData();
+  }, [searchMedicine]);
+
+  const handleSelectChangeName = (value) => {
+    setSearchMedicine(`${value}`)
+    const selectedMedicine = medicineData.find((medicine) => medicine.name === `${value}`);
+    setMedicineId(selectedMedicine ? selectedMedicine.id : -1);
+    setRetailPrice(selectedMedicine? selectedMedicine.retail_price : -1)
+  }
+
+  console.log(searchMedicine);
+
+  const handleDiscountAmountChange = (event) => {
+      const target = event.target;
+      const value = target.value
+      const isDiscountAmount = event.target.value;
+      setIsDiscountAmount(isDiscountAmount !== '');
+      setDiscountAmount(value);
+      if (value === '') {
+        setIsDiscountPercent(false);
+      }
+  };
+
+  const handleDiscountPercentChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    setNote(value);
+    const isDiscountPercent = event.target.value;
+    setIsDiscountPercent(isDiscountPercent !== '');
+    setDiscountPercent(value);
+    if (value === '') {
+      setIsDiscountAmount(false);
+    }
+  }
 
   const handleChange = (page, pageSize) => {
     setPagination({ current: page, pageSize });
@@ -30,47 +120,13 @@ const ExportWarehouse = () =>{
   })
 
   const [form] = Form.useForm();
-  const [data, setData] = useState([
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-  ]);
+  const [data, setData] = useState([]);
 
   const onEdit = (record) => {
+    setEditingIndex(record.key - 1);
+    setIsEditing(true);
     form.setFieldsValue(record);
+   
   };
 
   const onDelete = (record) => {
@@ -96,22 +152,22 @@ const ExportWarehouse = () =>{
   const columns = [
     {
       title: 'STT',
-      dataIndex: 'name',
+      dataIndex: 'key',
       editable: true,
     },
     {
       title: 'Tên thuốc',
-      dataIndex: 'age',
+      dataIndex: 'name',
       editable: true,
     },
     {
       title: 'Số lượng',
-      dataIndex: 'address',
+      dataIndex: 'quantity',
       editable: true,
     },
     {
-      title: 'Dơn giá',
-      dataIndex: 'address',
+      title: 'Đơn giá',
+      dataIndex: 'retailPriceFormatted',
       editable: true,
     },
     
@@ -137,22 +193,141 @@ const ExportWarehouse = () =>{
     },
     {
       title: 'Thành tiền',
-      dataIndex: 'address',
+      dataIndex: 'totalAmountFormatted',
       editable: true,
     },
   ];
 
+  const retailPriceFormatted = parseFloat(retailPrice).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+  
+  
+
   const onFinish = (values) => {
-    const { name, age, address } = values;
-    const newData = {
-      key: (data.length + 1).toString(),
+    const { name, unit } = values;
+    const newProduct = {
       name,
-      age,
-      address,
+      medicine_id,
+      quantity,
+      unit,
+      retailPrice,
+      totalAmount: parseFloat(quantity) * parseFloat(retailPrice),
+      retailPriceFormatted,
+      totalAmountFormatted: (parseFloat(quantity) * parseFloat(retailPrice)).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })
     };
-    setData([...data, newData]);
-    form.resetFields();
+  
+    if (isEditing) {
+      // Cập nhật thông tin sản phẩm đã có trong danh sách
+      const updatedProduct = { ...newProduct, key: editingIndex + 1 };
+      setData([
+        ...data.slice(0, editingIndex),
+        updatedProduct,
+        ...data.slice(editingIndex + 1),
+      ]);
+      setIsEditing(false);
+    } else {
+      // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
+      const existingProductIndex = data.findIndex((product) => product.name === name);
+  
+      if (existingProductIndex !== -1) {
+        // Sản phẩm đã tồn tại trong danh sách, cộng thêm quantity cho sản phẩm này
+        const existingProduct = data[existingProductIndex];
+        const updatedProduct = {
+          ...existingProduct,
+          quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
+          totalAmount: parseFloat(existingProduct.totalAmount) + parseFloat(newProduct.totalAmount),
+          totalAmountFormatted: parseFloat(retailPrice).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })
+        };
+        setData([
+          ...data.slice(0, existingProductIndex),
+          updatedProduct,
+          ...data.slice(existingProductIndex + 1),
+        ]);
+      } else {
+        // Sản phẩm chưa tồn tại trong danh sách, thêm sản phẩm mới vào danh sách
+        setData([...data, { ...newProduct, key: data.length + 1 }]);
+      }
+    }
+  
+    setSearchMedicine("");
+    form.resetFields(['quantity','name','unit']);
   };
+
+
+  const handleChangeQuantity = async (event) => {
+    const target = event.target;
+    const value = target.value;
+    setQuantity(value);
+  };
+
+
+  const checkQuantity = async (_, value) => {
+    const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
+    const currentId = medicine ? medicine.id : 0;
+    const currentInventory = medicine ? medicine.inventory_quantity : 0;
+    const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
+      params:{
+        medicine_id: currentId,
+        quantity: parseFloat(quantity)
+      }
+    });
+    if(response.data.status === 400 && currentInventory === ""){
+      // message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+      return Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+    }else{
+      return Promise.resolve();
+    }
+    // if (value <= 0) {
+    //   return Promise.reject("Lớn hơn 0");
+    // } else {
+    //   return Promise.resolve();
+    // }
+    
+  };
+
+  const checkDiscountPercent = (_, value) =>{
+    if (value < 0 && value > 100) {
+      return Promise.reject("Phần trăm giảm giá lớn hơn 0 và bé hơn 100");
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  const handleExportMedicine = async () =>{
+    if(data.length === 0){
+      message.error('Bạn cần chọn thuốc để xuất kho');
+      return;
+    }
+    if (!employeeId) {
+      message.error('Bạn cần chọn tên nhân viên phụ trách xuất kho');
+      return;
+    }
+    const response = await axios.post(`http://localhost:9000/api/orders/create-medicnes`, {
+        employee_id: 1,
+        discount_percent: discountPercent,
+        type: 1,
+        discount_amount: discountAmount,
+        description : note,
+        warehouse_session_request:  data
+    });
+    message.success('Thêm phiếu xuất kho thành công');
+    setData([]);
+    form.resetFields();
+  }
+
+  const handleDropdownVisibleChange = (open) => {
+    if (!open) {
+      setSearchMedicine("");
+    }
+  }
 
   return (
     <>
@@ -160,7 +335,7 @@ const ExportWarehouse = () =>{
         Xuất kho
       </Button>
       <Modal
-            title="Phiếu nhập kho"
+            title="Phiếu xuất kho"
             centered
             open={open}
             onOk={() => setOpen(false)}
@@ -172,104 +347,109 @@ const ExportWarehouse = () =>{
               
                 <Button onClick={handlePrint}>Lưu và in</Button>
                
-                <Button >Lưu</Button>
+                <Button onClick={handleExportMedicine}  >Thêm phiếu xuất</Button>
               </div>
             }
             >
+              <Form   form={form} onFinish={onFinish}>
                <div className='export-warehouse-container'>
                   <div style={{height:'50%', width:'55%',display:'flex', alignItems:'center'}}>
                      <div className='info-info-detail' >
                            <h5>Thông tin khách hàng</h5>
-                        <Form form={form} onFinish={onFinish}>
+                      
                            <div className='customer customer-name'>
                               <div className='number-1-name'>
                                  <label className='label customer-name'>Tên khách hàng</label>
 
-                                 <Form.Item name="customer-name" rules={[{ required: true }]}>
-                                    <Input className='input customer-name'></Input>
+                                 <Form.Item name="customer-name" >
+                                    <Input className='input customer-name' placeholder= 'Tên khách hàng'></Input>
                                  </Form.Item>
                                 
                               </div>
                               <div className='number-1-birth-year'>
-                                 <label className='label birth-year'>Năm sinh</label>
+                                 <label className='label birth-year' >Năm sinh</label>
                                 
 
-                                 <Form.Item name="name" rules={[{ required: true }]}>
-                                    <Input className='input birth-year'></Input>
+                                 <Form.Item name="birth-year" >
+                                    <Input className='input birth-year' placeholder= 'Năm sinh' ></Input>
                                   </Form.Item>
                               </div>
                            </div>
                            <div className='customer customer-info'>
                               <div className='number-2-address'>
                                  <label className='label address'>Địa chỉ</label>
-                                 <Input className='input address'></Input>
+                                 <Input className='input address' placeholder= 'Địa chỉ'></Input>
                               </div>
                               <div className='number-2-phone '>
                                  <label className='label phone'>Số điện thoại</label>
-                                 <Input className='input phone'></Input>
+                                 <Input className='input phone' placeholder= 'Số điện thoại'></Input>
                               </div>
                            </div>
                            <div className='customer customer-info'>
-                              <div className='number-3-name-employee'>
-                                 <label className='label name-employee'>Tên nhân viên</label>
-
-                                 <Form.Item name="Tên nhân viên" rules={[{ required: true }]}>
-                                    <Input className='input name-employee'></Input>
-                                 </Form.Item>
-                                 
-                              </div>
+                             
                               <div className='number-3-percent-discount'>
                                  <label className='label percent-discount'>Giảm giá(%)</label>
-                                 <Input className='input percent-discount'></Input>
+                                 <Form.Item name= "discountPercent" rules={[ { validator: checkDiscountPercent}]}>                                 
+                                    <Input name= "discountPercent" type="number" min={0} max={100} placeholder= 'Phần trăm giảm giá' onChange={handleDiscountPercentChange} disabled={isDiscountAmount}  className='input percent-discount' style ={{width:"200px"}}></Input>
+                                 </Form.Item>
                               </div>
                               <div className='number-3-amount-discount'>
                                  <label className='label amount-discount'>Giảm giá(VND)</label>
-                                 <Input className='input amount-discount'></Input>
+                                 <Form.Item name ="discountAmount" >
+                                    <Input type="number" min={0} max={100000000}  name ="discountAmount" placeholder= 'Số tiền giảm giá' onChange={handleDiscountAmountChange} disabled={isDiscountPercent} className='input amount-discount' style ={{width:"271px"}}></Input>
+                                  </Form.Item>
                               </div>
                            </div>
                            <div className='customer customer-info'>
                               <div className='number-4-note'>
                                  <label className='label note'>Ghi chú</label>
                                 
-                                 <Form.Item name="name" rules={[{ required: true }]}>
-                                    <Input className='input note'></Input>
+                                 <Form.Item name="note" >
+                                    <Input placeholder= 'Ghi chú' className='input note'></Input>
                                   </Form.Item>
                               </div>
                            </div>
-                          </Form>
+                          
                      </div>
                      
                   </div>
                   
                      <div className='input-drug'>
                                  <div>
-                                    <Form   form={form} onFinish={onFinish}>
+                                    
                                        <div style={{display: 'flex',alignItems: 'center'}}>
                                           <h5>Thêm thuốc xuất kho</h5>
                                           <Button type="primary" htmlType="submit" style={{marginLeft:'24%',height:'36px',width:'150px'}}>
                                              Thêm thuốc
                                           </Button>
                                        </div>
-                                       <div style={{alignItems:'center',flex:'row'}}>
-                                          <Form.Item name="Tên thuốc" rules={[{ required: true }]}>
-                                             <Input className='input-1' placeholder="Name" />
+                                       <div style={{alignItems:'center',flex:'row', marginTop:"50px"}}>
+                                          <Form.Item name="name" rules={[{ required: true }]}>
+                                            <Select onDropdownVisibleChange={handleDropdownVisibleChange} allowClear onChange={handleSelectChangeName} placeholder= "Tên thuốc"  showSearch className='input name' >
+                                                {medicineData.map(option => (
+                                                    <option key={option.id} value={option.name}>
+                                                      {option.name}
+                                                    </option>
+                                                ))}
+                                            </Select>
                                           </Form.Item>
-                                          <Form.Item name="Số lượng" rules={[{ required: true }]}>
-                                             <Input className='input' placeholder="Age" />
+                                          <Form.Item name="quantity" rules={[{ required: true, message:"Bắt buộc nhập" } , { validator: checkQuantity, message:"Số lượng không đủ"}]}>
+                                             <Input type="number" min={0}  name ="quantity" onChange={handleChangeQuantity} className='input' placeholder="Số lượng" />
                                           </Form.Item>
-                                          <Form.Item name="Đơn vị" rules={[{ required: true }]}>
-                                             <Input className='input' placeholder="Address" />
+                                          <Form.Item name="unit" rules={[{ required: true }]}>
+                                             <Input className='input' placeholder="Đơn vị" />
                                           </Form.Item>
                                        </div>
-                                    </Form>
+                                    
                                  </div>
                               
                      </div>
                   
                   
                </div>
+               </Form> 
                <div  className='table-container'>
-                    
+                  
                     <Table
                         ref= {componentRef}
                         bordered
@@ -279,7 +459,7 @@ const ExportWarehouse = () =>{
                         onChange={handleChange}
                     />
               </div>
-              <div style={{display:"none"}}>
+              {/* <div style={{display:"none"}}>
               <Table
                         ref= {componentRef} 
                         bordered
@@ -288,7 +468,7 @@ const ExportWarehouse = () =>{
                         pagination={pagination}
                         onChange={handleChange}
                     />
-              </div>
+              </div> */}
       </Modal>
     </>
   );
