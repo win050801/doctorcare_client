@@ -1,7 +1,11 @@
 
+import { getDate } from "date-fns"
 import "../../components/Paitent/Paitent.scss"
 import { Input, Table, Button } from 'antd'
+import { useEffect } from "react"
 export default function Paitent() {
+    var today = new Date(),
+            date = today.getDate()+'/'+ (today.getMonth() + 1)+'/' + today.getFullYear() 
     return (
         <div className="paitentcontainer">
             <div style={{ display: "flex", flex: 0.1, width: "100%", height: "100%", alignItems: "flex-end", paddingLeft: 20 }}>
@@ -24,7 +28,7 @@ export default function Paitent() {
                     <hr></hr>
                     <div style={{ display: "flex", flex: 0.15, alignItems: "center", justifyContent: "center" }}>
                         
-                        <span style={{ fontSize: 13, fontWeight: "bold" }}>Ngày in : </span><span style={{ fontSize: 13, fontWeight: "inherit" }}>18/4/2022 01:10:60</span>
+                        <span style={{ fontSize: 13, fontWeight: "bold" }}>Ngày in : </span><span style={{ fontSize: 13, fontWeight: "inherit" }}>{date}</span>
 
                     </div>
                 </div>

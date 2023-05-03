@@ -1,7 +1,8 @@
 import { Button, Table } from "antd"
 import "../../components/UIKham/UIKham.scss"
 
-export default function UIKham() {
+export default function UIKham({patient}) {
+   
     const dataSource = [
         
         // {
@@ -88,10 +89,11 @@ export default function UIKham() {
         
        
     ];
+    
     return (
         <div className="UIKhamcontainer">
             <div className="UIKham">
-                <div style={{ display: "flex", flex: 1, width: "100%", height: "100%", flexDirection: "column" }}>
+                <div style={{ display: "flex", width: "100%", height: 250, flexDirection: "column" }}>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <span style={{ fontSize: 15, fontWeight: "bold", color: "red", margin: 15 }}>Thông tin bệnh nhân</span>
                         <div style={{ display: "flex", justifyContent: "space-between", flex: 0.23, paddingRight: 15, alignItems: "center" }}>
@@ -107,7 +109,7 @@ export default function UIKham() {
 
                     <div style={{ display: "flex", width: "100%", height: "100%", flexDirection: "column", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
-                            <div style={{ width: "25%", display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: 30 }}><label className="font-label">Họ tên: </label><input className="input1" type="text"></input></div>
+                            <div style={{ width: "25%", display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: 30 }}><label className="font-label">Họ tên: </label><input className="input1" type="text" value={patient.name}  ></input></div>
                             <div style={{ width: "25%", display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: 10 }}><label className="font-label">Ngày sinh: </label><input className="input1" type="text"></input></div>
                             <div style={{ width: "25%", display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: 10 }}><label className="font-label">Tuổi: </label><input className="input1" type="text"></input></div>
                             <div style={{ width: "25%", display: "flex", justifyContent: "center", alignItems: "center" }}><label style={{ fontSize: 14, fontWeight: "bold" }}>Bệnh nhân cũ </label></div>
@@ -164,13 +166,13 @@ export default function UIKham() {
 
                 </div>
                 <hr></hr>
-                <div style={{ display: "flex", flex: 0.25, width: "100%", height: "100%", alignItems: "center", flexDirection: "column" }}>
-                    <div style={{display:"flex",flex:0.2    ,width:"100%",height:"100%",flexDirection:"row"}}>
-                        <div className="bordersearch" style={{display:"flex",width:"60%",height:"100%"}}>
+                <div style={{ display: "flex", flex: 0.25, width: "100%", height: "100%", alignItems: "center", flexDirection: "column",}}>
+                    <div style={{display:"flex",width:"100%",height:30,flexDirection:"row"}}>
+                        <div className="bordersearch" style={{display:"flex",width:"100%",height:"100%"}}>
                             <input className="inputserch" type="text" placeholder="Nhập từ khóa tìm kiếm thuốc"></input>
                         </div>
                         <div className="btntt">
-                            <div className="btn2" style={{display:"flex",width:"50%",height:"100%",justifyContent:"center",alignItems:"center"}}>
+                            <div className="btn2" style={{display:"flex",width:"30%",height:"100%",justifyContent:"center",alignItems:"center"}}>
                                 <span style={{fontSize:13,fontWeight:"initial",color:"white"}}>Thêm vào toa</span>
                             </div>
                         </div>

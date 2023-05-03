@@ -6,6 +6,7 @@ import Search from '../../components/Search/Search';
 import Getsick from '../../components/Getsick/Getsick';
 import Infopaitent from '../../components/Infopaitent/Infopaitent';
 import { Alert } from 'antd';
+import UIdoctor from '../../components/UIDoctor/UIdoctor';
 class UserManage extends Component {
 
 
@@ -39,7 +40,7 @@ class UserManage extends Component {
                 <Menu setdata={this.updateState} data={this.state.get}></Menu>
                 {this.state.get === 0 ? (<><Search></Search>
                     <Getsick></Getsick></>) : (<>
-                        <Infopaitent></Infopaitent>
+                        {this.state.get===3? (<><Infopaitent></Infopaitent></>):(<><UIdoctor></UIdoctor></>)}
                     </>)}
 
 

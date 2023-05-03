@@ -14,6 +14,7 @@
     border-radius: 3px;
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 .font-label{
     font-size: 13px;
@@ -45,3 +46,45 @@
 .btn{
     height: 20px;
 }
+.bordersearch{
+    border: 1px solid red;
+    margin-left: 15px;
+}
+.inputserch{
+    width: 100%;
+    height: 100%;
+    border: none;
+   
+}
+input:focus{
+    outline: none;
+}
+input{
+    padding-left: 10px;
+    border: #AAAAAA solid 1px;
+    border-radius: 2px;
+    font-size: 13px;
+    font-weight: inherit;
+    color: gray;
+}   
+.btntt{
+    display:flex;
+    width: 50%;
+    height: 100%;
+    // background-color: aqua;
+    justify-content: center;
+
+}
+.btn2{
+    display: flex;
+    width: 30%;
+    height: 100%;
+    background-color: #FF9933;
+    border-radius: 1px;
+    cursor: pointer;
+}
+.btn2:hover{
+    background-color: #FF9966;
+}
+
+
