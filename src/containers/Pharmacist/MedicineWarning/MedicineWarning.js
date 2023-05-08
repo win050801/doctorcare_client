@@ -10,6 +10,13 @@ const MedicineWarning = () => {
 
    const [categoryData,setCategoryData] = useState([]);
 
+   const [pagination, setPagination] = useState({
+         limit: 7,
+         total: 0
+   });
+
+   const [page, setPage] = useState(1);
+
    const [medicineData, setMedicineData] = useState([]);
 
    const [categoryId, setCategoryId] = useState(-1);
@@ -49,13 +56,24 @@ const MedicineWarning = () => {
               from_date: search.fromDate,
               to_date: search.toDate,
               sort_by: search.sortBy,
+              limit: pagination.limit,
+              page: page
             }
         });
-        setMedicineData(response.data.data);
-        console.log(medicineData);
+      const sttStart = (page - 1) * pagination.limit + 1;
+
+
+      const medicineDataWithStt = response.data.data.list.map((medicine, index) => {
+         const stt = sttStart + index;
+         return { ...medicine, stt };
+      });
+
+      setMedicineData(medicineDataWithStt);
+      setPagination({ ...pagination, total: response.data.data.total_record });
+
       };
       fetchCategoryData();
-   }, [search]);
+   }, [search,page]);
 
    const handleSelectChangeCategory = (value) => {
       setCategoryId(`${value}`)
@@ -77,6 +95,14 @@ const MedicineWarning = () => {
       setIsExpiryDateAlert(`${value}`)
       setSearch({ ...search, isExpiryDateAlert: value });
    }
+
+   const handleTableChange = (pagination, filters, sorter) => {
+      // Lấy ra số trang hiện tại
+      // setPagination({...pagination, page: pagination.current})
+      console.log(pagination.current);
+      setPage(pagination.current)
+      // ...
+    };
 
    const dataSource = [
       {
@@ -105,7 +131,7 @@ const MedicineWarning = () => {
     const columns = [
       {
         title: 'STT',
-        dataIndex: 'stt',
+        dataIndex: 'id',
         key: 'stt',
       },
       {
@@ -192,10 +218,22 @@ const MedicineWarning = () => {
                                              
                                           </div>
                                           <div className="table-content" >
-                                             <Table responsive  dataSource={medicineData} columns={columns}  >
-                                                   
-                                             </Table>
+                                             <Table   responsive  
+                                                      dataSource={medicineData} 
+                                                      columns={columns}  
+                                                      pagination={{
+                                                         current: page,
+                                                         pageSize: pagination.limit,
+                                                         total: pagination.total,
+                                                       }}
+                                                       onChange={handleTableChange}
+                                             />
+                                                         
+                                             
                                           </div>
+                                          <Link to={"/pharmacist"}>
+                                             <Button  color="warning" className="btn-back">Quay về kho thuốc</Button>
+                                          </Link>
                                  </div>
                      </div>
                   </div>            

@@ -22,6 +22,12 @@ const ImportWarehouse = () =>{
 
    const [editingIndex, setEditingIndex] = useState(-1);
 
+  //  axios.interceptors.request.use(function (config) {
+  //     const token = localStorage.getItem('token');
+  //     config.headers.Authorization =  token ? `Bearer ${token}` : '';
+  //     return config;
+  // });
+
    useEffect(() => {
     const fetchCategoryData = async () => {
       const response = await axios.get(`http://localhost:9000/api/employees/`, {
@@ -59,20 +65,36 @@ const ImportWarehouse = () =>{
       message.error('Bạn phải chọn tên nhân viên và nhập ghi chú');
       return;
     }
-    if (expiry_date === null || expiry_date === "") {
-      message.error('Vui lòng chọn ngày hết hạn lại lần nữa');
+    if (expiry_date === null || expiry_date === "" || expiry_date === undefined) {
+      message.error('Vui lòng chọn ngày hết ');
       return;
     }
-      const response = await axios.post(`http://localhost:9000/api/medicines/create-warehouse`, {
-        employee_id: employeeId,
-        discount_percent: 0,
-        type: 0,
-        discount_amount: 0,
-        description : note,
-        warehouse_session_request:  data
-      });
+    if (manufacture_date === null || manufacture_date === "" || manufacture_date === undefined ) {
+      message.error('Vui lòng chọn ngày sản xuất ');
+      return;
+    }
+    const response = await axios.post('http://localhost:9000/api/medicines/create-warehouse', 
+  {
+    discount_percent: 0,
+    type: 0,
+    discount_amount: 0,
+    description: note,
+    expiry_date: expiry_date,
+    manufacture_date: manufacture_date,
+    warehouse_session_request:  data
+  },
+  {
+    headers: {
+      'Authorization': `Bearer eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==`,
+      'Content-Type': 'application/json'
+    }
+  }
+);
+
+    
       message.success("Thêm phiếu nhập kho thành công");
       setOpen(false);
+      setData([]);
       form.resetFields();
   }
 
@@ -92,6 +114,9 @@ const ImportWarehouse = () =>{
 
   const [defaultValueDate, setDefaultValueDate] = useState(null);
 
+  const [manufacture_date,setManufactureDate] = useState();
+
+  const [costPrice,setCostPrice] = useState(0);
 
   const [data, setData] = useState([]);
 
@@ -104,10 +129,12 @@ const ImportWarehouse = () =>{
               medicine_id: -1,
               key_search: searchMedicine,
               status: 1,
-              sort_by: 0
+              sort_by: 0,
+              limit:"",
+              offset: ""
             }
         });
-        setMedicineData(response.data.data);
+        setMedicineData(response.data.data.list);
       };
       fetchCategoryData();
   }, [searchMedicine]);
@@ -115,7 +142,8 @@ const ImportWarehouse = () =>{
   const handleSelectChangeName = (value) => {
     setSearchMedicine(`${value}`)
     const selectedMedicine = medicineData.find((medicine) => medicine.name === `${value}`);
-    setMedicineId(selectedMedicine ? selectedMedicine.id: -1);
+    setMedicineId(selectedMedicine ? selectedMedicine.id : -1);
+    setCostPrice(selectedMedicine? selectedMedicine.cost_price : -1)
   }
 
   
@@ -173,12 +201,13 @@ const ImportWarehouse = () =>{
       title: 'Đơn vị',
       dataIndex: 'unit',
       editable: true,
-      width: 100,
+  
     },
     {
-      title: 'Hạn sử dụng',
-      dataIndex: 'expiry_date',
+      title: 'Đơn giá',
+      dataIndex: 'costPriceFormatted',
       editable: true,
+     
     },
     {
       title: 'Hành động',
@@ -200,9 +229,18 @@ const ImportWarehouse = () =>{
           </div>
         ) : null,
     },
+    {
+      title: 'Thành tiền',
+      dataIndex: 'totalAmountFormatted',
+      editable: true,
+      width: 100,
+    },
   ];
 
-
+  const costPriceFormatted = parseFloat(costPrice).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
 
   const onFinish = (values) => {
     const { name, unit } = values;
@@ -211,7 +249,13 @@ const ImportWarehouse = () =>{
       medicine_id,
       quantity,
       unit,
-      expiry_date,
+      costPrice,
+      totalAmount: parseFloat(quantity) * parseFloat(costPrice),
+      costPriceFormatted,
+      totalAmountFormatted: (parseFloat(quantity) * parseFloat(costPrice)).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      })
     };
   
     if (isEditing) {
@@ -233,6 +277,11 @@ const ImportWarehouse = () =>{
         const updatedProduct = {
           ...existingProduct,
           quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
+          totalAmount: parseFloat(existingProduct.totalAmount) + parseFloat(newProduct.totalAmount),
+          totalAmountFormatted: parseFloat(costPrice).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })
         };
         setData([
           ...data.slice(0, existingProductIndex),
@@ -263,6 +312,10 @@ const ImportWarehouse = () =>{
       setExpiryDate(dateString);  
   }
 
+  const handleSelectChangeManufactureDate = (date, dateString) =>{
+      setManufactureDate(dateString);
+  }
+
   const handleChangeQuantity = (event) => {
     const target = event.target;
     const value = target.value;
@@ -281,6 +334,18 @@ const ImportWarehouse = () =>{
     const today = moment().startOf('day');
     // Nếu ngày được chọn nhỏ hơn hoặc bằng ngày hiện tại, disable nó
     return current && current <= today;
+  }
+
+  const disabledManufactureDate = (current) => {
+    const today = moment().startOf('day');
+    // Nếu ngày được chọn nhỏ hơn hoặc bằng ngày hiện tại, disable nó
+    return current && current > today;
+  }
+
+  const handleDropdownVisibleChange = (open) => {
+    if (!open) {
+      setSearchMedicine("");
+    }
   }
 
   return (
@@ -306,9 +371,9 @@ const ImportWarehouse = () =>{
                   </div>
                   <div className='search-container'>
                     
-                        <div style={{width:'38%'}} >
+                        <div style={{width:'30%'}} >
                            <label style={{marginBottom:'5px'}}>Tên nhân viên</label>
-                           <Select onChange={handleSelectChangeNameEmployee} style={{width:"320px" , height:"36px"}} placeholder="Tên nhân viên" showSearch className='input name' >
+                           <Select onChange={handleSelectChangeNameEmployee} style={{width:"200px" , height:"36px"}} placeholder="Tên nhân viên" showSearch className='input name' >
                            {employeeData.map(option => (
                                 <option key={option.id} value={option.name}>
                                   {option.name}
@@ -317,10 +382,19 @@ const ImportWarehouse = () =>{
                            </Select>
                            {/* <Input className='input note'></Input> */}
                         </div>
+                        <div style={{width:'40%',marginLeft:'2%'}} >
+                           <label style={{marginBottom:'5px'}}>Ngày sản xuất</label>
+                           <DatePicker disabledDate= {disabledManufactureDate} onChange={handleSelectChangeManufactureDate}  style={{width:"200px", height:"36px",marginTop:"5px"}}/>
+                        </div>
+                        <div style={{width:'40%',marginLeft:'2%'}} >
+                           <label style={{marginBottom:'5px'}}>Ngày hết hạn</label>
+                           <DatePicker disabledDate= {disabledDate} onChange={handleSelectChangeExpiryDate}  style={{width:"200px", height:"36px",marginTop:"5px"}}/>
+                        </div>
                         <div style={{width:'60%',marginLeft:'2%'}} >
                            <label style={{marginBottom:'5px'}}>Ghi chú</label>
                            <Input placeholder="Ghi chú"  onChange={handleInputChange} className='input note'></Input>
                         </div>
+                        
                       </div>
                    
                       <div className='table-container'>
@@ -332,7 +406,7 @@ const ImportWarehouse = () =>{
                             <div>
                   <Form form={form} onFinish={onFinish} style ={{display: 'flex'}}>
                     <Form.Item name="name" style={{ width:'30%', backgroundColor:''}}  rules={[{ required: true }]}>
-                      <Select onChange={handleSelectChangeName} placeholder= "Tên thuốc"  showSearch className='input name' >
+                      <Select onDropdownVisibleChange={handleDropdownVisibleChange} allowClear onChange={handleSelectChangeName} placeholder= "Tên thuốc"  showSearch className='input name' >
                           {medicineData.map(option => (
                               <option key={option.id} value={option.name}>
                                 {option.name}
@@ -349,7 +423,7 @@ const ImportWarehouse = () =>{
                     {/* <Form.Item  name="expiryDate"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}> */}
                       {/* <DatePicker value={expiry_date} onChange={handleSelectChangeExpiryDate}  style={{ height:"32px",width:'15%',marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng" > </DatePicker> */}
                       {/* <Input placeholder="Hạn sử dụng" /> */}
-                      <DatePicker disabledDate= {disabledDate} onChange={handleSelectChangeExpiryDate} style={{ height:"32px", width:'15%', marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng"/>
+                      {/* <DatePicker disabledDate= {disabledDate} onChange={handleSelectChangeExpiryDate} style={{ height:"32px", width:'15%', marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng"/> */}
 
                     {/* </Form.Item> */}
                     <Button onClick={handleReset}  style={{ width:'15%',marginLeft:'5%', marginTop:"5px"}} type="primary" htmlType="submit">

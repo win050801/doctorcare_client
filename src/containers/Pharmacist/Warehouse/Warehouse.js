@@ -1,4 +1,4 @@
-import React, { Component,useEffect,useState } from "react";
+import React, { Component,useEffect,useState, useRef } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
@@ -29,6 +29,8 @@ function MyVerticallyCenteredModal(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [categoryId, setCategoryId] = useState(-1);
+
+  const [totalPages, setTotalPages] = useState(1);
 
   const checkQuantity = (_, value) => {
     if (value <= 0) {
@@ -92,7 +94,8 @@ function MyVerticallyCenteredModal(props) {
         original_name: formValues.original_name,
         out_expiry_date_alert: formValues.out_expiry_date_alert,
         note: formValues.note,
-        method_of_use: formValues.method_of_use
+        method_of_use: formValues.method_of_use,
+        status: 1
     }).catch(error => console.error(error));
     console.log(response.status);
     if(response.status === 400 ){
@@ -266,15 +269,25 @@ function MyVerticallyCenteredModal(props) {
 
 function  Warehouse(){
 
+    const tableRef = useRef(null);
+
     const [modalShow, setModalShow] = React.useState(false);
 
     const [categoryData,setCategoryData] = useState([]);
+
+    const [page, setPage]  = useState(1);
+
+    const [limit, setLimit]  = useState(6);
+
+    const [total, setTotal] = useState(0);
 
     const [open, setOpen] = useState(false);
 
     const [data, setData] = useState([]);
 
     const [categoryId, setCategoryId] = useState(-1);
+
+    const [loading, setLoading] = useState(false);
 
     const [status, setStatus] = useState(-1);
 
@@ -295,6 +308,7 @@ function  Warehouse(){
 
     useEffect(() => {
       const fetchMedicineData = async () => {
+        setLoading(true);
         const response = await axios.get(`http://localhost:9000/api/categories/`, {});
         setCategoryData(response.data);
       };
@@ -311,17 +325,29 @@ function  Warehouse(){
                 key_search: search.keySearch,
                 status: search.status,
                 sort_by: search.sortBy,
+                limit: 6,
+                page: page
               }
           });
-    
-          setData(response.data);
+
+          const sttStart = (page - 1) * limit + 1;
+
+          const medicineDataWithStt = response.data.list.map((medicine, index) => {
+            const stt = sttStart + index;
+            return { ...medicine, stt };
+         });
+
+          setData(medicineDataWithStt);
+          setTotal(response.data.total_record);
+          setLoading(false);
+          // console.log(response);
         } catch (error) {
           console.error(error);
         }
       };
     
       fetchData();
-    }, [search]);
+    }, [search,page]);
     
   
 
@@ -338,7 +364,7 @@ function  Warehouse(){
     const columns = [
       {
         title: 'STT',
-        dataIndex: 'stt',
+        dataIndex: 'id',
         key: 'stt',
       },
       {
@@ -405,6 +431,13 @@ function  Warehouse(){
       setSortBy(`${value}`)
       setSearch({ ...search, sortBy: value });
     }
+
+    const handleTableChange = (pagination, filters, sorter) => {
+      // Lấy ra số trang hiện tại
+      const currentPage = pagination.current;
+      setPage(currentPage);
+      // ...
+    };
 
     return (
             <React.Fragment>
@@ -492,9 +525,18 @@ function  Warehouse(){
                                             
                                         </div>
                                         <div className="table-content">
-                                            <Table responsive  dataSource={data} columns={columns}  >
-                                                
-                                            </Table>
+                                                    
+                                            <Table  responsive  
+                                                    dataSource={data} 
+                                                    columns={columns} 
+                                                    pagination={{
+                                                      // current: page,
+                                                      pageSize: limit,
+                                                      total: total,
+                                                    }}
+                                                    onChange={handleTableChange}
+                                              />
+                                           
                                         </div>
                                 </div>
                             </div>

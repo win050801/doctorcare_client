@@ -10,7 +10,7 @@ import ReactToPrint, { useReactToPrint } from 'react-to-print';
 
 const ExportWarehouse = () =>{
 
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 2 });
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
 
   const [isDiscountAmount, setIsDiscountAmount] = useState(false);
 
@@ -66,10 +66,12 @@ const ExportWarehouse = () =>{
               medicine_id: -1,
               key_search: searchMedicine,
               status: 1,
-              sort_by: 0
+              sort_by: 0,
+              limit:"",
+              offset:""
             }
         });
-        setMedicineData(response.data.data);
+        setMedicineData(response.data.data.list);
       };
       fetchCategoryData();
   }, [searchMedicine]);
@@ -106,8 +108,16 @@ const ExportWarehouse = () =>{
     }
   }
 
-  const handleChange = (page, pageSize) => {
-    setPagination({ current: page, pageSize });
+  // const handleChange = (page, pageSize) => {
+  //   setPagination({ current: page, pageSize });
+  // };
+
+  const handleChange = (pagination, filters, sorter) => {
+    // Lấy ra số trang hiện tại
+    // const currentPage = pagination.current;
+    // setPage(currentPage);
+    setPagination({ current: pagination.current, pageSize:5 });
+    // ...
   };
   
   const [open, setOpen] = useState(false);
@@ -206,6 +216,9 @@ const ExportWarehouse = () =>{
   
 
   const onFinish = (values) => {
+    if(checkQuantity === false){
+      return Promise.reject(`Số lượng còn lại không đủ`);
+    }
     const { name, unit } = values;
     const newProduct = {
       name,
@@ -281,9 +294,11 @@ const ExportWarehouse = () =>{
     });
     if(response.data.status === 400 && currentInventory === ""){
       // message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
-      return Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+       Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+       return false;
     }else{
-      return Promise.resolve();
+      Promise.resolve();
+      return true;
     }
     // if (value <= 0) {
     //   return Promise.reject("Lớn hơn 0");
