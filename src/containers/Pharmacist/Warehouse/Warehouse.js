@@ -514,8 +514,7 @@ function  Warehouse(){
                                                     <option value="4">Ngày nhập kho (giảm dần)</option>
                                                     <option value="5">Số lượng tồn (tăng dần)</option>
                                                     <option value="6">Số lượng tồn (giảm dần)</option>
-                                                    <option value="7">Hạn sử dụng (tăng dần)</option>
-                                                    <option value="8">Hạn sử dụng (giảm dần)</option>
+                                                   
                                                 </Select>
                                             </div>
                                             <div>

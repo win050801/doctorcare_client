@@ -74,28 +74,29 @@ const ImportWarehouse = () =>{
       return;
     }
     const response = await axios.post('http://localhost:9000/api/medicines/create-warehouse', 
-  {
-    discount_percent: 0,
-    type: 0,
-    discount_amount: 0,
-    description: note,
-    expiry_date: expiry_date,
-    manufacture_date: manufacture_date,
-    warehouse_session_request:  data
-  },
-  {
-    headers: {
-      'Authorization': `Bearer eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==`,
-      'Content-Type': 'application/json'
-    }
-  }
-);
+          {
+            discount_percent: 0,
+            type: 0,
+            discount_amount: 0,
+            description: note,
+            expiry_date: expiry_date,
+            manufacture_date: manufacture_date,
+            warehouse_session_request:  data
+          },
+          {
+            headers: {
+              'Authorization': `eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==`,
+              'Content-Type': 'application/json'
+          }
+      }
+    );
 
+    console.log(response);
     
-      message.success("Thêm phiếu nhập kho thành công");
-      setOpen(false);
-      setData([]);
-      form.resetFields();
+    message.success("Thêm phiếu nhập kho thành công");
+    setOpen(false);
+    setData([]);
+    form.resetFields();
   }
 
   const [form] = Form.useForm();

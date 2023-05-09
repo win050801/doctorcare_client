@@ -159,6 +159,11 @@ const MedicineWarning = () => {
         dataIndex: 'inventory_quantity',
         key: 'inventory_quantity',
       },
+      {
+         title: 'Ngày nhập kho',
+         dataIndex: 'inventory_quantity',
+         key: 'inventory_quantity',
+      },
     ];
 
    return(
