@@ -297,6 +297,7 @@ function  Warehouse(){
       categoryId: -1,
       medicineId: -1,
       keySearch: "",
+      isExpiry: 0,
       status: 1,
       sortBy: 0
     });
@@ -318,13 +319,14 @@ function  Warehouse(){
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get("http://localhost:9000/api/medicines/", {
+          const response = await axios.get("http://localhost:9000/api/medicines/inventory/medicines", {
               params: {
                 category_id: categoryId,
                 medicine_id: search.medicineId,
                 key_search: search.keySearch,
                 status: search.status,
                 sort_by: search.sortBy,
+                is_expiry: search.isExpiry,
                 limit: 6,
                 page: page
               }
@@ -338,7 +340,14 @@ function  Warehouse(){
          });
 
           setData(medicineDataWithStt);
+          // const price = data.cost_price
+          // const formattedPrice = price.toLocaleString("vi-VN", {
+          //   style: "currency",
+          //   currency: "VND",
+          // });
+          // setData({...data,cost_price:formattedPrice})
           setTotal(response.data.total_record);
+          console.log(total);
           setLoading(false);
           // console.log(response);
         } catch (error) {
@@ -373,11 +382,6 @@ function  Warehouse(){
         key: 'name',
       },
       {
-        title: 'Ngày hết hạn',
-        dataIndex: 'expiry_date',
-        key: 'expiry_date',
-      },
-      {
         title: 'Giá vốn',
         dataIndex: 'cost_price',
         key: 'cost_price',
@@ -386,6 +390,11 @@ function  Warehouse(){
         title: 'Giá bán',
         dataIndex: 'retail_price',
         key: 'retail_price',
+      },
+      {
+        title: 'Số lượng tồn',
+        dataIndex: 'inventory',
+        key: 'storage_unit',
       },
       {
         title: 'Đơn vị lưu kho',
@@ -430,6 +439,11 @@ function  Warehouse(){
     const handleSelectChangeSortBy = (value) => {
       setSortBy(`${value}`)
       setSearch({ ...search, sortBy: value });
+    }
+
+    const handleSelectChangeExpiry = (value) =>{
+      setSearch({ ...search, isExpiry: value });
+      console.log(search);
     }
 
     const handleTableChange = (pagination, filters, sorter) => {
@@ -518,8 +532,14 @@ function  Warehouse(){
                                                 </Select>
                                             </div>
                                             <div>
-                                                <h5 className="text-hidden">a</h5>
-                                                <Button className="btn-see" >Xem</Button>
+                                                <h5 className="">Hết hạn</h5>
+                                                <Select onChange={handleSelectChangeExpiry} name="isExpiry"  className="input-search isExpiry" id="cars" placeholder="Chọn">
+                                                    <option value="0">Chưa hết hạn</option>
+                                                    <option value="1">Đã hết hạn</option>
+                                                    <option value="2">Tất cả</option>
+                                                    
+                                                   
+                                                </Select>
                                             </div>
                                             
                                         </div>
