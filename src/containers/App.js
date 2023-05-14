@@ -20,6 +20,7 @@ import Pharmacist from './Pharmacist/Pharmacist';
 import MedicineDetail from './Pharmacist/MedicineDetail/MedicineDetail';
 import MedicineHistory from './Pharmacist/MedicineHistory/MedicineHistory';
 import MedicineWarning from './Pharmacist/MedicineWarning/MedicineWarning';
+import AllMedicinesHistory from './Pharmacist/AllMedicineHistory/AllMedicine';
 
 class App extends Component {
 
@@ -58,6 +59,7 @@ class App extends Component {
                                 <Route path="/medicine/detail/:id" component={(MedicineDetail)} />
                                 <Route path="/medicine/:id/history" component={(MedicineHistory)} />
                                 <Route path="/medicine/warning" component={(MedicineWarning)} />
+                                <Route path="/medicine/history" component={(AllMedicinesHistory)} />
                             </Switch>
                         </span>
 

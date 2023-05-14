@@ -347,7 +347,6 @@ function  Warehouse(){
           // });
           // setData({...data,cost_price:formattedPrice})
           setTotal(response.data.total_record);
-          console.log(total);
           setLoading(false);
           // console.log(response);
         } catch (error) {
@@ -476,10 +475,13 @@ function  Warehouse(){
                                           Đang cảnh báo
                                       </Button>
                                     </Link>
+                                    <Link to={`/medicine/history/`}> 
+                                        <Button className="btn btn-report" variant="info" >
+                                              Lịch sử
+                                        </Button>
+                                    </Link>
                                     
-                                    <Button className="btn btn-report" variant="info" >
-                                        Lịch sử
-                                    </Button>
+                                        
                                     {/* <Button  onClick={() => setOpen(true)} className="btn btn-import" variant="info" >
                                         Nhập kho
                                     </Button> */}

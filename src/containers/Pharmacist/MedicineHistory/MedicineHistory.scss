@@ -18,5 +18,107 @@
       width: 70px;
       background-color: #3c8dbc;
       color: white;
+   }  
+   .search-content{
+      width: 80%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .input-search-type{
+         width: 200px;
+         margin-left: 15px;
+      
+     }
+     .input-search.sort{
+      width: 283px;
+    
 }
+   }
+}
+// Import các biến và mixins của Ant Design
+// Import các biến và mixins của Ant Design
+// Tùy chỉnh bảng
+.ant-table {
+  // Đặt font-size cho bảng
+  font-size: 14px;
+
+  // Tùy chỉnh các hàng
+  .ant-table-tbody {
+    > tr {
+      &:hover {
+        background-color: #f0f5ff;
+      }
+
+      // Hiệu ứng khi được chọn
+      &.selected {
+        background-color: #e6f7ff;
+      }
+    }
+
+    > tr > td {
+      padding: 16px;
+      white-space: nowrap;
+    }
+  }
+
+  // Tùy chỉnh tiêu đề cột
+  .ant-table-thead {
+    > tr > th {
+      padding: 16px;
+      background-color: #f5f5f5;
+      font-weight: bold;
+      text-align: left;
+
+      // Hiệu ứng hover
+      &:hover {
+        background-color: #e6e6e6;
+      }
+    }
+  }
+
+  // Tùy chỉnh đường viền
+  &.ant-table-bordered {
+    border: 1px solid #e8e8e8;
+
+    // Đường viền các cột
+    .ant-table-thead > tr > th {
+      border-right: 1px solid #e8e8e8;
+    }
+  }
+
+  // Tùy chỉnh phần trang trí
+  .ant-table-thead {
+    // Gradient background cho phần tiêu đề cột
+    background: linear-gradient(to bottom, #f5f5f5, #e8e8e8);
+    border-bottom: 1px solid #e8e8e8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .ant-table-tbody {
+    // Đường viền các hàng
+    > tr {
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    // Gradient background cho hàng chẵn
+    > tr:nth-child(even) {
+      background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    }
+  }
+  
+
+  // Chỉ định kiểu chọn hàng
+  &.ant-table-row-selected {
+    > .ant-table-cell {
+      background-color: #e6f7ff;
+    }
+  }
+
+  // Hiệu ứng hover cho các checkbox
+  .ant-checkbox-wrapper:hover {
+    .ant-checkbox-inner {
+      border-color: #1890ff;
+    }
+  }
+  
 }

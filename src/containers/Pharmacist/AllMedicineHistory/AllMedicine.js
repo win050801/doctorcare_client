@@ -1,7 +1,7 @@
 import React, { Component,useState,useEffect } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
-import './MedicineHistory.scss';
+import '../MedicineHistory/MedicineHistory.scss';
 import { Link } from 'react-router-dom';
 
 import { Input, Table,Select,DatePicker } from 'antd';
@@ -9,11 +9,12 @@ import { useParams } from 'react-router-dom';
 import axios from "../../../axios";
 // import axios from "axios";
 
-const MedicineHistory = () =>{
+const AllMedicinesHistory = () =>{
 
-      const { id } = useParams();
 
       const [medicineData, setMedicineData] = useState([]);
+
+      const [fromDate, setFromDate] = useState("");
 
       const [limit, setLimit]  = useState(6);
 
@@ -21,14 +22,16 @@ const MedicineHistory = () =>{
 
       const [total, setTotal] = useState(0);
 
-      const [fromDate, setFromDate] = useState("");
-
       const [toDate, setToDate] = useState("");
 
       const [search, setSearch] = useState({
+            medicineId : -1,
+            status: -1,
             fromDate: "",
             toDate: "",
-            status: -1
+            keySearch: "",
+            limit: limit,
+            page: page
       });
 
       useEffect(() => {
@@ -36,7 +39,7 @@ const MedicineHistory = () =>{
                   const response = await axios.get(`http://localhost:9000/api/medicines/history`, {
                   params:{
 
-                        medicine_id: id,
+                        medicine_id: search.medicineId,
                         status: search.status,
                         key_search: "",
                         from_date: search.fromDate,
@@ -133,26 +136,59 @@ const MedicineHistory = () =>{
                                     
                                     {/* body */}
                                           <div className="box-body">
-                                                <h5>Tên thuốc</h5>
-                                                <div style={{display:'flex', marginTop: '20px' }}>
+                                                <div className="search-content">
                                                       <div>
-                                                            <label><h5>Từ: </h5></label>
-                                                            <DatePicker onChange={onChangeFromDate} />
+                                                            <h5>Từ khóa </h5>
+                                                            <Input  name="keySearch" type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
                                                       </div>
-                                                      <div style={{marginLeft:'20px'}}>
-                                                            <label><h5>Đến: </h5></label>
-                                                            <DatePicker onChange={onChangeToDate} />
-                                                      </div>
-                                                      <div style={{marginLeft:'20px', width:" 283px"}}>
-                                                          
-                                                            <Select  name="sortBy"  style={{ width:" 283px"}} id="cars" placeholder="Hoạt động">
-                                                                  <option value="0">Xuất kho</option>
-                                                                  <option value="1">Nhập kho</option>
+                                                      <div>
+                                                            <h5>Danh mục thuốc </h5>
+                                                            <Select name="categoryId"  className="input-search-type" id="cars"  placeholder="Tất cả">
+                                                            {/* {categoryData.map(option => (
+                                                            <option key={option.id} value={option.id}>
+                                                                  {option.name}
+                                                            </option>
+                                                            ))} */}
                                                             </Select>
                                                       </div>
-                                                </div>
+                                                     
+                                                      <div>
+                                                            <h5>Sắp xếp theo </h5>
+                                                            <Select  name="sortBy"  className="input-search sort" id="cars" placeholder="Chọn">
+                                                                  <option value="0">Tất cả</option>
+                                                                  <option value="1">Tên thuốc (Tăng dần)</option>
+                                                                  <option value="2">Tên thuốc (giảm dần)</option>
+                                                                  <option value="3">Ngày nhập kho (tăng dần)</option>
+                                                                  <option value="4">Ngày nhập kho (giảm dần)</option>
+                                                                  <option value="5">Số lượng  (tăng dần)</option>
+                                                                  <option value="6">Số lượng  (giảm dần)</option>
+                                                            
+                                                            </Select>
+                                                      </div>
+                                           
+                                                      <div>
+                                                            <h5>Từ: </h5>
+                                                            <DatePicker onChange={onChangeFromDate} />
+                                                      </div>
+                                                      
+                                                      <div style={{marginLeft:'20px'}}>
+                                                            <h5>Đến: </h5>
+                                                            <DatePicker onChange={onChangeToDate} />
+                                                      </div>
+                                             
+                                        </div>
+                                                
                                                 <div className="medicine-history-table">
-                                                      <Table responsive  dataSource={medicineData} columns={columns}  >
+                                                      <Table 
+                                                            responsive  
+                                                            dataSource={medicineData} 
+                                                            columns={columns}  
+                                                            pagination={{
+                                                                  // current: page,
+                                                                  pageSize: limit,
+                                                                  total: total,
+                                                                }}
+                                                            >
                                                       </Table>
                                                 </div>
                                           </div>
@@ -165,4 +201,4 @@ const MedicineHistory = () =>{
          </>
       )
 }
-export default MedicineHistory;
+export default AllMedicinesHistory;
