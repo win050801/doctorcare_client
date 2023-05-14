@@ -12,8 +12,8 @@ export default function Navbar(props) {
 
     const items = [
         { label: "Tiếp nhận bệnh nhân", icon: <ImportOutlined style={{ color: "white", paddingLeft: 5 }}></ImportOutlined> },
-        { label: "Lịch bác sĩ", icon: <CalendarOutlined style={{ color: "white", paddingLeft: 5 }} /> },
-        { label: "Đặt trực tuyến", icon: <MessageOutlined style={{ color: "white", paddingLeft: 5 }} /> },
+        { label: "Khám bệnh", icon: <CalendarOutlined style={{ color: "white", paddingLeft: 5 }} /> },
+        { label: "Siêu âm", icon: <MessageOutlined style={{ color: "white", paddingLeft: 5 }} /> },
         { label: "Hồ sơ bệnh nhân", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} /> }
     ]
     return (

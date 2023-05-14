@@ -7,9 +7,8 @@ import Getsick from '../../components/Getsick/Getsick';
 import Infopaitent from '../../components/Infopaitent/Infopaitent';
 import { Alert } from 'antd';
 import UIdoctor from '../../components/UIDoctor/UIdoctor';
+import UISieuam from '../../components/UISieuam/UISieuam';
 class UserManage extends Component {
-
-
 
     componentDidMount() {
 
@@ -40,7 +39,15 @@ class UserManage extends Component {
                 <Menu setdata={this.updateState} data={this.state.get}></Menu>
                 {this.state.get === 0 ? (<><Search></Search>
                     <Getsick></Getsick></>) : (<>
-                        {this.state.get===3? (<><Infopaitent></Infopaitent></>):(<><UIdoctor></UIdoctor></>)}
+                        {this.state.get === 3 ? (<><Infopaitent></Infopaitent></>) : (<>
+                            {this.state.get === 1 ? (<>
+                                <UIdoctor></UIdoctor>
+                            </>) : (<>
+                                <UISieuam></UISieuam>
+                            </>)}
+
+
+                        </>)}
                     </>)}
 
 

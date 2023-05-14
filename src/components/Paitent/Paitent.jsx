@@ -3,7 +3,7 @@ import { getDate } from "date-fns"
 import "../../components/Paitent/Paitent.scss"
 import { Input, Table, Button } from 'antd'
 import { useEffect } from "react"
-export default function Paitent() {
+export default function Paitent({handleLogin}) {
     var today = new Date(),
             date = today.getDate()+'/'+ (today.getMonth() + 1)+'/' + today.getFullYear() 
     return (
@@ -34,7 +34,7 @@ export default function Paitent() {
                 </div>
             </div>
             <div style={{ display: "flex", flex: 0.1, width: "70%", height: "100%", justifyContent: "center", alignItems: "center" }}>
-                <Button style={{ width: 170 }} type="primary" block>
+                <Button style={{ width: 170 }} type="primary" block onClick={handleLogin}>
                     Lưu và in phiếu khám
                 </Button>
             </div>

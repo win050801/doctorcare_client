@@ -5,7 +5,7 @@ import MenuDoctor from "../MenuDoctor/MenuDoctor"
 import UIKham from "../UIKham/UIKham"
 export default function UIdoctor()
 {
-    const [patient,setPatient]=useState({name:"thang"})
+    const [patient,setPatient]=useState({name:"",address:"",phone:"",weight:"",height:""})
     return(
         <div className="doctorContainer">
             

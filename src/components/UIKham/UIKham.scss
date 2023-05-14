@@ -54,7 +54,7 @@
     width: 100%;
     height: 100%;
     border: none;
-   
+    
 }
 input:focus{
     outline: none;
@@ -72,7 +72,9 @@ input{
     width: 50%;
     height: 100%;
     // background-color: aqua;
-    justify-content: center;
+    justify-content: space-between;
+    padding-left: 30px;
+    padding-right: 30px;
 
 }
 .btn2{
@@ -85,6 +87,17 @@ input{
 }
 .btn2:hover{
     background-color: #FF9966;
+}
+.btn3{
+    display: flex;
+    width: 30%;
+    height: 100%;
+    background-color: rgba(248, 50, 39, 0.984);
+    border-radius: 1px;
+    cursor: pointer;
+}
+.btn3:hover{
+    background-color:rgb(249, 76, 49);
 }
 
 
