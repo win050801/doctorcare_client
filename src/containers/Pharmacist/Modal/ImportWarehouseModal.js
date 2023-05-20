@@ -1,14 +1,17 @@
 import React, { useState,useEffect } from 'react';
-import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message } from 'antd';
+import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message,Typography } from 'antd';
 import './ImportWarehouseModal.scss'
 import { Link } from 'react-router-dom';
 import ImportTable from './ImportTable';
 import axios from "axios";
 import moment from 'moment';
+const { Text } = Typography;
 
 const ImportWarehouse = () =>{
 
    const [open, setOpen] = useState(false);
+
+   const [modalVisible, setModalVisible] = useState(false);
 
    const [searchEmployee, setSearchEmployee] = useState("");
 
@@ -22,11 +25,7 @@ const ImportWarehouse = () =>{
 
    const [editingIndex, setEditingIndex] = useState(-1);
 
-  //  axios.interceptors.request.use(function (config) {
-  //     const token = localStorage.getItem('token');
-  //     config.headers.Authorization =  token ? `Bearer ${token}` : '';
-  //     return config;
-  // });
+   const [storageUnit, setStorageUnit] = useState("");
 
    useEffect(() => {
     const fetchCategoryData = async () => {
@@ -56,7 +55,12 @@ const ImportWarehouse = () =>{
     setNote(value);
   };
 
-  const handleImportMedicine = async () =>{
+  const handleImportMedicine = (event) => {
+    event.preventDefault();
+    setModalVisible(true);
+  };
+  
+  const handleConfirm = async () =>{
     if(data.length === 0){
       message.error('Bạn cần chọn thuốc để nhập kho');
       return;
@@ -90,10 +94,9 @@ const ImportWarehouse = () =>{
           }
       }
     );
-
-    console.log(response);
     
     message.success("Thêm phiếu nhập kho thành công");
+    setModalVisible(false);
     setOpen(false);
     setData([]);
     form.resetFields();
@@ -121,6 +124,10 @@ const ImportWarehouse = () =>{
 
   const [data, setData] = useState([]);
 
+  let [totalAmountSum,setTotalAmountSum] = useState(0);
+
+  const [avatar, setAvatar] = useState("");
+
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -145,6 +152,8 @@ const ImportWarehouse = () =>{
     const selectedMedicine = medicineData.find((medicine) => medicine.name === `${value}`);
     setMedicineId(selectedMedicine ? selectedMedicine.id : -1);
     setCostPrice(selectedMedicine? selectedMedicine.cost_price : -1)
+    setStorageUnit(selectedMedicine? selectedMedicine.storage_unit : "")
+    setAvatar(selectedMedicine? selectedMedicine.avatar : "")
   }
 
   
@@ -186,6 +195,17 @@ const ImportWarehouse = () =>{
       dataIndex: 'key',
       editable: true,
       width: 20,
+    },
+    {
+      title: 'Hình ảnh',
+      dataIndex: 'avatar',
+      width: "12%",
+      key: 'avatar',
+      render: (avatar) => (
+        <td className="img-cell">
+          <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
+        </td>
+      ),
     },
     {
       title: 'Tên thuốc',
@@ -251,6 +271,7 @@ const ImportWarehouse = () =>{
       quantity,
       unit,
       costPrice,
+      avatar,
       totalAmount: parseFloat(quantity) * parseFloat(costPrice),
       costPriceFormatted,
       totalAmountFormatted: (parseFloat(quantity) * parseFloat(costPrice)).toLocaleString("vi-VN", {
@@ -294,12 +315,17 @@ const ImportWarehouse = () =>{
         setData([...data, { ...newProduct, key: data.length + 1 }]);
       }
     }
-  
+
     setSearchMedicine("");
     form.resetFields();
   };
-  
 
+  useEffect(() => {
+    // Tính tổng totalAmount của tất cả các sản phẩm trong data
+    const sum = data.reduce((accumulator, product) => accumulator + product.totalAmount, 0);
+    setTotalAmountSum(sum);
+  }, [data])
+  
   const checkQuantity = (_, value) => {
     if (value <= 0) {
       return Promise.reject("Lớn hơn 0");
@@ -330,7 +356,6 @@ const ImportWarehouse = () =>{
     }, 0);
    
   };
-
   const disabledDate = (current) => {
     const today = moment().startOf('day');
     // Nếu ngày được chọn nhỏ hơn hoặc bằng ngày hiện tại, disable nó
@@ -346,6 +371,7 @@ const ImportWarehouse = () =>{
   const handleDropdownVisibleChange = (open) => {
     if (!open) {
       setSearchMedicine("");
+      
     }
   }
 
@@ -354,6 +380,15 @@ const ImportWarehouse = () =>{
       <Button className="btn btn-import" type="primary" onClick={() => setOpen(true)}>
         Nhập kho
       </Button>
+      <Modal
+                          title="Xác nhận cập nhật thông tin"
+                          visible={modalVisible}
+                          onOk={handleConfirm}
+                          onCancel={() => setModalVisible(false)}
+                        >
+                          <p>Xác nhận thêm phiếu nhập kho?</p>
+      </Modal>
+
       <Modal
             title="Phiếu nhập kho"
             centered
@@ -418,9 +453,9 @@ const ImportWarehouse = () =>{
                     <Form.Item name="quantity" style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }, { validator: checkQuantity }]}>
                       <Input type="number" min={0}  name ="quantity" onChange={handleChangeQuantity} placeholder="Số lượng" />
                     </Form.Item>
-                    <Form.Item name="unit"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}>
-                      <Input placeholder="Đơn vị" />
-                    </Form.Item>
+                    {/* <Form.Item name="unit"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}> */}
+                      <Input style={{ height:"32px", width:'15%',marginLeft:'2%', marginTop:"5px"}} placeholder="Đơn vị" value={storageUnit}  readOnly/>
+                    {/* </Form.Item> */}
                     {/* <Form.Item  name="expiryDate"  style={{ width:'15%',marginLeft:'2%', marginTop:"5px"}} rules={[{ required: true }]}> */}
                       {/* <DatePicker value={expiry_date} onChange={handleSelectChangeExpiryDate}  style={{ height:"32px",width:'15%',marginLeft:'2%', marginTop:"5px"}} placeholder="Hạn sử dụng" > </DatePicker> */}
                       {/* <Input placeholder="Hạn sử dụng" /> */}
@@ -439,6 +474,11 @@ const ImportWarehouse = () =>{
                     columns={columns}
                     pagination={false}
                   />
+                  <div style={{ marginTop: 16, textAlign: 'right' }}>
+                    <Text strong>Tổng tiền:</Text>{' '}
+                    <Text>{totalAmountSum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                  </div>
+                 
                 </div>
                               </div>
                </div>

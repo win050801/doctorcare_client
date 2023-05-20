@@ -11,12 +11,15 @@ import axios from "../../../axios";
 
 const AllMedicinesHistory = () =>{
 
+      const [categoryData,setCategoryData] = useState([]);
 
       const [medicineData, setMedicineData] = useState([]);
 
       const [fromDate, setFromDate] = useState("");
 
       const [limit, setLimit]  = useState(6);
+
+      const [categoryId, setCategoryId] = useState(-1);
 
       const [page, setPage]  = useState(1);
 
@@ -33,71 +36,69 @@ const AllMedicinesHistory = () =>{
             limit: limit,
             page: page
       });
-
       useEffect(() => {
             const fetchMedicineData = async () => {
-                  const response = await axios.get(`http://localhost:9000/api/medicines/history`, {
-                  params:{
-
-                        medicine_id: search.medicineId,
-                        status: search.status,
-                        key_search: "",
-                        from_date: search.fromDate,
-                        to_date: search.toDate,
-                  }
-                  });
-                  const sttStart = (page - 1) * limit + 1;
-
-                  const medicineDataWithStt = response.data.list.map((medicine, index) => {
-                        const stt = sttStart + index;
-                        return { ...medicine, stt };
-                  });
-
-                  setMedicineData(medicineDataWithStt);
-                  setTotal(response.data.total_record);
+              const response = await axios.get(`http://localhost:9000/api/categories/`, {});
+              setCategoryData(response.data);
             };
-      
-      fetchMedicineData();
-      }, [search]);
+            fetchMedicineData();
+          }, []);
+
+          useEffect(() => {
+            const fetchMedicineData = async () => {
+              const response = await axios.get(`http://localhost:9000/api/medicines/history`, {
+                params: {
+                  medicine_id: search.medicineId,
+                  status: search.status,
+                  key_search: search.keySearch,
+                  from_date: search.fromDate,
+                  to_date: search.toDate,
+                },
+              });
+          
+              const { list: medicineList, total_record: total } = response.data;
+              const startIndex = (page - 1) * limit + 1;
+          
+              const medicineDataWithStt = medicineList.map((medicine, index) => ({
+                ...medicine,
+                stt: startIndex + index,
+              }));
+          
+              setMedicineData(medicineDataWithStt);
+              setTotal(total);
+              console.log(medicineDataWithStt);
+            };
+          
+            fetchMedicineData();
+          }, [search, page, limit]);
+          
           
       const onChangeFromDate = (date, dateString) => {
             setSearch({ ...search, fromDate: dateString });
       };
+
       
       const onChangeToDate = (date, dateString) => {
             setSearch({ ...search, toDate: dateString });
       };
-      
-
-      const dataSource = [
-            {
-              key: '1',
-              name: 'John Brown',
-              stt: '1',
-              age: 32,
-              address: 'New York No. 1 Lake Park',
-              actions: (
-                <span>
-                  <Link to="/medicine/detail"> 
-                      <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
-                      >
-                        Chi tiết</Button>
-                  </Link>
-                  <Link to="/medicine/history">
-                      <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
-                  </Link>
-                  
-                  <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
-                </span>
-              ),
-            },
-          ];
       
       const columns = [
       {
             title: 'STT',
             dataIndex: 'stt',
             key: 'stt',
+            width: "5%"
+      },
+      {
+            title: 'Hình ảnh',
+            dataIndex: 'avatar',
+            width: "12%",
+            key: 'name',
+            render: (avatar) => (
+                  <td className="img-cell">
+                    <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
+                  </td>
+                ),
       },
       {
             title: 'Ngày thực hiện',
@@ -122,6 +123,17 @@ const AllMedicinesHistory = () =>{
       
       ];
 
+      const handleInputChange = (event) => {
+            console.log(event.target.value);
+            setSearch({ ...search, keySearch: event.target.value });
+      };
+          
+
+      const handleSelectChangeCategory = (value) => {
+            setCategoryId(`${value}`)
+            setSearch({ ...search, categoryId: value });
+      }
+
       return(
          <>
             <div>
@@ -139,16 +151,16 @@ const AllMedicinesHistory = () =>{
                                                 <div className="search-content">
                                                       <div>
                                                             <h5>Từ khóa </h5>
-                                                            <Input  name="keySearch" type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
+                                                            <Input onChange={handleInputChange} name="keySearch" type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
                                                       </div>
                                                       <div>
                                                             <h5>Danh mục thuốc </h5>
-                                                            <Select name="categoryId"  className="input-search-type" id="cars"  placeholder="Tất cả">
-                                                            {/* {categoryData.map(option => (
+                                                            <Select onChange={handleSelectChangeCategory} name="categoryId"  className="input-search-type" id="cars"  placeholder="Tất cả">
+                                                            {categoryData.map(option => (
                                                             <option key={option.id} value={option.id}>
                                                                   {option.name}
                                                             </option>
-                                                            ))} */}
+                                                            ))}
                                                             </Select>
                                                       </div>
                                                      
@@ -190,6 +202,9 @@ const AllMedicinesHistory = () =>{
                                                                 }}
                                                             >
                                                       </Table>
+                                                      <Link to={"/pharmacist"}>
+                                                            <Button  Button  color="warning" className="btn-back">Quay về kho thuốc</Button>
+                                                      </Link>
                                                 </div>
                                           </div>
                                     </div>
@@ -197,6 +212,7 @@ const AllMedicinesHistory = () =>{
                         
                         </div>
                   </div>
+
             </div>
          </>
       )

@@ -2,14 +2,23 @@ import React, { Component,useState,useEffect } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
 import './MedicineDetail.scss';
-import { Input, Table,Select,DatePicker } from 'antd';
+import { Input, Table,Select,DatePicker, message,Modal  } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 // import axios from "../../../axios";
 import axios from "axios";
 import moment from "moment";
+import CommonUtils from "../../../utils/CommonUtils";
+import Lightbox from 'react-image-lightbox';
 
 
 function  MedicineDetail(){
+  const [previewImgUrl, setPreviewImgUrl] = useState("");
+  
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [avatar, setAvatar] = useState('');
 
   const [medicineData, setMedicineData] = useState({});
 
@@ -21,7 +30,9 @@ function  MedicineDetail(){
 
   const [status, setStatus] = useState(medicineData.status);
 
-  const [categoryId, setCategoryId] = useState(medicineData.category_id);
+  const [categoryId, setCategoryId] = useState(0);
+
+  const [imageBuffer, setImageBuffer] = useState("");
 
   const { id } = useParams();
 
@@ -54,6 +65,10 @@ function  MedicineDetail(){
     const fetchMedicineData = async () => {
       const response = await axios.get(`http://localhost:9000/api/medicines/${id}`, {});
       setMedicineData(response.data.data);
+      console.log(response.data.data);
+      setCategoryId(response.data.data.category_id)
+      setImageBuffer(new Buffer(response.data.data.avatar,'base64').toString('binary'));
+      setPreviewImgUrl(new Buffer(response.data.data.avatar,'base64').toString('binary'));
     };
     fetchMedicineData();
   }, [id]);
@@ -74,17 +89,58 @@ function  MedicineDetail(){
     console.log(medicineData);
   };
 
-  const handleSubmit = async (event) => {
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const response = await axios.post(`http://localhost:9000/api/medicines/${id}/update`, {
+  //         category_id: medicineData.category_id,
+  //         avatar: medicineData.avatar,
+  //         name: medicineData.name,
+  //         expiry_date: medicineData.expiry_date,
+  //         out_stock_alert_quantity: medicineData.out_stock_alert_quantity,
+  //         retail_price: medicineData.retail_price,
+  //         cost_price: medicineData.cost_price,
+  //         status: medicineData.status,
+  //         note : medicineData.note,
+  //         storage_unit: medicineData.storage_unit,
+  //         use_unit: medicineData.use_unit,
+  //         method_of_use: medicineData.method_of_use,
+  //         original_name: medicineData.original_name,
+  //         out_expiry_date_alert: medicineData.out_expiry_date_alert
+  //   });
+    
+  //   const formData = new FormData();
+  //   formData.append('id', id);
+  //   formData.append('avatar', avatar);
+  //   const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
+  //       headers: {
+  //         Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
+  //         'Content-Type': 'multipart/form-data',
+  //       }
+  //   });
+
+  //   message.success("Cập nhập thành công")
+  // };
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const response = await axios.post(`http://localhost:9000/api/medicines/${id}/update`, {
-          category_id: medicineData.category_id,
+    setModalVisible(true);
+  };
+  
+
+  const handleConfirm = async () => {
+    setModalVisible(false);
+    console.log(medicineData);
+    console.log(categoryId);
+    try {
+      const response = await axios.post(`http://localhost:9000/api/medicines/${id}/update`, {
+          category_id: categoryId,
           avatar: medicineData.avatar,
           name: medicineData.name,
           expiry_date: medicineData.expiry_date,
           out_stock_alert_quantity: medicineData.out_stock_alert_quantity,
           retail_price: medicineData.retail_price,
           cost_price: medicineData.cost_price,
-          status: medicineData.status,
+          status: status,
           note : medicineData.note,
           storage_unit: medicineData.storage_unit,
           use_unit: medicineData.use_unit,
@@ -92,32 +148,97 @@ function  MedicineDetail(){
           original_name: medicineData.original_name,
           out_expiry_date_alert: medicineData.out_expiry_date_alert
     });
-    console.log(response);
-    console.log(medicineData.name);
+    
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('avatar', avatar === "" ? previewImgUrl : avatar);
+    const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
+        headers: {
+          Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
+          'Content-Type': 'multipart/form-data',
+        }
+    });
+  
+      message.success('Cập nhật thành công');
+    } catch (error) {  
+      message.error('Có lỗi xảy ra');
+    }
+  };
+  
+
+  const handleSelectChangeStatus = (event) =>{
+      setStatus(event.target.value)
+      setMedicineData({ ...medicineData, status: event.target.value });
+  }
+
+  const handleSelectChangeCategory = (event) => {
+    setCategoryId(event.target.value);
+    setMedicineData({ ...medicineData, category_id: event.target.value });
+  }
+
+  const handleOnChangeImage = async (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if(file){
+      let base64 = await CommonUtils.getBast64(file);
+      const objectUrl =  URL.createObjectURL(file);
+      setPreviewImgUrl(objectUrl);
+      setAvatar(base64)
+    }
   };
 
-  const handleSelectChangeStatus = (value) =>{
-      setStatus(`${value}`)
-      setMedicineData({ ...medicineData, status: value });
+  const openPreviewImage = () =>{
+    console.log(previewImgUrl);
+    if(!previewImgUrl ) return;
+      setIsOpen(true);
   }
 
-  const handleSelectChangeCategory = (value) => {
-    setCategoryId(`${value}`)
-    setMedicineData({ ...medicineData, category_id: value });
+  const closeLightbox = () => {
+    setIsOpen(false);
+  };
+
+  const handleOnChangeSelectUnit = (event) =>{
+    setMedicineData({ ...medicineData, storage_unit: event.target.value });
   }
 
- let handleColor = (time) => {
-   return time.getHours() > 12 ? "text-success" : "text-error";
- };
+  const handleOnChangeSelectMethodOfUse = (event) =>{
+    setMedicineData({ ...medicineData, method_of_use: event.target.value });
+  }
 
    return (
            <React.Fragment>
             <div style={{ display: 'flex' }}>
                     <Navbar/>
+                    <Modal
+                          title="Xác nhận cập nhật thông tin"
+                          visible={modalVisible}
+                          onOk={handleConfirm}
+                          onCancel={() => setModalVisible(false)}
+                        >
+                          <p>Xác nhận cập nhật thông tin?</p>
+                    </Modal>
                     <div className="medicine-detail">
                       <div className="medicine-detail-container">
                       <form className="form-medicine-detail">
                           <h2 className="mb-4 text-2xl font-medium">Chi tiết thuốc</h2>
+                          <div className="">
+                                <input id="previewImg" type="file" hidden 
+                                  onChange={(event) => handleOnChangeImage(event)} />
+
+                                <label className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
+                                <div className='preview-image'
+                                  style={{
+                                    backgroundImage: `url(${previewImgUrl})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                  }}
+                                  onClick={openPreviewImage}
+                                >
+                                  
+                                </div>
+                          </div>
+                          
+                          
                           <div className="row">
                             <div className="col-lg-2 col-md-6 mb-4">
                               <div className="form-group">
@@ -127,13 +248,13 @@ function  MedicineDetail(){
                                 {/* <Select className="form-control">
       
                                 </Select> */}
-                                <Select onChange={handleSelectChangeCategory} value={categoryChoose.name} defaultValue={categoryChoose.name}  name=""  className="form-control" id="cars"  placeholder="Tất cả">
+                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeCategory} value={categoryChoose.name} defaultValue={categoryChoose.name}  name=""  className="form-control" id="cars"  placeholder="Tất cả">
                                                   {categoryData.map(option => (
                                                     <option key={option.id} value={option.id}>
                                                       {option.name}
                                                     </option>
                                                   ))}
-                                </Select>
+                                </select>
                                 {/* <Input type="text" className="form-control" id="name" placeholder="Tên thuốc" value={medicineData.name} onChange={handleInputChange}/> */}
                               </div>
                             </div>
@@ -158,7 +279,17 @@ function  MedicineDetail(){
                                 <label htmlFor="storageUnit" className="input-search">
                                   Đơn vị lưu kho
                                 </label>
-                                <Input type="text" className="form-control" name="storage_unit" value={medicineData.storage_unit} onChange={handleInputChange}/>
+                                {/* <Input type="text" className="form-control" name="storage_unit" value={medicineData.storage_unit} onChange={handleInputChange}/> */}
+                                <select onChange={handleOnChangeSelectUnit} defaultValue={medicineData.storage_unit}  name= "storage_unit"  style={{width:"200px" , height:"38px"}} placeholder="Tên nhân viên" showSearch className='form-control' >
+                                  <option value="Viên">Viên</option>
+                                  <option value="Gói">Gói</option>
+                                  <option value="Lọ">Lọ</option>
+                                  <option value="Chai">Chai</option>
+                                  <option value="Ống">Ống</option>
+                                  <option value="Tuýt">Tuýt</option>
+                                  <option value="Hộp">Hộp</option>
+                                  <option value="Vĩ">Vĩ</option>
+                           </select>
                               </div>
                             </div>
                           
@@ -175,10 +306,20 @@ function  MedicineDetail(){
                             </div>
                             <div className="col-lg-3 ">
                               <div className="form-group">
-                                <label htmlFor="methodOfUse" className="input-search">
+                                <label style={{marginLeft:"12%"}} htmlFor="methodOfUse" className="input-search">
                                   Phương thức
                                 </label>
-                                <Input type="text" className="form-control" name="method_of_use" value={medicineData.method_of_use} onChange={handleInputChange} />
+                                {/* <Input type="text" className="form-control" name="method_of_use" value={medicineData.method_of_use} onChange={handleInputChange} /> */}
+                                <select onChange={handleOnChangeSelectMethodOfUse} defaultValue ={medicineData.method_of_use} className="form-control" name= "storage_unit"  style={{width:"200px" , height:"40px",marginLeft:"12%"}} placeholder="Tên nhân viên" showSearch  >
+                                    <option value="Uống">Uống</option>
+                                    <option value="Nhai">Nhai</option>
+                                    <option value="Ngậm">Ngậm</option>
+                                    <option value="Đặt âm đạo">Đặt âm đạo</option>
+                                    <option value="Thoa">Thoa</option>
+                                    <option value="Tiêm">Tiêm</option>
+                                    <option value="Nhỏ">Nhỏ</option>
+                                    <option value="Xịt">Xịt</option>
+                                </select>
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -194,10 +335,10 @@ function  MedicineDetail(){
                                 <label htmlFor="storageUnit" className="input-search">
                                   Trạng thái
                                 </label>
-                                <Select onChange={handleSelectChangeStatus} name="status" value={medicineData.status == 1 ? "Đang hoạt động": "Không hoạt động"} className="form-control" id="cars" placeholder="Tất cả">
+                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeStatus} name="status" defaultValue={medicineData.status == 1 ? "Đang hoạt động": "Không hoạt động"} className="form-control" id="cars" placeholder="Tất cả">
                                           <option value="1">Đang hoạt động</option>
                                           <option value="0">Không còn sử dụng</option>
-                                  </Select>
+                                  </select>
                                 {/* <Input type="text" className="form-control" id="storageUnit" value={medicineData.medicineInventory} onChange={handleInputChange} /> */}
                               </div>
                             </div>
@@ -245,7 +386,7 @@ function  MedicineDetail(){
                                 <label htmlFor="genericName" className="input-search">
                                   Ngày hết hạn
                                 </label>
-                                <DatePicker onChange={handleDateChange} value={expiryDate} style={{width:"300px",height:"40px"}}/>
+                                <DatePicker disabled inputReadOnly onChange={handleDateChange} value={expiryDate} style={{width:"300px",height:"40px"}}/>
                                 {/* <Input type="text" className="form-control" name="expiry_date" value={medicineData.expiry_date} onChange={handleInputChange} /> */}
                               </div>
                             </div>
@@ -273,13 +414,21 @@ function  MedicineDetail(){
                               <Link to={"/pharmacist"}>
                                   <Button  color="warning" className="btn ">Quay về kho thuốc</Button>
                               </Link>
-                              
-                              <Button  color="success" className="btn ">Lịch sử dùng thuốc</Button>
+                              <Link to={`/medicine/${id}/history`}>
+                                    <Button  color="success" className="btn ">Lịch sử dùng thuốc</Button>
+                              </Link>
                           </div>
                       </form>
                       </div>
                   </div>
             </div>
+            {
+                isOpen === true && 
+                <Lightbox
+                    mainSrc={previewImgUrl}
+                    onCloseRequest={closeLightbox}
+                />
+              }
            </React.Fragment>
        );
   
