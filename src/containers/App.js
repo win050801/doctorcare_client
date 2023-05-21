@@ -21,6 +21,14 @@ import MedicineDetail from './Pharmacist/MedicineDetail/MedicineDetail';
 import MedicineHistory from './Pharmacist/MedicineHistory/MedicineHistory';
 import MedicineWarning from './Pharmacist/MedicineWarning/MedicineWarning';
 import AllMedicinesHistory from './Pharmacist/AllMedicineHistory/AllMedicine';
+import Report from './Report/Report';
+import ReportRevenueCostProfit from './Report/ReportRevenueCostProfit';
+import ReportPatientList from './Report/ReportPatientList';
+import ReportExport from './Report/ReportExport';
+import ReportInventory from './Report/ReportInventory';
+import ReportExportInventory from './Report/ReportExportInventory';
+
+
 
 class App extends Component {
 
@@ -59,7 +67,15 @@ class App extends Component {
                                 <Route path="/medicine/detail/:id" component={(MedicineDetail)} />
                                 <Route path="/medicine/:id/history" component={(MedicineHistory)} />
                                 <Route path="/medicine/warning" component={(MedicineWarning)} />
+
                                 <Route path="/medicine/history" component={(AllMedicinesHistory)} />
+                                <Route path="/report" component={(Report)} />
+                                <Route path="/report-revenue-cost-profit" component={(ReportRevenueCostProfit)} />
+                                <Route path="/report-patient-list" component={(ReportPatientList)} />
+                                <Route path="/report-export" component={(ReportExport)} />
+                                <Route path="/report-inventory" component={(ReportInventory)} />
+                                <Route path="/report-export-inventory" component={(ReportExportInventory)} />
+
                             </Switch>
                         </span>
 
