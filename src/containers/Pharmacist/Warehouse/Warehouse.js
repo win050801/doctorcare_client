@@ -99,14 +99,14 @@ function MyVerticallyCenteredModal(props) {
         method_of_use: formValues.method_of_use,
         status: 1
     }).catch(error => console.error(error));
-    console.log(response.data);
-    if(response.data === "Tên thuốc đã được sử dụng"){
-      alert("Tên thuốc đã được sử dụng");
+    console.log(response.data[0].id);
+    if(response.status === 2){
+      alert(response.message);
       return;
     }
 
     const formData = new FormData();
-    formData.append('id', response.data.id);
+    formData.append('id', response.data[0].id);
     formData.append('avatar', avatar);
     const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
         headers: {
@@ -671,7 +671,7 @@ function  Warehouse(){
                                                 <Select onChange={handleSelectChangeExpiry} name="isExpiry"  className="input-search isExpiry" id="cars" placeholder="Chọn">
                                                     <option value="0">Chưa hết hạn</option>
                                                     <option value="1">Đã hết hạn</option>
-                                                    <option value="2">Tất cả</option>
+                                                    <option value="-1">Tất cả</option>
                                                     
                                                    
                                                 </Select>

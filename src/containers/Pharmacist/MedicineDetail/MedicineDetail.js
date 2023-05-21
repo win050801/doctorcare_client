@@ -148,7 +148,10 @@ function  MedicineDetail(){
           original_name: medicineData.original_name,
           out_expiry_date_alert: medicineData.out_expiry_date_alert
     });
-    
+    if(response.data.status === 2){
+        message.error(response.data.message);
+        return;
+    }
     const formData = new FormData();
     formData.append('id', id);
     formData.append('avatar', avatar === "" ? previewImgUrl : avatar);
@@ -222,20 +225,20 @@ function  MedicineDetail(){
                       <form className="form-medicine-detail">
                           <h2 className="mb-4 text-2xl font-medium">Chi tiết thuốc</h2>
                           <div className="">
-                                <input id="previewImg" type="file" hidden 
+                                {/* <input id="previewImg" type="file" hidden 
                                   onChange={(event) => handleOnChangeImage(event)} />
 
                                 <label className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
                                 <div className='preview-image'
-                                  style={{
-                                    backgroundImage: `url(${previewImgUrl})`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                  }}
+                                  // style={{
+                                  //   backgroundImage: `url(${previewImgUrl})`,
+                                  //   backgroundSize: 'cover',
+                                  //   backgroundPosition: 'center',
+                                  // }}
                                   onClick={openPreviewImage}
                                 >
                                   
-                                </div>
+                                </div> */}
                           </div>
                           
                           
