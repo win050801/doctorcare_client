@@ -92,8 +92,6 @@ const ExportWarehouse = () =>{
     setAvatar(selectedMedicine? selectedMedicine.avatar : "")
   }
 
-  console.log(searchMedicine);
-
   const handleDiscountAmountChange = (event) => {
       const target = event.target;
       const value = target.value
@@ -362,7 +360,7 @@ const ExportWarehouse = () =>{
         message.error('Bạn cần chọn tên nhân viên phụ trách xuất kho');
         return;
       }
-      const response = await axios.post(`http://localhost:9000/api/orders/create-medicnes`, {
+      const response = await axios.post(`http://localhost:9000/api/orders/create-medicines`, {
           employee_id: 1,
           discount_percent: discountPercent,
           type: 1,

@@ -13,7 +13,6 @@ import CommonUtils from "../../../utils/CommonUtils";
 import axios from "../../../axios";
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import Lightbox from 'react-image-lightbox';
 
 
 
@@ -99,7 +98,6 @@ function MyVerticallyCenteredModal(props) {
         method_of_use: formValues.method_of_use,
         status: 1
     }).catch(error => console.error(error));
-    console.log(response.data[0].id);
     if(response.status === 2){
       alert(response.message);
       return;
@@ -118,6 +116,7 @@ function MyVerticallyCenteredModal(props) {
     message.success("Thêm thuốc thành công");
     setIsModalVisible(false);
     setPreviewImgUrl("");
+    
     form.resetFields();
   };
 
@@ -426,7 +425,6 @@ function  Warehouse(){
               page: page
             }
           });
-    
           const startIndex = (page - 1) * limit + 1;
           const medicineDataWithStt = response.data.list.map((medicine, index) => ({
             ...medicine,
@@ -563,6 +561,7 @@ function  Warehouse(){
     const handleSelectChangeStatus = (value) => {
       setStatus(`${value}`)
       setSearch({ ...search, status: value });
+      console.log(search);
     }
 
     const handleSelectChangeSortBy = (value) => {

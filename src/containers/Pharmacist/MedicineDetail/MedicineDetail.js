@@ -8,7 +8,6 @@ import { Link, useParams } from 'react-router-dom';
 import axios from "axios";
 import moment from "moment";
 import CommonUtils from "../../../utils/CommonUtils";
-import Lightbox from 'react-image-lightbox';
 
 
 function  MedicineDetail(){
@@ -28,7 +27,7 @@ function  MedicineDetail(){
 
   const [categoryChoose,setCategoryChoose] = useState([]);
 
-  const [status, setStatus] = useState(medicineData.status);
+  const [status, setStatus] = useState();
 
   const [categoryId, setCategoryId] = useState(0);
 
@@ -55,7 +54,8 @@ function  MedicineDetail(){
             category_id: id
           }
       });
-      setCategoryChoose(response.data.data);
+      setCategoryChoose(categoryId);
+      console.log(id);
     };
     fetchCategoryData();
   }, []);
@@ -65,7 +65,7 @@ function  MedicineDetail(){
     const fetchMedicineData = async () => {
       const response = await axios.get(`http://localhost:9000/api/medicines/${id}`, {});
       setMedicineData(response.data.data);
-      console.log(response.data.data);
+      setStatus(response.data.data.status)
       setCategoryId(response.data.data.category_id)
       setImageBuffer(new Buffer(response.data.data.avatar,'base64').toString('binary'));
       setPreviewImgUrl(new Buffer(response.data.data.avatar,'base64').toString('binary'));
@@ -130,7 +130,7 @@ function  MedicineDetail(){
   const handleConfirm = async () => {
     setModalVisible(false);
     console.log(medicineData);
-    console.log(categoryId);
+    console.log(status);
     try {
       const response = await axios.post(`http://localhost:9000/api/medicines/${id}/update`, {
           category_id: categoryId,
@@ -225,20 +225,20 @@ function  MedicineDetail(){
                       <form className="form-medicine-detail">
                           <h2 className="mb-4 text-2xl font-medium">Chi tiết thuốc</h2>
                           <div className="">
-                                {/* <input id="previewImg" type="file" hidden 
+                                <input id="previewImg" type="file" hidden 
                                   onChange={(event) => handleOnChangeImage(event)} />
 
                                 <label className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
                                 <div className='preview-image'
-                                  // style={{
-                                  //   backgroundImage: `url(${previewImgUrl})`,
-                                  //   backgroundSize: 'cover',
-                                  //   backgroundPosition: 'center',
-                                  // }}
+                                  style={{
+                                    backgroundImage: `url(${previewImgUrl})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                  }}
                                   onClick={openPreviewImage}
                                 >
                                   
-                                </div> */}
+                                </div>
                           </div>
                           
                           
@@ -251,7 +251,7 @@ function  MedicineDetail(){
                                 {/* <Select className="form-control">
       
                                 </Select> */}
-                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeCategory} value={categoryChoose.name} defaultValue={categoryChoose.name}  name=""  className="form-control" id="cars"  placeholder="Tất cả">
+                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeCategory} value={categoryId} defaultValue={categoryChoose.name}  name=""  className="form-control" id="cars"  placeholder="Tất cả">
                                                   {categoryData.map(option => (
                                                     <option key={option.id} value={option.id}>
                                                       {option.name}
@@ -283,7 +283,7 @@ function  MedicineDetail(){
                                   Đơn vị lưu kho
                                 </label>
                                 {/* <Input type="text" className="form-control" name="storage_unit" value={medicineData.storage_unit} onChange={handleInputChange}/> */}
-                                <select onChange={handleOnChangeSelectUnit} defaultValue={medicineData.storage_unit}  name= "storage_unit"  style={{width:"200px" , height:"38px"}} placeholder="Tên nhân viên" showSearch className='form-control' >
+                                <select onChange={handleOnChangeSelectUnit} value={medicineData.storage_unit}  name= "storage_unit"  style={{width:"200px" , height:"38px"}} placeholder="Tên nhân viên" showSearch className='form-control' >
                                   <option value="Viên">Viên</option>
                                   <option value="Gói">Gói</option>
                                   <option value="Lọ">Lọ</option>
@@ -313,7 +313,7 @@ function  MedicineDetail(){
                                   Phương thức
                                 </label>
                                 {/* <Input type="text" className="form-control" name="method_of_use" value={medicineData.method_of_use} onChange={handleInputChange} /> */}
-                                <select onChange={handleOnChangeSelectMethodOfUse} defaultValue ={medicineData.method_of_use} className="form-control" name= "storage_unit"  style={{width:"200px" , height:"40px",marginLeft:"12%"}} placeholder="Tên nhân viên" showSearch  >
+                                <select onChange={handleOnChangeSelectMethodOfUse} value ={medicineData.method_of_use} className="form-control" name= "storage_unit"  style={{width:"200px" , height:"40px",marginLeft:"12%"}} placeholder="Tên nhân viên" showSearch  >
                                     <option value="Uống">Uống</option>
                                     <option value="Nhai">Nhai</option>
                                     <option value="Ngậm">Ngậm</option>
@@ -338,7 +338,7 @@ function  MedicineDetail(){
                                 <label htmlFor="storageUnit" className="input-search">
                                   Trạng thái
                                 </label>
-                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeStatus} name="status" defaultValue={medicineData.status == 1 ? "Đang hoạt động": "Không hoạt động"} className="form-control" id="cars" placeholder="Tất cả">
+                                <select style={{width:"200px" , height:"38px"}} onChange={handleSelectChangeStatus} name="status" value={status} className="form-control" id="cars" placeholder="Tất cả">
                                           <option value="1">Đang hoạt động</option>
                                           <option value="0">Không còn sử dụng</option>
                                   </select>
@@ -425,13 +425,13 @@ function  MedicineDetail(){
                       </div>
                   </div>
             </div>
-            {
+            {/* {
                 isOpen === true && 
                 <Lightbox
                     mainSrc={previewImgUrl}
                     onCloseRequest={closeLightbox}
                 />
-              }
+              } */}
            </React.Fragment>
        );
   
