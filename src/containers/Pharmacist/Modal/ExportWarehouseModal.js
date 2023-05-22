@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal, Select, message,Typography } from 'antd';
 import './ImportWarehouseModal.scss';
 import './ExportWarehouseModal.scss';
@@ -6,10 +6,13 @@ import axios from 'axios';
 import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
+import { AppContext } from "../Warehouse/AppContext";
 const { Text } = Typography;
 
 const ExportWarehouse = () =>{
   let [totalAmountSum,setTotalAmountSum] = useState(0);
+
+  const { data, setData } = useContext(AppContext);
 
   const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
 
@@ -44,6 +47,8 @@ const ExportWarehouse = () =>{
   const [storageUnit, setStorageUnit] = useState("");
   
   const [avatar, setAvatar] = useState("");
+
+  const [checkQuantityM, setCheckQuantityM] = useState(false);
 
   useEffect(() => {
     const check = async () => {
@@ -136,7 +141,7 @@ const ExportWarehouse = () =>{
   })
 
   const [form] = Form.useForm();
-  const [data, setData] = useState([]);
+  const [dataExport, setDataExport] = useState([]);
 
   const onEdit = (record) => {
     setEditingIndex(record.key - 1);
@@ -146,21 +151,21 @@ const ExportWarehouse = () =>{
   };
 
   const onDelete = (record) => {
-    setData(data.filter((item) => item.key !== record.key));
+    setDataExport(dataExport.filter((item) => item.key !== record.key));
   };
 
   const onSave = (values) => {
-    const newData = [...data];
+    const newData = [...dataExport];
     const index = newData.findIndex((item) => values.key === item.key);
 
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, ...values });
-      setData(newData);
+      setDataExport(newData);
       form.resetFields();
     } else {
       newData.push(values);
-      setData(newData);
+      setDataExport(newData);
       form.resetFields();
     }
   };
@@ -202,7 +207,7 @@ const ExportWarehouse = () =>{
       title: 'Action',
       dataIndex: 'operation',
       render: (_, record) =>
-        data.length >= 1 ? (
+        dataExport.length >= 1 ? (
           <div>
             <Button type="primary" onClick={() => onEdit(record)}>
               Sửa
@@ -233,7 +238,7 @@ const ExportWarehouse = () =>{
   
 
   const onFinish = (values) => {
-    if(checkQuantity === false){
+    if(checkQuantityM === false){
       return Promise.reject(`Số lượng còn lại không đủ`);
     }
     const { name, unit } = values;
@@ -255,19 +260,19 @@ const ExportWarehouse = () =>{
     if (isEditing) {
       // Cập nhật thông tin sản phẩm đã có trong danh sách
       const updatedProduct = { ...newProduct, key: editingIndex + 1 };
-      setData([
-        ...data.slice(0, editingIndex),
+      setDataExport([
+        ...dataExport.slice(0, editingIndex),
         updatedProduct,
-        ...data.slice(editingIndex + 1),
+        ...dataExport.slice(editingIndex + 1),
       ]);
       setIsEditing(false);
     } else {
       // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-      const existingProductIndex = data.findIndex((product) => product.name === name);
+      const existingProductIndex = dataExport.findIndex((product) => product.name === name);
   
       if (existingProductIndex !== -1) {
         // Sản phẩm đã tồn tại trong danh sách, cộng thêm quantity cho sản phẩm này
-        const existingProduct = data[existingProductIndex];
+        const existingProduct = dataExport[existingProductIndex];
         const updatedProduct = {
           ...existingProduct,
           quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
@@ -277,14 +282,14 @@ const ExportWarehouse = () =>{
             currency: "VND",
           })
         };
-        setData([
-          ...data.slice(0, existingProductIndex),
+        setDataExport([
+          ...dataExport.slice(0, existingProductIndex),
           updatedProduct,
-          ...data.slice(existingProductIndex + 1),
+          ...dataExport.slice(existingProductIndex + 1),
         ]);
       } else {
         // Sản phẩm chưa tồn tại trong danh sách, thêm sản phẩm mới vào danh sách
-        setData([...data, { ...newProduct, key: data.length + 1 }]);
+        setDataExport([...dataExport, { ...newProduct, key: dataExport.length + 1 }]);
       }
     }
   
@@ -300,8 +305,8 @@ const ExportWarehouse = () =>{
   };
 
   useEffect(() => {
-    // Tính tổng totalAmount của tất cả các sản phẩm trong data
-    const sum = data.reduce((accumulator, product) => accumulator + product.totalAmount, 0);
+    // Tính tổng totalAmount của tất cả các sản phẩm trong dataExport
+    const sum = dataExport.reduce((accumulator, product) => accumulator + product.totalAmount, 0);
     let total = 0;
     if (discountPercent === 0 && discountAmount === 0) {
       total = sum;
@@ -312,33 +317,27 @@ const ExportWarehouse = () =>{
     }
     setTotalAmountSum(total);
 
-  }, [data])
+  }, [dataExport])
 
 
   const checkQuantity = async (_, value) => {
+    console.log(medicineData);
     const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
     const currentId = medicine ? medicine.id : 0;
-    const currentInventory = medicine ? medicine.inventory_quantity : 0;
+    const currentInventory = medicine ? medicine.inventory : 0;
     const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
       params:{
         medicine_id: currentId,
         quantity: parseFloat(quantity)
       }
     });
-    if(response.data.status === 400 && currentInventory === ""){
-      // message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+    if(response.data.status === 400){
        Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
        return false;
     }else{
       Promise.resolve();
-      return true;
+      setCheckQuantityM(true)
     }
-    // if (value <= 0) {
-    //   return Promise.reject("Lớn hơn 0");
-    // } else {
-    //   return Promise.resolve();
-    // }
-    
   };
 
   const checkDiscountPercent = (_, value) =>{
@@ -352,12 +351,15 @@ const ExportWarehouse = () =>{
   const handleConfirm = async () => {
       setModalVisible(false);
 
-      if(data.length === 0){
+      if(dataExport.length === 0){
         message.error('Bạn cần chọn thuốc để xuất kho');
         return;
       }
       if (!employeeId) {
         message.error('Bạn cần chọn tên nhân viên phụ trách xuất kho');
+        return;
+      }
+      if(!checkQuantity){
         return;
       }
       const response = await axios.post(`http://localhost:9000/api/orders/create-medicines`, {
@@ -366,7 +368,7 @@ const ExportWarehouse = () =>{
           type: 1,
           discount_amount: discountAmount,
           description : note,
-          warehouse_session_request:  data
+          warehouse_session_request:  dataExport
       },
       {
         headers: {
@@ -376,9 +378,28 @@ const ExportWarehouse = () =>{
     }
       );
       message.success('Thêm phiếu xuất kho thành công');
-      setData([]);
+      updateQuantityByIds(dataExport.map(item => item.medicine_id), dataExport.map(item => item.quantity))
+      setDataExport([]);
       form.resetFields();
   }
+
+
+  const updateQuantityByIds = (ids, quantities) => {
+    const updatedMedicineData = data.map((medicine) => {
+      if (ids.includes(medicine.id)) {
+        const index = ids.indexOf(medicine.id);
+        const quantity = parseFloat(quantities[index]);
+        return {
+          ...medicine,
+          inventory: parseFloat(medicine.inventory - quantity),
+        };
+      }
+      return medicine;
+    });
+  
+    setData(updatedMedicineData);
+  };
+
   // const handleExportMedicine = async () =>{
     const handleExportMedicine = (event) => {
       event.preventDefault();
@@ -523,7 +544,7 @@ const ExportWarehouse = () =>{
                     <Table
                         ref= {componentRef}
                         bordered
-                        dataSource={data}
+                        dataSource={dataExport}
                         columns={columns}
                         pagination={pagination}
                         onChange={handleChange}
@@ -537,7 +558,7 @@ const ExportWarehouse = () =>{
               <Table
                         ref= {componentRef} 
                         bordered
-                        dataSource={data}
+                        dataSource={dataExport}
                         columns={columns}
                         pagination={pagination}
                         onChange={handleChange}

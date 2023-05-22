@@ -1,10 +1,8 @@
-import React, { Component,useEffect,useState, useRef } from "react";
+import React, { Component,useEffect,useState, useRef, useContext } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'antd';
-
-
 import { connect } from "react-redux";
 import './Warehouse.scss'
 import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
@@ -13,12 +11,16 @@ import CommonUtils from "../../../utils/CommonUtils";
 import axios from "../../../axios";
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { AppContext } from "./AppContext";
+
 
 
 
 function MyVerticallyCenteredModal(props) {
 
   const [form] = Form.useForm();
+
+  const { data, setData } = useContext(AppContext);
 
   const [categoryData,setCategoryData] = useState([]);
 
@@ -112,11 +114,31 @@ function MyVerticallyCenteredModal(props) {
           'Content-Type': 'multipart/form-data',
         }
     });
+
+    // const lastItemId = 0;
+    // if (Array.isArray(data) && data.length > 0) {
+    //   const lastItem = data[data.length - 1];
+    //   lastItemId = lastItem.stt;
+    // }
+    // console.log(lastItemId);
     
+    const newRecord = {
+      id: response.data[0].id,
+      avatar: avatar,
+      retail_price: formValues.retail_price,
+      cost_price: formValues.cost_price,
+      inventory: 0,
+      inventory_quantity: 0,
+      name: formValues.name,
+      storage_unit: formValues.storage_unit,
+      stt: 5,
+    };
     message.success("Thêm thuốc thành công");
     setIsModalVisible(false);
     setPreviewImgUrl("");
-    
+    const updatedData = [...data, newRecord];
+    setData(updatedData);
+    console.log(data);
     form.resetFields();
   };
 
@@ -358,9 +380,9 @@ function MyVerticallyCenteredModal(props) {
   );
 }
 
-function  Warehouse(){
+const  Warehouse = () =>{
 
-    const tableRef = useRef(null);
+    const { data, setData } = useContext(AppContext);
 
     const [modalShow, setModalShow] = React.useState(false);
 
@@ -373,8 +395,6 @@ function  Warehouse(){
     const [total, setTotal] = useState(0);
 
     const [open, setOpen] = useState(false);
-
-    const [data, setData] = useState([]);
 
     const [categoryId, setCategoryId] = useState(-1);
 
@@ -467,6 +487,7 @@ function  Warehouse(){
         title: 'STT',
         dataIndex: 'stt',
         key: 'stt',
+        width: "2%",
       },
       {
         title: 'Hình ảnh',
@@ -544,8 +565,6 @@ function  Warehouse(){
               <Link to={`/medicine/${record.id}/history/`}> 
                   <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
               </Link>
-              
-              <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
             </span>
           );
         }

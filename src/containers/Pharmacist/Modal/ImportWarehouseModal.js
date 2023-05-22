@@ -1,13 +1,16 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message,Typography } from 'antd';
 import './ImportWarehouseModal.scss'
 import { Link } from 'react-router-dom';
 import ImportTable from './ImportTable';
 import axios from "axios";
 import moment from 'moment';
+import { AppContext } from "../Warehouse/AppContext";
 const { Text } = Typography;
 
 const ImportWarehouse = () =>{
+
+  const { data, setData } = useContext(AppContext);
 
    const [open, setOpen] = useState(false);
 
@@ -61,7 +64,7 @@ const ImportWarehouse = () =>{
   };
   
   const handleConfirm = async () =>{
-    if(data.length === 0){
+    if(dataImport.length === 0){
       message.error('Bạn cần chọn thuốc để nhập kho');
       return;
     }
@@ -85,7 +88,7 @@ const ImportWarehouse = () =>{
             description: note,
             expiry_date: expiry_date,
             manufacture_date: manufacture_date,
-            warehouse_session_request:  data
+            warehouse_session_request:  dataImport
           },
           {
             headers: {
@@ -96,11 +99,38 @@ const ImportWarehouse = () =>{
     );
     
     message.success("Thêm phiếu nhập kho thành công");
+    
     setModalVisible(false);
+    const ids = dataImport.map(item => item.medicine_id);
+    console.log(dataImport);
+    console.log(ids); // In ra một mảng chứa các giá trị id
+    const quantity = dataImport.map(item => item.quantity);
+    console.log(quantity);
+
+    updateQuantityByIds(dataImport.map(item => item.medicine_id), dataImport.map(item => item.quantity))
+    console.log(data);
     setOpen(false);
-    setData([]);
+    setDataImport([]);
     form.resetFields();
   }
+
+  const updateQuantityByIds = (ids, quantities) => {
+    const updatedMedicineData = data.map((medicine) => {
+      if (ids.includes(medicine.id)) {
+        const index = ids.indexOf(medicine.id);
+        const quantity = parseFloat(quantities[index]);
+        return {
+          ...medicine,
+          inventory: parseFloat(medicine.inventory + quantity),
+        };
+      }
+      return medicine;
+    });
+  
+    setData(updatedMedicineData);
+  };
+  
+  
 
   const [form] = Form.useForm();
 
@@ -122,7 +152,7 @@ const ImportWarehouse = () =>{
 
   const [costPrice,setCostPrice] = useState(0);
 
-  const [data, setData] = useState([]);
+  const [dataImport, setDataImport] = useState([]);
 
   let [totalAmountSum,setTotalAmountSum] = useState(0);
 
@@ -170,21 +200,21 @@ const ImportWarehouse = () =>{
   };
 
   const onDelete = (record) => {
-    setData(data.filter((item) => item.key !== record.key));
+    setDataImport(dataImport.filter((item) => item.key !== record.key));
   };
 
   const onSave = (values) => {
-    const newData = [...data];
+    const newData = [...dataImport];
     const index = newData.findIndex((item) => values.key === item.key);
 
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, ...values });
-      setData(newData);
+      setDataImport(newData);
       form.resetFields();
     } else {
       newData.push(values);
-      setData(newData);
+      setDataImport(newData);
       form.resetFields();
     }
   };
@@ -234,7 +264,7 @@ const ImportWarehouse = () =>{
       title: 'Hành động',
       dataIndex: 'operation',
       render: (_, record) =>
-        data.length >= 1 ? (
+        dataImport.length >= 1 ? (
           <div>
             <Button type="primary" onClick={() => onEdit(record)}>
               Sửa
@@ -283,19 +313,19 @@ const ImportWarehouse = () =>{
     if (isEditing) {
       // Cập nhật thông tin sản phẩm đã có trong danh sách
       const updatedProduct = { ...newProduct, key: editingIndex + 1 };
-      setData([
-        ...data.slice(0, editingIndex),
+      setDataImport([
+        ...dataImport.slice(0, editingIndex),
         updatedProduct,
-        ...data.slice(editingIndex + 1),
+        ...dataImport.slice(editingIndex + 1),
       ]);
       setIsEditing(false);
     } else {
       // Kiểm tra xem sản phẩm đã tồn tại trong danh sách hay chưa
-      const existingProductIndex = data.findIndex((product) => product.name === name);
+      const existingProductIndex = dataImport.findIndex((product) => product.name === name);
   
       if (existingProductIndex !== -1) {
         // Sản phẩm đã tồn tại trong danh sách, cộng thêm quantity cho sản phẩm này
-        const existingProduct = data[existingProductIndex];
+        const existingProduct = dataImport[existingProductIndex];
         const updatedProduct = {
           ...existingProduct,
           quantity: parseFloat(parseFloat(existingProduct.quantity) + parseFloat(quantity)),
@@ -305,14 +335,14 @@ const ImportWarehouse = () =>{
             currency: "VND",
           })
         };
-        setData([
-          ...data.slice(0, existingProductIndex),
+        setDataImport([
+          ...dataImport.slice(0, existingProductIndex),
           updatedProduct,
-          ...data.slice(existingProductIndex + 1),
+          ...dataImport.slice(existingProductIndex + 1),
         ]);
       } else {
         // Sản phẩm chưa tồn tại trong danh sách, thêm sản phẩm mới vào danh sách
-        setData([...data, { ...newProduct, key: data.length + 1 }]);
+        setDataImport([...dataImport, { ...newProduct, key: dataImport.length + 1 }]);
       }
     }
 
@@ -321,10 +351,10 @@ const ImportWarehouse = () =>{
   };
 
   useEffect(() => {
-    // Tính tổng totalAmount của tất cả các sản phẩm trong data
-    const sum = data.reduce((accumulator, product) => accumulator + product.totalAmount, 0);
+    // Tính tổng totalAmount của tất cả các sản phẩm trong dataImport
+    const sum = dataImport.reduce((accumulator, product) => accumulator + product.totalAmount, 0);
     setTotalAmountSum(sum);
-  }, [data])
+  }, [dataImport])
   
   const checkQuantity = (_, value) => {
     if (value <= 0) {
@@ -470,7 +500,7 @@ const ImportWarehouse = () =>{
                   <br />
                   <Table
                     bordered
-                    dataSource={data}
+                    dataSource={dataImport}
                     columns={columns}
                     pagination={false}
                   />
