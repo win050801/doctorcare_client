@@ -4,6 +4,7 @@ import { Input, Table, Button,Select } from 'antd';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import axios from "axios";
+import moment from "moment";
 
 
 const MedicineWarning = () => {
@@ -104,65 +105,82 @@ const MedicineWarning = () => {
       // ...
     };
 
-   const dataSource = [
-      {
-        key: '1',
-        name: 'John Brown',
-        stt: '1',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        actions: (
-          <span>
-            <Link to="/medicine/detail"> 
-                <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
-                        
-                >
-                  Chi tiết</Button>
-            </Link>
-            <Link to="/medicine/history">
-                <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
-            </Link>
-            
-          </span>
-        ),
-      },
-    ];
 
     const columns = [
       {
         title: 'STT',
-        dataIndex: 'id',
+        dataIndex: 'stt',
         key: 'stt',
+        width: "5%"
       },
+      {
+         title: 'Hình ảnh',
+         dataIndex: 'avatar',
+         width: "12%",
+         key: 'name',
+         render: (avatar) => (
+            <td className="img-cell">
+              <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
+            </td>
+          ),
+       },
       {
         title: 'Tên thuốc',
         dataIndex: 'name',
         key: 'name',
       },
       {
-        title: 'Ngày hết hạn',
-        dataIndex: 'expiry_date',
-        key: 'age',
-      },
+         title: 'Ngày hết hạn',
+         dataIndex: 'expiry_date',
+         width: "12%",
+         key: 'age',
+         render: (text) => {
+           return <span>{moment(text).format('DD/MM/YYYY')}</span>;
+         },
+       },
       {
-        title: 'Giá vốn',
-        dataIndex: 'cost_price',
-        key: 'cost_price',
-      },
-      {
-        title: 'Giá bán',
-        dataIndex: 'retail_price',
-        key: 'retail_price',
-      },
+         title: 'Giá vốn',
+         dataIndex: 'cost_price',
+         key: 'cost_price',
+         width: "12%",
+         render: (text) => {
+           return (
+             <span>
+               {parseFloat(text).toLocaleString('vi-VN', {
+                 style: 'currency',
+                 currency: 'VND',
+               })}
+             </span>
+           );
+         },
+       },
+       {
+         title: 'Giá bán',
+         dataIndex: 'retail_price',
+         key: 'retail_price',
+         width: "12%",
+         render: (text) => {
+           return (
+             <span>
+               {parseFloat(text).toLocaleString('vi-VN', {
+                 style: 'currency',
+                 currency: 'VND',
+               })}
+             </span>
+           );
+         },
+       },
       {
         title: 'Số lượng tồn',
         dataIndex: 'inventory_quantity',
         key: 'inventory_quantity',
+        width: "12%"
       },
       {
          title: 'Ngày nhập kho',
          dataIndex: 'inventory_quantity',
          key: 'inventory_quantity',
+         width: "12%"
       },
     ];
 

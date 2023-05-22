@@ -1,24 +1,26 @@
-import React, { Component,useEffect,useState, useRef } from "react";
+import React, { Component,useEffect,useState, useRef, useContext } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
 import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'antd';
-
-
 import { connect } from "react-redux";
 import './Warehouse.scss'
 import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
 import ExportWarehouseModal from "../Modal/ExportWarehouseModal";
-import { getMedicines } from "../../../routes/APIRoutes/APIMedicine";
+import CommonUtils from "../../../utils/CommonUtils";
 import axios from "../../../axios";
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { AppContext } from "./AppContext";
+
 
 
 
 function MyVerticallyCenteredModal(props) {
 
   const [form] = Form.useForm();
+
+  const { data, setData } = useContext(AppContext);
 
   const [categoryData,setCategoryData] = useState([]);
 
@@ -32,6 +34,16 @@ function MyVerticallyCenteredModal(props) {
 
   const [totalPages, setTotalPages] = useState(1);
 
+  const [previewImgUrl, setPreviewImgUrl] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [avatar, setAvatar] = useState('');
+
+  const [unit, setUnit] = useState('');
+
+  const [method, setMethod] = useState('');
+
   const checkQuantity = (_, value) => {
     if (value <= 0) {
       return Promise.reject("Lớn hơn 0");
@@ -40,16 +52,10 @@ function MyVerticallyCenteredModal(props) {
     }
   };
 
-  const renderQuantityError = () => {
-    return (
-      <div>
-        <span>Số lượng phải lớn hơn 0</span>
-      </div>
-    );
-  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    
     setFormValues({ ...formValues, [name]: value });
   };
 
@@ -61,14 +67,13 @@ function MyVerticallyCenteredModal(props) {
     const value = event.target.value;
     if (isNaN(value)) {
       message.error('Vui lòng nhập số!');
+      return;
     } 
   };
 
   const handleSelectChange = (value) => {
     setCategoryId(`${value}`)
   }
-
-
 
   useEffect(() => {
     const fetchMedicineData = async () => {
@@ -78,11 +83,9 @@ function MyVerticallyCenteredModal(props) {
     fetchMedicineData();
   }, []);
 
-
-
   const handleSubmit = async (event) => {
     // event.preventDefault();
-   
+    console.log(formValues);
     const response = await axios.post(`http://localhost:9000/api/medicines/create`, {
         category_id: categoryId,
         name: formValues.name,
@@ -97,14 +100,77 @@ function MyVerticallyCenteredModal(props) {
         method_of_use: formValues.method_of_use,
         status: 1
     }).catch(error => console.error(error));
-    console.log(response.status);
-    if(response.status === 400 ){
-        message.error("Thêm thuốc thất bại");
-        return;
+    if(response.status === 2){
+      alert(response.message);
+      return;
     }
+
+    const formData = new FormData();
+    formData.append('id', response.data[0].id);
+    formData.append('avatar', avatar);
+    const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
+        headers: {
+          Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
+          'Content-Type': 'multipart/form-data',
+        }
+    });
+
+    // const lastItemId = 0;
+    // if (Array.isArray(data) && data.length > 0) {
+    //   const lastItem = data[data.length - 1];
+    //   lastItemId = lastItem.stt;
+    // }
+    // console.log(lastItemId);
+    
+    const newRecord = {
+      id: response.data[0].id,
+      avatar: avatar,
+      retail_price: formValues.retail_price,
+      cost_price: formValues.cost_price,
+      inventory: 0,
+      inventory_quantity: 0,
+      name: formValues.name,
+      storage_unit: formValues.storage_unit,
+      stt: 5,
+    };
     message.success("Thêm thuốc thành công");
     setIsModalVisible(false);
+    setPreviewImgUrl("");
+    const updatedData = [...data, newRecord];
+    setData(updatedData);
+    console.log(data);
+    form.resetFields();
   };
+
+  const openPreviewImage = () =>{
+    console.log(previewImgUrl);
+    if(!previewImgUrl ) return;
+      setIsOpen(true);
+  }
+
+  const handleOnChangeImage = async (event) => {
+      const file = event.target.files[0];
+      console.log(file);
+      if(file){
+        let base64 = await CommonUtils.getBast64(file);
+        const objectUrl =  URL.createObjectURL(file);
+        setPreviewImgUrl(objectUrl);
+        setAvatar(base64)
+      }
+  };
+  
+  const handleOnChangeSelectUnit = (event) =>{
+    setFormValues({ ...formValues, storage_unit: event.target.value });
+  }
+
+  const handleOnChangeSelectMethod = (event) =>{
+    setFormValues({ ...formValues, method_of_use: event.target.value });
+  }
+
+  
+
+  
+  
 
   return (
     <Modal
@@ -116,16 +182,18 @@ function MyVerticallyCenteredModal(props) {
       onCancel={() => setIsModalVisible(false)}
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Title style={{marginLeft:"45%"}} id="contained-modal-title-vcenter">
+            Thêm thuốc
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
 
       <Form form={form} onFinish={handleSubmit}>
    
-        <div style={{display:"flex"}}>
-          <h2 className="mb-4 text-2xl font-medium">Thêm thuốc</h2>
-          <Form.Item style={{marginLeft: "30px"}} name="Danh mục thuốc" rules={[{ required: true , message:"Bạn cần chọn danh mục"}]}>
+        <div className="container">
+         
+          <Form.Item style={{}} name="Danh mục thuốc" rules={[{ required: true , message:"Bạn cần chọn danh mục"}]}>
+
 
             <Select onChange={handleSelectChange} getPopupContainer={(trigger) => trigger.parentElement}  placeholder="Danh mục"  style={{ width: "160px"}}>
                 {/* <option value="volvo">Nam</option>
@@ -136,9 +204,24 @@ function MyVerticallyCenteredModal(props) {
                   </option>
                 ))}
             </Select>
-        </Form.Item>
+          </Form.Item>
+          
+                              <input id="previewImg" type="file" hidden 
+                                  onChange={(event) => handleOnChangeImage(event)} />
+
+                                <label className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
+                                <div className='preview-image'
+                                  style={{
+                                    backgroundImage: `url(${previewImgUrl})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                  }}
+                                  onClick={openPreviewImage}
+                                >
+                                  
+                                </div>
+                            
         </div>
-        
         
         <div className="row">
           <div className="col-lg-5 col-md-6 mb-4">
@@ -167,8 +250,19 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="storageUnit" className="inputSearch">
                 Đơn vị lưu kho
               </label>
-              <Form.Item name="Đơn vị lưu kho" rules={[{ required: true ,message:"Bạn cần nhập đơn vị lưu" }]}>
-                      <Input name= "storage_unit" onChange={handleInputChange} placeholder="Đơn vị lưu kho"></Input>
+              <Form.Item name="Đơn vị lưu kho" rules={[{ required: true,message:"Bạn cần nhập phương thức" }]} >
+                        <select onChange={handleOnChangeSelectUnit}  name= "storage_unit"  style={{width:"200px" , height:"38px"}} placeholder="Tên nhân viên" showSearch className='form-control' >
+                                  <option value="">- Chọn đơn vị -</option>
+                                  <option value="Viên">Viên</option>
+                                  <option value="Gói">Gói</option>
+                                  <option value="Lọ">Lọ</option>
+                                  <option value="Chai">Chai</option>
+                                  <option value="Ống">Ống</option>
+                                  <option value="Tuýt">Tuýt</option>
+                                  <option value="Hộp">Hộp</option>
+                                  <option value="Vĩ">Vĩ</option>
+                           </select>
+                      {/* <Input name= "storage_unit" onChange={handleInputChange} placeholder="Đơn vị lưu kho"></Input> */}
               </Form.Item>
             </div>
           </div>
@@ -202,12 +296,22 @@ function MyVerticallyCenteredModal(props) {
               <label htmlFor="storageUnit" className="inputSearch">
                 Phương thức sử dụng
               </label>
-              <Form.Item name="Phương thức" rules={[{ required: true ,message:"Bạn cần nhập phương thức sử dụng" }]}>
-                <Input name ="method_of_use" onChange={handleInputChange} onBlur={handleBlur} placeholder="Phương thức sử dụng"></Input>
+              <Form.Item name="Phương thức" rules={[{ required: true,message:"Bạn cần nhập phương thức" }]} >
+                {/* <Input name ="method_of_use" onChange={handleInputChange} onBlur={handleBlur} placeholder="Phương thức sử dụng"></Input> */}
+                <select onChange={handleOnChangeSelectMethod} name= "storage_unit"  style={{width:"200px" , height:"38px"}} placeholder="Tên nhân viên" showSearch className='form-control' >
+                                  <option value="">- Chọn phương thức -</option>
+                                  <option value="Uống">Uống</option>
+                                  <option value="Nhai">Nhai</option>
+                                  <option value="Ngậm">Ngậm</option>
+                                  <option value="Đặt âm đạo">Đặt âm đạo</option>
+                                  <option value="Thoa">Thoa</option>
+                                  <option value="Tiêm">Tiêm</option>
+                                  <option value="Nhỏ">Nhỏ</option>
+                                  <option value="Xịt">Xịt</option>
+                </select>
               </Form.Item>
             </div>
           </div>
-          
         </div>
 
         <div className="row mb-4 justify-content-between">
@@ -255,8 +359,17 @@ function MyVerticallyCenteredModal(props) {
               </div>
             </div>
         </div>
+        {/* {
+          isOpen === true && (
+            <Lightbox
+              mainSrc={previewImgUrl}
+              onCloseRequest={() => setIsOpen(false)}
+            />
+          )
+        } */}
+
   
-    <Button onClick={handleSubmit} type="primary" htmlType="submit" style={{marginLeft:'77%',height:'36px',width:'150px'}}>
+    <Button  type="primary" htmlType="submit" style={{marginLeft:'77%',height:'36px',width:'150px'}}>
                                              Thêm thuốc
     </Button>
       </Form>
@@ -267,9 +380,9 @@ function MyVerticallyCenteredModal(props) {
   );
 }
 
-function  Warehouse(){
+const  Warehouse = () =>{
 
-    const tableRef = useRef(null);
+    const { data, setData } = useContext(AppContext);
 
     const [modalShow, setModalShow] = React.useState(false);
 
@@ -283,8 +396,6 @@ function  Warehouse(){
 
     const [open, setOpen] = useState(false);
 
-    const [data, setData] = useState([]);
-
     const [categoryId, setCategoryId] = useState(-1);
 
     const [loading, setLoading] = useState(false);
@@ -292,6 +403,8 @@ function  Warehouse(){
     const [status, setStatus] = useState(-1);
 
     const [sortBy, setSortBy] = useState(0);
+
+    const [totalPage, setTotalPages] = useState(0);
 
     const [search,setSearch] = useState({
       categoryId: -1,
@@ -305,6 +418,7 @@ function  Warehouse(){
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       setSearch({ ...search, [name]: value });
+      
     };
 
     useEffect(() => {
@@ -320,42 +434,41 @@ function  Warehouse(){
       const fetchData = async () => {
         try {
           const response = await axios.get("http://localhost:9000/api/medicines/inventory/medicines", {
-              params: {
-                category_id: categoryId,
-                medicine_id: search.medicineId,
-                key_search: search.keySearch,
-                status: search.status,
-                sort_by: search.sortBy,
-                is_expiry: search.isExpiry,
-                limit: 6,
-                page: page
-              }
+            params: {
+              category_id: categoryId,
+              medicine_id: search.medicineId,
+              key_search: search.keySearch,
+              status: search.status,
+              sort_by: search.sortBy,
+              is_expiry: search.isExpiry,
+              limit: limit,
+              page: page
+            }
           });
-
-          const sttStart = (page - 1) * limit + 1;
-
-          const medicineDataWithStt = response.data.list.map((medicine, index) => {
-            const stt = sttStart + index;
-            return { ...medicine, stt };
-         });
-
+          const startIndex = (page - 1) * limit + 1;
+          const medicineDataWithStt = response.data.list.map((medicine, index) => ({
+            ...medicine,
+            stt: startIndex + index
+          }));
+    
           setData(medicineDataWithStt);
-          // const price = data.cost_price
-          // const formattedPrice = price.toLocaleString("vi-VN", {
-          //   style: "currency",
-          //   currency: "VND",
-          // });
-          // setData({...data,cost_price:formattedPrice})
           setTotal(response.data.total_record);
+          const totalPages = Math.ceil(response.data.total_record / limit);
+          if (page > totalPages) {
+            setPage(totalPages);
+          }
+          // setTotalPages(totalPages);
           setLoading(false);
-          // console.log(response);
         } catch (error) {
           console.error(error);
         }
       };
     
       fetchData();
-    }, [search,page]);
+    }, [search, page, categoryId, limit]);
+    
+    
+    
     
   
 
@@ -372,8 +485,19 @@ function  Warehouse(){
     const columns = [
       {
         title: 'STT',
-        dataIndex: 'id',
+        dataIndex: 'stt',
         key: 'stt',
+        width: "2%",
+      },
+      {
+        title: 'Hình ảnh',
+        dataIndex: 'avatar',
+        key: 'name',
+        render: (avatar) => (
+          <td className="img-cell">
+                    <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
+          </td>
+        ),
       },
       {
         title: 'Tên thuốc',
@@ -384,25 +508,50 @@ function  Warehouse(){
         title: 'Giá vốn',
         dataIndex: 'cost_price',
         key: 'cost_price',
+        width: "10%",
+        render: (text) => {
+          return (
+            <span>
+              {parseFloat(text).toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+              })}
+            </span>
+          );
+        },
       },
       {
-        title: 'Giá bán',
+        title: 'Giá vốn',
         dataIndex: 'retail_price',
+        width: "10%",
         key: 'retail_price',
+        render: (text) => {
+          return (
+            <span>
+              {parseFloat(text).toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+              })}
+            </span>
+          );
+        },
       },
       {
         title: 'Số lượng tồn',
         dataIndex: 'inventory',
         key: 'storage_unit',
+        width: "10%",
       },
       {
         title: 'Đơn vị lưu kho',
         dataIndex: 'storage_unit',
         key: 'storage_unit',
+        width: "12%",
       },
       {
         title: 'Tác vụ',
         dataIndex: 'actions',
+        width: "10%",
         key: 'actions',
         render: (_, record) => {
           return(
@@ -416,8 +565,6 @@ function  Warehouse(){
               <Link to={`/medicine/${record.id}/history/`}> 
                   <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
               </Link>
-              
-              <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
             </span>
           );
         }
@@ -433,6 +580,7 @@ function  Warehouse(){
     const handleSelectChangeStatus = (value) => {
       setStatus(`${value}`)
       setSearch({ ...search, status: value });
+      console.log(search);
     }
 
     const handleSelectChangeSortBy = (value) => {
@@ -447,8 +595,11 @@ function  Warehouse(){
 
     const handleTableChange = (pagination, filters, sorter) => {
       // Lấy ra số trang hiện tại
-      const currentPage = pagination.current;
-      setPage(currentPage);
+      // const currentPage = pagination.current;
+      // console.log(pagination.current);
+      // setPage(currentPage);
+      const { current } = pagination; // Lấy giá trị trang hiện tại từ pagination
+      setPage(current);
       // ...
     };
 
@@ -538,7 +689,7 @@ function  Warehouse(){
                                                 <Select onChange={handleSelectChangeExpiry} name="isExpiry"  className="input-search isExpiry" id="cars" placeholder="Chọn">
                                                     <option value="0">Chưa hết hạn</option>
                                                     <option value="1">Đã hết hạn</option>
-                                                    <option value="2">Tất cả</option>
+                                                    <option value="-1">Tất cả</option>
                                                     
                                                    
                                                 </Select>
@@ -547,16 +698,18 @@ function  Warehouse(){
                                         </div>
                                         <div className="table-content">
                                                     
-                                            <Table  responsive  
-                                                    dataSource={data} 
-                                                    columns={columns} 
-                                                    pagination={{
-                                                      // current: page,
-                                                      pageSize: limit,
-                                                      total: total,
-                                                    }}
-                                                    onChange={handleTableChange}
-                                              />
+                                          <Table
+                                              responsive
+                                              dataSource={data}
+                                              columns={columns}
+                                              pagination={{
+                                                pageSize: limit,
+                                                total: total,
+                                                current: page,
+                                              }}
+                                              onChange={handleTableChange}
+                                            />
+
                                            
                                         </div>
                                 </div>

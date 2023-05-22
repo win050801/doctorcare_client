@@ -65,41 +65,29 @@ const MedicineHistory = () =>{
             setSearch({ ...search, toDate: dateString });
       };
       
-
-      const dataSource = [
-            {
-              key: '1',
-              name: 'John Brown',
-              stt: '1',
-              age: 32,
-              address: 'New York No. 1 Lake Park',
-              actions: (
-                <span>
-                  <Link to="/medicine/detail"> 
-                      <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
-                      >
-                        Chi tiết</Button>
-                  </Link>
-                  <Link to="/medicine/history">
-                      <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
-                  </Link>
-                  
-                  <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
-                </span>
-              ),
-            },
-          ];
-      
       const columns = [
       {
             title: 'STT',
             dataIndex: 'stt',
+            width: "5%",
             key: 'stt',
+      },
+      {
+            title: 'Hình ảnh',
+            dataIndex: 'avatar',
+            width: "12%",
+            key: 'name',
+            render: (avatar) => (
+                  <td className="img-cell">
+                    <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
+                  </td>
+            ),
       },
       {
             title: 'Ngày thực hiện',
             dataIndex: 'name',
             key: 'name',
+            with: "15%"
       },
       {
             title: 'Hoạt động',
@@ -119,6 +107,12 @@ const MedicineHistory = () =>{
       
       ];
 
+      const handleSelectChange = (value) => {
+            setSearch({ ...search, status: value });
+          }
+
+      
+
       return(
          <>
             <div>
@@ -133,7 +127,6 @@ const MedicineHistory = () =>{
                                     
                                     {/* body */}
                                           <div className="box-body">
-                                                <h5>Tên thuốc</h5>
                                                 <div style={{display:'flex', marginTop: '20px' }}>
                                                       <div>
                                                             <label><h5>Từ: </h5></label>
@@ -145,7 +138,7 @@ const MedicineHistory = () =>{
                                                       </div>
                                                       <div style={{marginLeft:'20px', width:" 283px"}}>
                                                           
-                                                            <Select  name="sortBy"  style={{ width:" 283px"}} id="cars" placeholder="Hoạt động">
+                                                            <Select onChange={handleSelectChange}   name="sortBy"  style={{ width:" 283px"}} id="cars" placeholder="Hoạt động">
                                                                   <option value="0">Xuất kho</option>
                                                                   <option value="1">Nhập kho</option>
                                                             </Select>
@@ -154,6 +147,9 @@ const MedicineHistory = () =>{
                                                 <div className="medicine-history-table">
                                                       <Table responsive  dataSource={medicineData} columns={columns}  >
                                                       </Table>
+                                                      <Link to={"/pharmacist"}>
+                                                            <Button  Button  color="warning" className="btn-back">Quay về kho thuốc</Button>
+                                                      </Link>
                                                 </div>
                                           </div>
                                     </div>

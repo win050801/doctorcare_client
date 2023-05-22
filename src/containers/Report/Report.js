@@ -1,10 +1,44 @@
 import React, { Component,useState,useEffect } from "react";
 import Navbar from "../Menu/Navbar";
 import {Line} from '@ant-design/charts'
-
+import { Table } from "antd";
+import './Report.scss';
 
 
 function  Report(){
+
+    const dataSource = [
+        {
+          key: '1',
+          name: 'Mike',
+          age: 32,
+          address: '10 Downing Street',
+        },
+        {
+          key: '2',
+          name: 'John',
+          age: 42,
+          address: '10 Downing Street',
+        },
+      ];
+      
+      const columns = [
+        {
+          title: 'Name',
+          dataIndex: 'temporada',
+          key: 'name',
+        },
+        {
+          title: 'Age',
+          dataIndex: 'goles',
+          key: 'age',
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address',
+        },
+      ];
 
     const data = [
         {temporada: '2004-01', goles: 500},
@@ -58,9 +92,17 @@ function  Report(){
            <React.Fragment>
             <div style={{ display: 'flex' }}>
                 <Navbar/>
-                <div style={{width:1000,height:500,marginLeft:150,marginTop:50}}>
-                    <Line {...configuracion} />
+                <div className="report" style={{marginLeft:150,marginTop:50}}>
+                    <div style={{width:1000,height:250}}>
+                        <Line {...configuracion} />
+                    </div>
+                    <div style={{marginTop:50}}>
+                    <Table className="table-antd" dataSource={data} columns={columns} pagination={{ showPagination: false }} />
+
+                    </div>
                 </div>
+                
+                
             </div>
             
            </React.Fragment>
