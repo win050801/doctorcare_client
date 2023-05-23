@@ -21,7 +21,7 @@ export default function UIKhamSieuam({ patient,setPatient }) {
 
     const handleSubmit = async () => {
         try {
-            const { data } = await axios.post("http://localhost:8000/api/doctors/saveSieuAm", {
+            const { data } = await axios.post("http://localhost:9000/api/doctors/saveSieuAm", {
                 code: "1",
                 amount: 1.0,
                 discountPercent: 0,
@@ -51,7 +51,7 @@ export default function UIKhamSieuam({ patient,setPatient }) {
             const formData = new FormData();
             formData.append('id', data);
             formData.append('avatar', avatar);
-            const res = await axios.post('http://localhost:8000/api/doctors/upload-avatar', formData, {
+            const res = await axios.post('http://localhost:9000/api/doctors/upload-avatar', formData, {
                 headers: {
                     Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
                     'Content-Type': 'multipart/form-data',

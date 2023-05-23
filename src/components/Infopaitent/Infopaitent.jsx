@@ -13,7 +13,7 @@ export default function Infopaitent() {
         console.log(e.id);
         try {
             const respose = await axios.get(
-                "http://localhost:8000/api/supports/getExById?id=" + e.patient.id
+                "http://localhost:9000/api/supports/getExById?id=" + e.patient.id
             );
 
             if (respose) {
@@ -59,7 +59,7 @@ export default function Infopaitent() {
 
             try {
                 const { data } = await axios.get(
-                    "http://localhost:8000/api/supports/getRegistration"
+                    "http://localhost:9000/api/supports/getRegistration"
                 );
 
                 if (data) {
@@ -69,6 +69,7 @@ export default function Infopaitent() {
                         tam.name = element.patient.name
                         tam.address = element.patient.address
                         tam.phone = element.patient.phone
+                        tam.age= element.patient.age
                         tam.tacvu = <div style={{ display: "flex" }}>
                             <Button style={{ width: 100 }} type="primary" block onClick={() => { showModal(element) }}>
                                 Chi tiết

@@ -43,7 +43,7 @@ export default function UIKham({ patient, setPatient }) {
 
         try {
             const respose = await axios.get(
-                "http://localhost:8000/api/supports/getExById?id=" + e.id
+                "http://localhost:9000/api/supports/getExById?id=" + e.id
             );
 
             if (respose) {
@@ -91,7 +91,7 @@ export default function UIKham({ patient, setPatient }) {
     const showModalDonThuoc = async (e) => {
         try {
             const respose = await axios.get(
-                "http://localhost:8000/api/doctors/getOrderByExId?id=" + e.id
+                "http://localhost:9000/api/doctors/getOrderByExId?id=" + e.id
             );
             console.log(respose.data.orderMediceneDetails.length);
 
@@ -154,7 +154,7 @@ export default function UIKham({ patient, setPatient }) {
     const handleOk = async () => {
         console.log(patient);
         try {
-            const { data } = await axios.post("http://localhost:8000/api/supports/sendPaitentSA", {
+            const { data } = await axios.post("http://localhost:9000/api/supports/sendPaitentSA", {
                     name:patient.name,
                     gender: 1,
                     weight: patient.weight,
@@ -309,7 +309,7 @@ export default function UIKham({ patient, setPatient }) {
     const getThuoc = async (e) => {
 
         try {
-            const { data } = await axios.get("http://localhost:8000/api/doctors/getMedia?name=" + e.target.value, {
+            const { data } = await axios.get("http://localhost:9000/api/doctors/getMedia?name=" + e.target.value, {
 
             });
             const dataTam = []
@@ -355,7 +355,7 @@ export default function UIKham({ patient, setPatient }) {
     }
     const KetThucKham = async () => {
         try {
-            const { data } = await axios.post("http://localhost:8000/api/doctors/saveEx", {
+            const { data } = await axios.post("http://localhost:9000/api/doctors/saveEx", {
                 code: "1",
                 amount: 1.0,
                 discountPercent: 0,

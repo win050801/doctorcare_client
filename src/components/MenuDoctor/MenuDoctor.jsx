@@ -17,7 +17,7 @@ export default function MenuDoctor({ setPatient }) {
                     if (JSON.parse(localStorage.getItem("buong")) === 1) {
                         try {
                             const response = await axios.get(
-                                "http://localhost:8000/api/doctors/getBuong1"
+                                "http://localhost:9000/api/doctors/getBuong1"
                             );
                             // setDsbn(response.data);
                             // if (localStorage.getItem("user")) {
@@ -27,7 +27,7 @@ export default function MenuDoctor({ setPatient }) {
                                 setDsbn(response.data)
                             }
                             const response1 = await axios.get(
-                                "http://localhost:8000/api/doctors/getBuong1UT"
+                                "http://localhost:9000/api/doctors/getBuong1UT"
                             );
                             // setDsbn(response.data);
                             // if (localStorage.getItem("user")) {
@@ -46,7 +46,7 @@ export default function MenuDoctor({ setPatient }) {
                     else if (JSON.parse(localStorage.getItem("buong")) === 2) {
                         try {
                             const response = await axios.get(
-                                "http://localhost:8000/api/doctors/getBuong2"
+                                "http://localhost:9000/api/doctors/getBuong2"
                             );
                             // setDsbn(response.data);
                             // if (localStorage.getItem("user")) {
@@ -56,7 +56,7 @@ export default function MenuDoctor({ setPatient }) {
                                 setDsbn(response.data)
                             }
                             const response1 = await axios.get(
-                                "http://localhost:8000/api/doctors/getBuong2UT"
+                                "http://localhost:9000/api/doctors/getBuong2UT"
                             );
                             // setDsbn(response.data);
                             // if (localStorage.getItem("user")) {
@@ -89,7 +89,7 @@ export default function MenuDoctor({ setPatient }) {
     //         //   console.log("test");
     //         try {
     //             const response = await axios.get(
-    //                 "http://localhost:8000/getBuong1"
+    //                 "http://localhost:9000/getBuong1"
     //             );
     //             // setDsbn(response.data);
     //             // if (localStorage.getItem("user")) {
@@ -115,7 +115,7 @@ export default function MenuDoctor({ setPatient }) {
         if (localStorage.getItem("buong")) {
             if (JSON.parse(localStorage.getItem("buong")) === 1) {
                 try {
-                    const { data } = await axios.get("http://localhost:8000/api/doctors/getBNBuong1?index=" + index, {
+                    const { data } = await axios.get("http://localhost:9000/api/doctors/getBNBuong1?index=" + index, {
 
                     });
                     const dsTam = [...dsbn]
@@ -127,7 +127,7 @@ export default function MenuDoctor({ setPatient }) {
             }
             else if (JSON.parse(localStorage.getItem("buong")) === 2) {
                 try {
-                    const { data } = await axios.get("http://localhost:8000/api/doctors/getBNBuong2?index=" + index, {
+                    const { data } = await axios.get("http://localhost:9000/api/doctors/getBNBuong2?index=" + index, {
 
                     });
                     const dsTam = [...dsbn]
@@ -145,7 +145,7 @@ export default function MenuDoctor({ setPatient }) {
         if (localStorage.getItem("buong")) {
             if (JSON.parse(localStorage.getItem("buong")) === 1) {
                 try {
-                    const { data } = await axios.get("http://localhost:8000/api/doctors/getBNBuong1UT?index=" + index, {
+                    const { data } = await axios.get("http://localhost:9000/api/doctors/getBNBuong1UT?index=" + index, {
 
                     });
                     const dsTam = [...dsbnut]
@@ -157,7 +157,7 @@ export default function MenuDoctor({ setPatient }) {
             }
             else if (JSON.parse(localStorage.getItem("buong")) === 2) {
                 try {
-                    const { data } = await axios.get("http://localhost:8000/api/doctors/getBNBuong2UT?index=" + index, {
+                    const { data } = await axios.get("http://localhost:9000/api/doctors/getBNBuong2UT?index=" + index, {
 
                     });
                     const dsTam = [...dsbnut]
@@ -172,7 +172,7 @@ export default function MenuDoctor({ setPatient }) {
     };
     const openBuong = async () => {
         try {
-            const { data } = await axios.post("http://localhost:8000/api/doctors/openBuong", {
+            const { data } = await axios.post("http://localhost:9000/api/doctors/openBuong", {
 
             });
             setBuong(data)

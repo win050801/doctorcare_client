@@ -39,7 +39,7 @@ export default function Listwait() {
 
             try {
                 const { data } = await axios.get(
-                    "http://localhost:8000/api/supports/getRegistration"
+                    "http://localhost:9000/api/supports/getRegistration"
                 );
 
                 if (data) {

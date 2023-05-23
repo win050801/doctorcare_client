@@ -13,7 +13,7 @@ export default function Search({setPatient}) {
     const [data, setData] = useState([]);
     const search = async (e) => {
         try {
-            const { data } = await axios.get("http://localhost:8000/api/supports/getPatientByName?name=" + e.target.value, {
+            const { data } = await axios.get("http://localhost:9000/api/supports/getPatientByName?name=" + e.target.value, {
 
             });
 
