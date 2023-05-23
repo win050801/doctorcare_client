@@ -7,6 +7,7 @@ import { LanguageVariant } from 'typescript';
 import { Link } from 'react-router-dom';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
 import { AppContext } from "../Warehouse/AppContext";
+import { log } from '@antv/g2plot/lib/utils';
 const { Text } = Typography;
 
 const ExportWarehouse = () =>{
@@ -50,23 +51,31 @@ const ExportWarehouse = () =>{
 
   const [checkQuantityM, setCheckQuantityM] = useState(false);
 
+  const [previousQuantity, setPreviousQuantity] = useState(0);
+
   useEffect(() => {
     const check = async () => {
-      const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
-      const currentId = medicine ? medicine.id : 0;
-      const currentInventory = medicine ? medicine.inventory_quantity : 0;
-      const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
-        params:{
-          medicine_id: currentId,
-          quantity: parseFloat(quantity)
+      if (quantity !== previousQuantity) {
+        const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
+        const currentId = medicine ? medicine.id : 0;
+        const currentInventory = medicine ? medicine.inventory_quantity : 0;
+        const response = await axios.get('http://localhost:9000/api/orders/check-quantity', {
+          params: {
+            medicine_id: currentId,
+            quantity: parseFloat(quantity)
+          }
+        });
+        console.log(response);
+        if (response.data.status === 400) {
+          message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+          setCheckQuantityM(false);
+          return;
         }
-      });
-      console.log(response.data.status);
-      if(response.data.status === 400){
-        message.error(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+        setPreviousQuantity(quantity);
+        setCheckQuantityM(true);
       }
-  };
-    
+    };
+  
     check();
   }, [quantity]);
 
@@ -238,8 +247,9 @@ const ExportWarehouse = () =>{
   
 
   const onFinish = (values) => {
+    console.log(checkQuantityM);
     if(checkQuantityM === false){
-      return Promise.reject(`Số lượng còn lại không đủ`);
+      return message.error(`Số lượng không đủ`);
     }
     const { name, unit } = values;
     const newProduct = {
@@ -320,25 +330,25 @@ const ExportWarehouse = () =>{
   }, [dataExport])
 
 
-  const checkQuantity = async (_, value) => {
-    console.log(medicineData);
-    const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
-    const currentId = medicine ? medicine.id : 0;
-    const currentInventory = medicine ? medicine.inventory : 0;
-    const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
-      params:{
-        medicine_id: currentId,
-        quantity: parseFloat(quantity)
-      }
-    });
-    if(response.data.status === 400){
-       Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
-       return false;
-    }else{
-      Promise.resolve();
-      setCheckQuantityM(true)
-    }
-  };
+  // const checkQuantity = async (_, value) => {
+  //   console.log(medicineData);
+  //   const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
+  //   const currentId = medicine ? medicine.id : 0;
+  //   const currentInventory = medicine ? medicine.inventory : 0;
+  //   const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
+  //     params:{
+  //       medicine_id: currentId,
+  //       quantity: parseFloat(quantity)
+  //     }
+  //   });
+  //   if(response.data.status === 400){
+  //      Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
+  //      return false;
+  //   }else{
+  //     Promise.resolve();
+  //     setCheckQuantityM(true)
+  //   }
+  // };
 
   const checkDiscountPercent = (_, value) =>{
     if (value < 0 && value > 100) {
@@ -359,9 +369,12 @@ const ExportWarehouse = () =>{
         message.error('Bạn cần chọn tên nhân viên phụ trách xuất kho');
         return;
       }
-      if(!checkQuantity){
+      if(checkQuantityM === false){
         return;
       }
+      // if(!checkQuantity){
+      //   return;
+      // }
       const response = await axios.post(`http://localhost:9000/api/orders/create-medicines`, {
           employee_id: 1,
           discount_percent: discountPercent,
@@ -525,7 +538,7 @@ const ExportWarehouse = () =>{
                                                 ))}
                                             </Select>
                                           </Form.Item>
-                                          <Form.Item name="quantity" rules={[{ required: true, message:"Bắt buộc nhập" } , { validator: checkQuantity, message:"Số lượng không đủ"}]}>
+                                          <Form.Item name="quantity" rules={[{ required: true, message:"Bắt buộc nhập" } ]}>
                                              <Input type="number" min={0}  name ="quantity" onChange={handleChangeQuantity} className='input' placeholder="Số lượng" />
                                           </Form.Item>
                                           <Input style={{ height:"32px", width:'100%',marginLeft:'0%', marginTop:"5px"}} placeholder="Đơn vị" value={storageUnit}  readOnly/>

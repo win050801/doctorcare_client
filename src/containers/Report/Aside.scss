@@ -1,0 +1,170 @@
+.container.report{
+   display: grid;
+   grid-template-rows: auto; /* Mỗi container chiếm một hàng */
+   row-gap: 10px; 
+   width: 240px;
+   margin-top: 10px;
+}
+.container-patient{
+   margin-top: 10px;
+   height: 89px;
+   width: 231px;
+   border-radius: 5px;
+   background-color: #00c0ef;
+   display: flex;
+   .image-icon.patient {
+      height: 100%;
+      width: 120px;
+      background: #009abf url("https://cdn-icons-png.flaticon.com/512/1512/1512910.png") no-repeat;
+      background-size: cover;
+   }   
+   .text-report{
+      height: 100%;
+      width: 100%;
+      background-color: red;
+      .text-data {
+   
+         display: grid;
+         grid-template-rows: auto; /* Mỗi container chiếm một hàng */
+         row-gap: 10px; 
+         height: 56px;
+         width: 100%;
+         background-color: #00c0ef;
+      }
+      .text-line{
+         height: 2px;
+         width: 100%;
+         background-color: white;
+      }
+      .text-data2 {
+         height: 31px;
+         width: 100%;
+         background-color: #00c0ef;
+      }
+   }
+}
+
+
+
+.container-medicine{
+   margin-top: 10px;
+   height: 89px;
+   width: 231px;
+   border-radius: 5px;
+   background-color: #008548;
+   display: flex;
+   .image-icon.medicine {
+      height: 100%;
+      width: 120px;
+      background: #008548 url("https://cdn-icons-png.flaticon.com/128/883/883407.png") no-repeat;
+      background-size: cover;
+   }   
+   .text-report.medicine{
+      height: 100%;
+      width: 100%;
+      .text-data.medicine {
+         grid-template-rows: auto; /* Mỗi container chiếm một hàng */
+         row-gap: 10px; 
+         height: 56px;
+         width: 100%;
+         background-color: #00a65a;
+      }
+      .text-line{
+         height: 2px;
+         width: 100%;
+         background-color: white;
+      }
+      .text-data2.medicine {
+         height: 31px;
+         width: 100%;
+         background-color: #00a65a;
+      }
+   }
+}
+
+.container-calender{
+   margin-top: 10px;
+   height: 89px;
+   width: 231px;
+   border-radius: 5px;
+   background-color: #008548;
+   display: flex;
+   .image-icon.calender {
+      height: 100%;
+      width: 120px;
+      background: #c27d0e url("https://cdn-icons-png.flaticon.com/128/2278/2278049.png") no-repeat;
+      background-size: cover;
+   }   
+   .text-report.calender{
+      height: 100%;
+      width: 100%;
+      .text-data.calender {
+         grid-template-rows: auto; /* Mỗi container chiếm một hàng */
+         row-gap: 10px; 
+         height: 56px;
+         width: 100%;
+         background-color: #f39c12;
+      }
+      .text-line{
+         height: 2px;
+         width: 100%;
+         background-color: white;
+      }
+      .text-data2.calender {
+         height: 31px;
+         width: 100%;
+         background-color: #f39c12;
+      }
+   }
+}
+
+.container-money{
+   margin-top: 10px;
+   height: 89px;
+   width: 231px;
+   border-radius: 5px;
+   background-color: #008548;
+   display: flex;
+   .image-icon.money {
+      height: 100%;
+      width: 120px;
+      background: #b13c2e url("https://cdn-icons-png.flaticon.com/128/925/925748.png") no-repeat;
+      background-size: cover;
+   }   
+   .text-report.money{
+      height: 100%;
+      width: 100%;
+      .text-data.money {
+         grid-template-rows: auto; /* Mỗi container chiếm một hàng */
+         row-gap: 10px; 
+         height: 56px;
+         width: 100%;
+         background-color: #dd4b39;
+      }
+      .text-line{
+         height: 2px;
+         width: 100%;
+         background-color: white;
+      }
+      .text-data2.money {
+         height: 31px;
+         width: 100%;
+         background-color: #dd4b39;
+      }
+   }
+}
+.label-report{
+   margin-top: 5px;
+   margin-left: 5px;
+   color: white;
+   font-size: 16px;
+}
+.label-report-number{
+   margin-left: 5px;
+   display: block;
+   font-weight: bold;
+   font-size: 18px;
+   align-items: center;
+   color: white;
+   align-items: center;
+}
