@@ -53,6 +53,8 @@ const AllMedicinesHistory = () =>{
                   key_search: search.keySearch,
                   from_date: search.fromDate,
                   to_date: search.toDate,
+                  limit: limit,
+                  page: page
                 },
               });
           

@@ -3,8 +3,22 @@ import Navbar from "../Menu/Navbar";
 import {Line} from '@ant-design/charts';
 import { Chart } from "react-google-charts";
 import './Aside.scss';
+import axios from "axios";
 
 function  Aside(){
+
+    const [data, setData] = useState([]);
+    
+
+    useEffect(() => {
+        const fetchMedicineData = async () => {
+          const response = await axios.get(`http://localhost:9000/api/reports/data-report`, {});
+          setData(response.data.data);
+          console.log(response.data.data[0]);
+        };
+        fetchMedicineData();
+      }, []);
+
    return (
            <React.Fragment>
             <div className="container report">
@@ -20,7 +34,8 @@ function  Aside(){
                                 Bệnh nhân
                             </label>
                             <label className="label-report-number">
-                                2
+                                
+                                {data && data.length > 4 && data[0].value}
                             </label>
                         </div>
                         <div className="text-line patient">
@@ -45,7 +60,7 @@ function  Aside(){
                                     Thuốc
                                 </label>
                                 <label className="label-report-number">
-                                    2
+                                    { data && data.length > 4 &&  data[1].value}
                                 </label>
                             </div>
                         </div>
@@ -70,7 +85,7 @@ function  Aside(){
                                     Toa thuốc 
                                 </label>
                                 <label className="label-report-number">
-                                    2
+                                    { data && data.length > 4 &&  data[2].value}
                                 </label>
                         </div>
                         <div className="text-line calender">
@@ -94,7 +109,7 @@ function  Aside(){
                                     Tiền
                                 </label>
                                 <label className="label-report-number">
-                                    2
+                                 {data && data.length > 4 && data[3].value && data[3].value.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                 </label>
                         </div>
                         <div className="text-line money">
