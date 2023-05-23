@@ -50,7 +50,7 @@ class Login extends Component {
 
     processLogin = () => {
         const { username, password } = this.state;
-
+        console.log(username);
         const { adminLoginSuccess, adminLoginFail } = this.props;
         let loginBody = {
             username: 'admin',
@@ -110,7 +110,7 @@ class Login extends Component {
                         <div className="form-group icon-true">
                             <img className="icon" src={userIcon} alt="this" />
                             <input
-                                placeholder={LanguageUtils.getMessageByKey("login.username", lang)}
+                                placeholder={"Số điện thoại"}
                                 id="username"
                                 name="username"
                                 type="text"
@@ -123,7 +123,7 @@ class Login extends Component {
                         <div id="phone-input-container" className="form-group icon-true">
                             <img className="icon" src={passIcon} alt="this" />
                             <input
-                                placeholder={LanguageUtils.getMessageByKey("login.password", lang)}
+                                placeholder={"Mật khẩu"}
                                 id="password"
                                 name="password"
                                 type="password"

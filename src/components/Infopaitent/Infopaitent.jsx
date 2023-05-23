@@ -1,50 +1,98 @@
 
 
+import { useState, useEffect } from "react";
 import "../../components/Infopaitent/Infopaitent.scss"
-import { Input, Table, Button } from 'antd'
+import { Input, Table, Button, Modal } from 'antd'
+import axios from "axios";
 export default function Infopaitent() {
-    const dataSource = [
-        {
-            key: '1',
-            stt: '1',
-            name: "Mạnh Đức",
-            age: 32,
-            khoa: "Tiêu hóa",
-            address: '778 Thống Nhất Gò Vấp Tp.HCM',
-            tacvu:
-                <div style={{display:"flex"}}>
-                    <Button style={{width:100}} type="primary" block>
-                        Chi tiết
-                    </Button>
-                    <Button style={{width:70,marginLeft:20}} type="primary" danger>
-                        Xóa
-                    </Button>
-                </div>
-        },
-        {
-            key: '2',
-            stt: '2',
-            name: "Đào Cao Thắng",
-            age: 42,
-            khoa: "Chấn thương",
-            address: '778 Thống Nhất Gò Vấp Tp.HCM',
-            tacvu:
-                <div style={{display:"flex"}}>
-                    <Button style={{width:100}} type="primary" block>
-                        Chi tiết
-                    </Button>
-                    <Button style={{width:70,marginLeft:20}} type="primary" danger>
-                        Xóa
-                    </Button>
-                </div>
-        },
-        // {
-        //   key: '2',
-        //   stt: '2',
-        //   age: 42,
-        //   address: '10 Downing Street',
-        // },
-    ];
+    const [data, setData] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [patient, setPatient] = useState({ name: "", address: "", phone: "" })
+    const [examninationHistory, setExamninationHistory] = useState([]);
+    const showModal = async (e) => {
+        console.log(e.id);
+        try {
+            const respose = await axios.get(
+                "http://localhost:8000/api/supports/getExById?id=" + e.patient.id
+            );
+
+            if (respose) {
+                const dataTam = []
+                respose.data.forEach(element => {
+                   
+                    const tam = element
+                    tam.name = element.patient.name
+                    tam.address = element.patient.address
+                    tam.phone = element.patient.phone
+                    tam.doctor = element.doctor.name
+                    
+                    tam.createdAt = element.createdAt.slice(0,10)
+                    dataTam.push(tam)
+                });
+
+                setExamninationHistory(dataTam)
+                setPatient(e)
+                setIsModalOpen(true);
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    };
+    const handleOk = async () => {
+
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    useEffect(() => {
+
+        async function fetchData() {
+            // You can await here
+            //   console.log("test");
+            const buongTam = 0
+
+
+            try {
+                const { data } = await axios.get(
+                    "http://localhost:8000/api/supports/getRegistration"
+                );
+
+                if (data) {
+                    const dataTam = []
+                    data.forEach(element => {
+                        const tam = element
+                        tam.name = element.patient.name
+                        tam.address = element.patient.address
+                        tam.phone = element.patient.phone
+                        tam.tacvu = <div style={{ display: "flex" }}>
+                            <Button style={{ width: 100 }} type="primary" block onClick={() => { showModal(element) }}>
+                                Chi tiết
+                            </Button>
+                           
+                        </div>
+                        dataTam.push(element)
+                    });
+                    setData(dataTam)
+                    console.log(data);
+                }
+
+
+                // console.log(response);
+            } catch (error) {
+                console.log(error);
+            }
+
+
+        }
+        fetchData();
+
+
+    }, []);
 
     const columns = [
         {
@@ -63,11 +111,6 @@ export default function Infopaitent() {
             key: 'age',
         },
         {
-            title: "Khoa khám",
-            dataIndex: 'khoa',
-            key: 'khoa',
-        },
-        {
             title: 'Địa chỉ',
             dataIndex: 'address',
             key: 'address',
@@ -78,12 +121,52 @@ export default function Infopaitent() {
             key: 'tacvu',
         },
     ];
+    const columnsEx = [
+
+        {
+            title: "Họ Tên",
+            dataIndex: "name",
+            key: "name"
+        },
+
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Ngày khám',
+            dataIndex: 'createdAt',
+            key: 'tacvu',
+        },
+        {
+            title: 'Bác sĩ khám',
+            dataIndex: 'doctor',
+            key: 'tacvu',
+        },
+    ];
     return (
         <div className="InfoContainer">
             <div className="headerds">
-                <h3 style={{fontSize:24,fontWeight:'bold',color:"White"}}>Danh sách bệnh nhân</h3>
+                <h3 style={{ fontSize: 24, fontWeight: 'bold', color: "White" }}>Danh sách bệnh nhân</h3>
             </div>
-            <Table dataSource={dataSource} columns={columns} size="small" />;
+            <Modal title="Thông tin bệnh nhân" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "flex-start", paddingLeft: 30, flexDirection: "column" }}>
+                    <label className="font-label">Họ tên:  </label><label>{patient.name}</label>
+                    <br></br>
+                    <label className="font-label">Địa chỉ:  </label><label>{patient.address}</label>
+                    <br></br>
+                    <label className="font-label">Số điện thoại:  </label><label>{patient.phone}</label>
+                    <br></br>
+                    <div>
+                        <label className="font-label">Lịch sử khám bệnh</label>
+                        <Table dataSource={examninationHistory} columns={columnsEx} size="small">
+
+                        </Table>
+                    </div>
+                </div>
+            </Modal>
+            <Table dataSource={data} columns={columns} size="small" />
         </div>
     )
 }

@@ -4,6 +4,7 @@
     height: 0vh;
     display: flex;
     flex-direction: row;
+    background-color: antiquewhite;
 }
 .user-1{
     display: flex;
@@ -11,7 +12,10 @@
     align-items: center;
     justify-content: start;
     width: 100%;
-    padding-top: 5px;
-    // background-color: aqua;
+    padding-top: 25px;
+   
 
+}
+span{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
