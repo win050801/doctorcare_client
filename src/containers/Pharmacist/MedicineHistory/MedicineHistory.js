@@ -25,6 +25,7 @@ const MedicineHistory = () =>{
 
       const [toDate, setToDate] = useState("");
 
+
       const [search, setSearch] = useState({
             fromDate: "",
             toDate: "",
@@ -41,6 +42,8 @@ const MedicineHistory = () =>{
                         key_search: "",
                         from_date: search.fromDate,
                         to_date: search.toDate,
+                        limit: limit,
+                        page: page
                   }
                   });
                   const sttStart = (page - 1) * limit + 1;
