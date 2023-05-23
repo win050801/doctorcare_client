@@ -29,6 +29,7 @@ import ReportInventory from './Report/ReportInventory';
 import ReportExportInventory from './Report/ReportExportInventory';
 import AppProvider from './Pharmacist/Warehouse/AppContext';
 import Warehouse from './Pharmacist/Warehouse/Warehouse';
+import ManageUser from './Admin/ManageUser';
 
 
 
@@ -70,6 +71,7 @@ class App extends Component {
                                     <Route path="/medicine/detail/:id" component={(MedicineDetail)} />
                                     <Route path="/medicine/:id/history" component={(MedicineHistory)} />
                                     <Route path="/medicine/warning" component={(MedicineWarning)} />
+                                    <Route path="/manage-user" component={(ManageUser)} />
 
                                     <Route path="/medicine/history" component={(AllMedicinesHistory)} />
                                     <Route path="/report" component={(Report)} />

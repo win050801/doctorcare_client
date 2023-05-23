@@ -190,37 +190,40 @@ function MyVerticallyCenteredModal(props) {
 
       <Form form={form} onFinish={handleSubmit}>
    
-        <div className="container">
-         
-          <Form.Item style={{}} name="Danh mục thuốc" rules={[{ required: true , message:"Bạn cần chọn danh mục"}]}>
+        <div className="container-create-medicine">
+          <div style={{display:"flex"}}>
+            {/* <label>Danh mục thuốc</label> */}
+            <Form.Item style={{marginLeft:"5%"}} name="Danh mục thuốc" rules={[{ required: true , message:"Bạn cần chọn danh mục"}]}>
 
 
-            <Select onChange={handleSelectChange} getPopupContainer={(trigger) => trigger.parentElement}  placeholder="Danh mục"  style={{ width: "160px"}}>
-                {/* <option value="volvo">Nam</option>
-                <option value="saab">Nữ</option> */}
-                {categoryData.map(option => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-            </Select>
-          </Form.Item>
-          
-                              <input id="previewImg" type="file" hidden 
+              <Select onChange={handleSelectChange} getPopupContainer={(trigger) => trigger.parentElement}  placeholder="Danh mục"  style={{ width: "160px"}}>
+                  {/* <option value="volvo">Nam</option>
+                  <option value="saab">Nữ</option> */}
+                  {categoryData.map(option => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+              </Select>
+            </Form.Item>
+        </div>   
+                              <input style={{marginLeft:"50%"}} id="previewImg" type="file" hidden 
                                   onChange={(event) => handleOnChangeImage(event)} />
 
-                                <label className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
-                                <div className='preview-image'
+                                <label style={{marginLeft:"40%"}} className='label-upload ' htmlFor='previewImg' >Tải ảnh <i className="fa-solid fa-upload"></i></label>
+                                <div  className='preview-image'
                                   style={{
                                     backgroundImage: `url(${previewImgUrl})`,
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
+                                    marginLeft:"5%",
+                                    marginTop:"5px"
                                   }}
                                   onClick={openPreviewImage}
                                 >
                                   
                                 </div>
-                            
+                   
         </div>
         
         <div className="row">
