@@ -18,7 +18,6 @@ import System from '../routes/System';
 import { CustomToastCloseButton } from '../components/CustomToast';
 import Pharmacist from './Pharmacist/Pharmacist';
 import MedicineDetail from './Pharmacist/MedicineDetail/MedicineDetail';
-<<<<<<< HEAD
 import MedicineHistory from './Pharmacist/MedicineHistory/MedicineHistory';
 import MedicineWarning from './Pharmacist/MedicineWarning/MedicineWarning';
 import AllMedicinesHistory from './Pharmacist/AllMedicineHistory/AllMedicine';

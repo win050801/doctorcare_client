@@ -166,7 +166,6 @@ const ExportWarehouse = () =>{
 
   const onSave = (values) => {
     const newData = [...dataExport];
-
     const index = newData.findIndex((item) => values.key === item.key);
 
     if (index > -1) {
@@ -222,8 +221,6 @@ const ExportWarehouse = () =>{
       dataIndex: 'operation',
       render: (_, record) =>
         dataExport.length >= 1 ? (
-        data.length >= 1 ? (
-
           <div>
             <Button type="primary" onClick={() => onEdit(record)}>
               Sửa
@@ -457,8 +454,7 @@ const ExportWarehouse = () =>{
             width={1000}
             footer={
               <div>
-                <Button >Thoát</Button>
-              
+                <Button >Thoát</Button>         
                 <Button onClick={handlePrint}>Lưu và in</Button>
                
                 <Button onClick={handleExportMedicine}  >Thêm phiếu xuất</Button>
@@ -487,7 +483,6 @@ const ExportWarehouse = () =>{
                                  <Form.Item name="birth-year" >
                                     <Input className='input birth-year' placeholder= 'Năm sinh' ></Input>
                                   </Form.Item>
-
                               </div>
                            </div>
                            <div className='customer customer-info'>
@@ -518,7 +513,7 @@ const ExportWarehouse = () =>{
                            </div>
                            <div className='customer customer-info'>
                               <div className='number-4-note'>
-                                 <label className='label note'>Ghi chú</label>                            
+                                 <label className='label note'>Ghi chú</label>                          
                                  <Form.Item name="note" >
                                     <Input placeholder= 'Ghi chú' className='input note'></Input>
                                   </Form.Item>
@@ -531,9 +526,7 @@ const ExportWarehouse = () =>{
                   </div>
                   
                      <div className='input-drug'>
-                                 <div>
-                                    
-
+                                 <div>                          
                                        <div style={{display: 'flex',alignItems: 'center'}}>
                                           <h5>Thêm thuốc xuất kho</h5>
                                           <Button type="primary" htmlType="submit" style={{marginLeft:'24%',height:'36px',width:'150px'}}>
