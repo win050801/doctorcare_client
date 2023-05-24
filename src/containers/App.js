@@ -18,6 +18,7 @@ import System from '../routes/System';
 import { CustomToastCloseButton } from '../components/CustomToast';
 import Pharmacist from './Pharmacist/Pharmacist';
 import MedicineDetail from './Pharmacist/MedicineDetail/MedicineDetail';
+<<<<<<< HEAD
 import MedicineHistory from './Pharmacist/MedicineHistory/MedicineHistory';
 import MedicineWarning from './Pharmacist/MedicineWarning/MedicineWarning';
 import AllMedicinesHistory from './Pharmacist/AllMedicineHistory/AllMedicine';
@@ -72,6 +73,7 @@ class App extends Component {
                                     <Route path="/medicine/:id/history" component={(MedicineHistory)} />
                                     <Route path="/medicine/warning" component={(MedicineWarning)} />
                                     <Route path="/manage-user" component={(ManageUser)} />
+
 
                                     <Route path="/medicine/history" component={(AllMedicinesHistory)} />
                                     <Route path="/report" component={(Report)} />

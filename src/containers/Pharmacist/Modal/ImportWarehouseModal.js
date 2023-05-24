@@ -1,3 +1,4 @@
+
 import React, { useState,useEffect, useContext } from 'react';
 import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message,Typography } from 'antd';
 import './ImportWarehouseModal.scss'
@@ -405,6 +406,7 @@ const ImportWarehouse = () =>{
     }
   }
 
+
   return (
     <>
       <Button className="btn btn-import" type="primary" onClick={() => setOpen(true)}>
@@ -426,6 +428,7 @@ const ImportWarehouse = () =>{
             closable={true}
             okButtonProps={{ style: { display: 'none' } }}
             cancelButtonProps  ={{ style: { display: 'none' } }}
+
             onCancel={() => setOpen(false)}
             width={1000}
             >
@@ -511,6 +514,7 @@ const ImportWarehouse = () =>{
                  
                 </div>
                               </div>
+
                </div>
       </Modal>
     </>

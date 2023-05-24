@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { Component,useEffect,useState, useRef, useContext } from "react";
 
 import Modal from 'react-bootstrap/Modal';
@@ -475,6 +476,179 @@ const  Warehouse = () =>{
     
   
 
+=======
+import React, { Component,useState } from "react";
+
+import Modal from 'react-bootstrap/Modal';
+import { Link } from 'react-router-dom';
+import { Input, Table, Button,Select } from 'antd'
+
+
+import { connect } from "react-redux";
+import DatePicker from "react-datepicker";
+import './Warehouse.scss'
+import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
+import ExportWarehouseModal from "../Modal/ExportWarehouseModal";
+
+function MyVerticallyCenteredModal(props) {
+    return (
+      <Modal
+      {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <form className="p-4 bg-white rounded-lg shadow-md">
+          <h2 className="mb-4 text-2xl font-medium">Thêm thuốc</h2>
+          <div className="row">
+            <div className="col-lg-5 col-md-6 mb-4">
+              <div className="form-group">
+                <label htmlFor="name" className="inputSearch">
+                  Tên thuốc
+                </label>
+                <input type="text" className="form-control" id="name" />
+              </div>
+            </div>
+            <div className="col-lg-3 col-md-6 mb-4">
+              <div className="form-group">
+                <label htmlFor="genericName" className="inputSearch">
+                  Tên gốc
+                </label>
+                <input type="text" className="form-control" id="genericName" />
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="form-group">
+                <label htmlFor="storageUnit" className="inputSearch">
+                  Đơn vị lưu kho
+                </label>
+                <input type="text" className="form-control" id="storageUnit" />
+              </div>
+            </div>
+          
+          </div>
+
+          <div className="row mb-4">
+            <div className="col-lg-3">
+              <div className="form-group">
+                <label htmlFor="name" className="inputSearch">
+                  Đơn vị sử dụng/ lần
+                </label>
+                <input type="text" className="form-control" id="name" />
+              </div>
+            </div>
+            <div className="col-lg-3 ">
+              <div className="form-group">
+                <label htmlFor="genericName" className="inputSearch">
+                  Phương thức
+                </label>
+                <input type="text" className="form-control" id="genericName" />
+              </div>
+            </div>
+            <div className="col-lg-3 ">
+              <div className="form-group">
+                <label htmlFor="storageUnit" className="inputSearch">
+                  Đơn vị lưu kho
+                </label>
+                <input type="text" className="form-control" id="storageUnit" />
+              </div>
+            </div>
+            <div className="col-lg-3 ">
+              <div className="form-group">
+                <label htmlFor="storageUnit" className="inputSearch">
+                  Số lượng tồn
+                </label>
+                <input type="text" className="form-control" id="storageUnit" />
+              </div>
+            </div>
+          </div>
+ 
+          <div className="row mb-4 justify-content-between">
+            <div className="col-lg-4">
+              <div className="form-group">
+                <label htmlFor="name" className="inputSearch">
+                  Đơn giá vốn
+                </label>
+                <input type="text" className="form-control" id="name" />
+              </div>
+            </div>
+            <div className="col-lg-3 ">
+              <div className="form-group">
+                <label htmlFor="genericName" className="inputSearch">
+                  Đơn giá bán
+                </label>
+                <input type="text" className="form-control" id="genericName" />
+              </div>
+            </div>
+            <div className="col-lg-4 ">
+              <div className="form-group">
+                <label htmlFor="storageUnit" className="inputSearch">
+                  Số lượng tồn
+                </label>
+                <input type="text" className="form-control" id="storageUnit" />
+              </div>
+            </div>
+            
+          </div>
+
+          <div className="row mb-4 justify-content-between">
+            <div className="col-lg-4">
+              <div className="form-group">
+                <label htmlFor="name" className="inputSearch">
+                  Thông báo khi SL tồn nhỏ hơn
+                </label>
+                <input type="text" className="form-control" id="name" />
+              </div>
+            </div>
+            <div className="col-lg-3 ">
+              <div className="form-group">
+                <label htmlFor="genericName" className="inputSearch">
+                  Ngày hết hạn
+                </label>
+                <input type="text" className="form-control" id="genericName" />
+              </div>
+            </div>
+            <div className="col-lg-4 ">
+              <div className="form-group">
+                <label htmlFor="storageUnit" className="inputSearch">
+                  Thông báo khi số ngày sử
+                </label>
+                <input type="text" className="form-control" id="storageUnit" />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+              <div className="col-lg-12">
+                <div className="form-group">
+                  <label htmlFor="name" className="inputSearch">
+                    Ghi chú
+                  </label>
+                  <input type="text" className="form-control" id="name" />
+                </div>
+              </div>
+          </div>
+      </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+          <Button color="info" onClick={props.onHide}>Thêm thuốc</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+}
+
+function  Warehouse(){
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [modalShow, setModalShow] = React.useState(false);
+    const [open, setOpen] = useState(false);
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
     const handleOpenModal = () => {
       setOpen(true);
     };
@@ -483,13 +657,38 @@ const  Warehouse = () =>{
       setOpen(false);
     };
 
+<<<<<<< HEAD
     
+=======
+    const dataSource = [
+      {
+        key: '1',
+        name: 'John Brown',
+        stt: '1',
+        age: 32,
+        address: 'New York No. 1 Lake Park',
+        actions: (
+          <span>
+            <Link to="/medicine/detail"> 
+                <Button style={{backgroundColor:'#3c8dbc', color: 'white', fontSize: '15px'}}
+                        onClick={() => handleViewMedicineDetail()}
+                >
+                  Chi tiết</Button>
+            </Link>
+            <Button style={{backgroundColor:'#00a65a', color: 'white', fontSize: '15px'}}>Lịch sử</Button>
+            <Button style={{backgroundColor:'red', color: 'white', fontSize: '15px'}}>Xóa</Button>
+          </span>
+        ),
+      },
+    ];
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
 
     const columns = [
       {
         title: 'STT',
         dataIndex: 'stt',
         key: 'stt',
+<<<<<<< HEAD
         width: "2%",
       },
       {
@@ -501,6 +700,8 @@ const  Warehouse = () =>{
                     <img src={avatar} alt="Hình ảnh" style={{ width: '100px' }} />
           </td>
         ),
+=======
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
       },
       {
         title: 'Tên thuốc',
@@ -508,6 +709,7 @@ const  Warehouse = () =>{
         key: 'name',
       },
       {
+<<<<<<< HEAD
         title: 'Giá vốn',
         dataIndex: 'cost_price',
         key: 'cost_price',
@@ -550,10 +752,31 @@ const  Warehouse = () =>{
         dataIndex: 'storage_unit',
         key: 'storage_unit',
         width: "12%",
+=======
+        title: 'Ngày hết hạn',
+        dataIndex: 'age',
+        key: 'age',
+      },
+      {
+        title: 'Giá vốn',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Giá bán',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Đơn vị lưu kho',
+        dataIndex: 'address',
+        key: 'address',
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
       },
       {
         title: 'Tác vụ',
         dataIndex: 'actions',
+<<<<<<< HEAD
         width: "10%",
         key: 'actions',
         render: (_, record) => {
@@ -605,6 +828,19 @@ const  Warehouse = () =>{
       setPage(current);
       // ...
     };
+=======
+        key: 'actions',
+      },
+    ];
+
+    const handleViewMedicineDetail = () =>{
+        
+    }
+
+  let handleColor = (time) => {
+    return time.getHours() > 12 ? "text-success" : "text-error";
+  };
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
 
     return (
             <React.Fragment>
@@ -624,6 +860,7 @@ const  Warehouse = () =>{
                                         show={modalShow}
                                         onHide={() => setModalShow(false)}
                                     />
+<<<<<<< HEAD
                                     <Link to="/medicine/warning">
                                       <Button className="btn btn-warning" variant="info" >
                                           Đang cảnh báo
@@ -636,6 +873,14 @@ const  Warehouse = () =>{
                                     </Link>
                                     
                                         
+=======
+                                    <Button className="btn btn-warning" variant="info" >
+                                        Đang cảnh báo
+                                    </Button>
+                                    <Button className="btn btn-report" variant="info" >
+                                        Lập báo cáo
+                                    </Button>
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
                                     {/* <Button  onClick={() => setOpen(true)} className="btn btn-import" variant="info" >
                                         Nhập kho
                                     </Button> */}
@@ -654,6 +899,7 @@ const  Warehouse = () =>{
                                         <div className="search-content">
                                             <div>
                                                 <h5>Từ khóa </h5>
+<<<<<<< HEAD
                                                 <Input onChange={handleInputChange} name="keySearch" type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
                                             </div>
                                             <div>
@@ -672,10 +918,28 @@ const  Warehouse = () =>{
                                                     <option value="-1">Tất cả</option>
                                                     <option value="1">Đang hoạt động</option>
                                                     <option value="0">Không còn sử dụng</option>
+=======
+                                                <Input type="text" className="input-search key"placeholder="Tìm kiếm thuốc"></Input>
+                                            </div>
+                                            <div>
+                                                <h5>Loại thuốc </h5>
+                                                <Select className="input-search-type" id="cars"  placeholder="Tất cả">
+                                                    <option value="volvo">Nam</option>
+                                                    <option value="saab">Nữ</option>
+                              
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <h5>Bắt đầu </h5>
+                                                <Select className="input-search start" id="cars" placeholder="Tất cả">
+                                                    <option value="volvo">Nam</option>
+                                                    <option value="saab">Nữ</option>
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
                                                 </Select>
                                             </div>
                                             <div>
                                                 <h5>Sắp xếp theo </h5>
+<<<<<<< HEAD
                                                 <Select onChange={handleSelectChangeSortBy} name="sortBy"  className="input-search sort" id="cars" placeholder="Chọn">
                                                     <option value="0">Tất cả</option>
                                                     <option value="1">Tên thuốc (Tăng dần)</option>
@@ -696,10 +960,21 @@ const  Warehouse = () =>{
                                                     
                                                    
                                                 </Select>
+=======
+                                                <Select className="input-search sort" id="cars" placeholder="Chọn">
+                                                    <option value="volvo">Nam</option>
+                                                    <option value="saab">Nữ</option>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <h5 className="text-hidden">a</h5>
+                                                <Button className="btn-see" >Xem</Button>
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
                                             </div>
                                             
                                         </div>
                                         <div className="table-content">
+<<<<<<< HEAD
                                                     
                                           <Table
                                               responsive
@@ -714,6 +989,11 @@ const  Warehouse = () =>{
                                             />
 
                                            
+=======
+                                            <Table responsive  dataSource={dataSource} columns={columns}  >
+                                                
+                                            </Table>
+>>>>>>> 1c0a8d8bfdae3a37cdc24f0e02c10777a33656f9
                                         </div>
                                 </div>
                             </div>

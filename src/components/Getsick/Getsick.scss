@@ -23,8 +23,15 @@
     // background-color: aqua;
 }
 .inputinfo{
-    height: 25px;
-    border: #AAAAAA solid 1px;
+    padding-left: 10px;
+    border: red solid 1px;
     border-radius: 2px;
-    height: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    color: gray;
+
 }
+.selected:focus{
+    outline:0;
+}
+

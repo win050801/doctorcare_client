@@ -1,3 +1,4 @@
+
 import React, { useState,useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form,Select, DatePicker } from 'antd';
 import axios from 'axios';
@@ -101,6 +102,7 @@ const ImportTable = () => {
     },
     {
       title: 'Hành động',
+
       dataIndex: 'operation',
       render: (_, record) =>
         data.length >= 1 ? (
@@ -120,8 +122,6 @@ const ImportTable = () => {
         ) : null,
     },
   ];
-
-
 
   const onFinish = (values) => {
     const { name, storageUnit } = values;
@@ -178,6 +178,7 @@ const ImportTable = () => {
       setReset(false);
     }, 0);
    
+
   };
 
   return (
@@ -207,6 +208,7 @@ const ImportTable = () => {
         </Button>
        
       </Form>
+
       <br />
       <Table
         bordered

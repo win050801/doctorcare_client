@@ -1,3 +1,4 @@
+
 import React, { Component,useState,useEffect } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
@@ -208,6 +209,7 @@ function  MedicineDetail(){
     setMedicineData({ ...medicineData, method_of_use: event.target.value });
   }
 
+
    return (
            <React.Fragment>
             <div style={{ display: 'flex' }}>
@@ -262,11 +264,13 @@ function  MedicineDetail(){
                               </div>
                             </div>
                             <div className="col-lg-3 col-md-6 mb-4">
+
                               <div className="form-group">
                                 <label htmlFor="name" className="input-search">
                                   Tên thuốc
                                 </label>
                                 <Input type="text" className="form-control" name="name" placeholder="Tên thuốc" value={medicineData.name} onChange={handleInputChange}/>
+
                               </div>
                             </div>
                             <div className="col-lg-3 col-md-6 mb-4">
@@ -275,6 +279,7 @@ function  MedicineDetail(){
                                   Tên gốc
                                 </label>
                                 <Input type="text" className="form-control" name="original_name" placeholder="Tên gốc"  value={medicineData.original_name} onChange={handleInputChange}/>
+
                               </div>
                             </div>
                             <div className="col-lg-4 col-md-6 mb-4">
@@ -293,6 +298,7 @@ function  MedicineDetail(){
                                   <option value="Hộp">Hộp</option>
                                   <option value="Vĩ">Vĩ</option>
                            </select>
+
                               </div>
                             </div>
                           
@@ -305,6 +311,7 @@ function  MedicineDetail(){
                                   Đơn vị sử dụng/ lần
                                 </label>
                                 <Input type="text" className="form-control" name="use_unit" value={medicineData.use_unit} />
+
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -323,6 +330,7 @@ function  MedicineDetail(){
                                     <option value="Nhỏ">Nhỏ</option>
                                     <option value="Xịt">Xịt</option>
                                 </select>
+
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -331,6 +339,7 @@ function  MedicineDetail(){
                                   Code
                                 </label>
                                 <Input type="text" className="form-control" name="code" value={medicineData.code} />
+
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -343,6 +352,7 @@ function  MedicineDetail(){
                                           <option value="0">Không còn sử dụng</option>
                                   </select>
                                 {/* <Input type="text" className="form-control" id="storageUnit" value={medicineData.medicineInventory} onChange={handleInputChange} /> */}
+
                               </div>
                             </div>
                           </div>
@@ -354,6 +364,7 @@ function  MedicineDetail(){
                                   Đơn giá vốn
                                 </label>
                                 <Input type="text" className="form-control" name="cost_price" value={medicineData.cost_price} onChange={handleInputChange} />
+
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -362,6 +373,7 @@ function  MedicineDetail(){
                                   Đơn giá bán
                                 </label>
                                 <Input type="text" className="form-control" name="retail_price" value={medicineData.retail_price} onChange={handleInputChange} />
+
                               </div>
                             </div>
                             <div className="col-lg-4 ">
@@ -370,6 +382,7 @@ function  MedicineDetail(){
                                   Số lượng tồn
                                 </label>
                                 <Input readOnly style={{backgroundColor:"#eeeeee"}} type="text" className="form-control" name="inventory_quantity" value={medicineData.inventory_quantity} />
+
                               </div>
                             </div>
                             
@@ -382,6 +395,7 @@ function  MedicineDetail(){
                                   Thông báo khi SL tồn nhỏ hơn
                                 </label>
                                 <Input type="text" className="form-control" name="out_stock_alert_quantity" value={medicineData.out_stock_alert_quantity} onChange={handleInputChange} />
+
                               </div>
                             </div>
                             <div className="col-lg-3 ">
@@ -391,6 +405,7 @@ function  MedicineDetail(){
                                 </label>
                                 <DatePicker disabled inputReadOnly onChange={handleDateChange} value={expiryDate} style={{width:"300px",height:"40px"}}/>
                                 {/* <Input type="text" className="form-control" name="expiry_date" value={medicineData.expiry_date} onChange={handleInputChange} /> */}
+
                               </div>
                             </div>
                             <div className="col-lg-4 ">
@@ -399,6 +414,7 @@ function  MedicineDetail(){
                                   Thông báo khi số ngày sử
                                 </label>
                                 <Input type="text" className="form-control" name="out_expiry_date_alert"  value={medicineData.out_expiry_date_alert} onChange={handleInputChange}/>
+
                               </div>
                             </div>
                           </div>
@@ -409,6 +425,7 @@ function  MedicineDetail(){
                                     Ghi chú
                                   </label>
                                   <Input type="text" className="form-control" name="note" value={medicineData.note} onChange={handleInputChange} />
+
                                 </div>
                               </div>
                           </div>
@@ -420,6 +437,7 @@ function  MedicineDetail(){
                               <Link to={`/medicine/${id}/history`}>
                                     <Button  color="success" className="btn ">Lịch sử dùng thuốc</Button>
                               </Link>
+
                           </div>
                       </form>
                       </div>
@@ -432,6 +450,7 @@ function  MedicineDetail(){
                     onCloseRequest={closeLightbox}
                 />
               } */}
+
            </React.Fragment>
        );
   

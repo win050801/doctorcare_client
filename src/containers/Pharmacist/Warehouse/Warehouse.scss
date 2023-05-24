@@ -8,6 +8,7 @@
       scroll-behavior: smooth;
       scroll-snap-align: normal;
       will-change: scroll-position;
+
       .warehouse-content{
             margin-top: 15px;
             width: 100%;
@@ -78,6 +79,7 @@
                   
                   .search-container{
                         height: 300px;
+
                         width: auto;
                    
                         .search-content{
@@ -88,6 +90,7 @@
                               flex-direction: row;
                               height: 70px;
                               width: 80%;
+
                               padding-left: 25px;
                               
                               .text-hidden{
@@ -117,6 +120,7 @@
                                     width: 150px;
                                   
                               }
+
                               .btn-see{
                                     font-family: inherit;
                                     font-size: inherit;
@@ -275,4 +279,5 @@
       object-fit: cover;
     }
     
+
 

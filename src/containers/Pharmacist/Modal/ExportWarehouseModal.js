@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Table, Input, Button, Popconfirm, Form ,Modal, Select, message,Typography } from 'antd';
 import './ImportWarehouseModal.scss';
@@ -165,6 +166,7 @@ const ExportWarehouse = () =>{
 
   const onSave = (values) => {
     const newData = [...dataExport];
+
     const index = newData.findIndex((item) => values.key === item.key);
 
     if (index > -1) {
@@ -175,6 +177,7 @@ const ExportWarehouse = () =>{
     } else {
       newData.push(values);
       setDataExport(newData);
+
       form.resetFields();
     }
   };
@@ -198,6 +201,7 @@ const ExportWarehouse = () =>{
     },
     {
       title: 'Tên thuốc',
+
       dataIndex: 'name',
       editable: true,
     },
@@ -209,6 +213,7 @@ const ExportWarehouse = () =>{
     {
       title: 'Đơn giá',
       dataIndex: 'retailPriceFormatted',
+
       editable: true,
     },
     
@@ -217,6 +222,8 @@ const ExportWarehouse = () =>{
       dataIndex: 'operation',
       render: (_, record) =>
         dataExport.length >= 1 ? (
+        data.length >= 1 ? (
+
           <div>
             <Button type="primary" onClick={() => onEdit(record)}>
               Sửa
@@ -426,6 +433,7 @@ const ExportWarehouse = () =>{
     }
   }
 
+
   return (
     <>
       <Button className="btn btn-import" type="primary" onClick={() => setOpen(true)}>
@@ -441,6 +449,7 @@ const ExportWarehouse = () =>{
         </Modal>
       <Modal
             title="Phiếu xuất kho"
+
             centered
             open={open}
             onOk={() => setOpen(false)}
@@ -478,6 +487,7 @@ const ExportWarehouse = () =>{
                                  <Form.Item name="birth-year" >
                                     <Input className='input birth-year' placeholder= 'Năm sinh' ></Input>
                                   </Form.Item>
+
                               </div>
                            </div>
                            <div className='customer customer-info'>
@@ -503,18 +513,19 @@ const ExportWarehouse = () =>{
                                  <Form.Item name ="discountAmount" >
                                     <Input type="number" min={0} max={100000000}  name ="discountAmount" placeholder= 'Số tiền giảm giá' onChange={handleDiscountAmountChange} disabled={isDiscountPercent} className='input amount-discount' style ={{width:"271px"}}></Input>
                                   </Form.Item>
+
                               </div>
                            </div>
                            <div className='customer customer-info'>
                               <div className='number-4-note'>
-                                 <label className='label note'>Ghi chú</label>
-                                
+                                 <label className='label note'>Ghi chú</label>                            
                                  <Form.Item name="note" >
                                     <Input placeholder= 'Ghi chú' className='input note'></Input>
                                   </Form.Item>
                               </div>
                            </div>
                           
+
                      </div>
                      
                   </div>
@@ -522,6 +533,7 @@ const ExportWarehouse = () =>{
                      <div className='input-drug'>
                                  <div>
                                     
+
                                        <div style={{display: 'flex',alignItems: 'center'}}>
                                           <h5>Thêm thuốc xuất kho</h5>
                                           <Button type="primary" htmlType="submit" style={{marginLeft:'24%',height:'36px',width:'150px'}}>
@@ -545,6 +557,7 @@ const ExportWarehouse = () =>{
 
                                        </div>
                                     
+
                                  </div>
                               
                      </div>
@@ -577,6 +590,7 @@ const ExportWarehouse = () =>{
                         onChange={handleChange}
                     />
               </div> */}
+
       </Modal>
     </>
   );
