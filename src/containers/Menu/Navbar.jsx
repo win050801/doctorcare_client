@@ -17,7 +17,6 @@ export default function Navbar(props) {
         props.setdata(index);
     }
     
-    
     const items = [
         { label: "Tiếp nhận bệnh nhân", icon: <ImportOutlined style={{ color: "white", paddingLeft: 5 }}></ImportOutlined> },
         { label: "Khám bệnh", icon: <CalendarOutlined style={{ color: "white", paddingLeft: 5 }} /> },
