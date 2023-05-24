@@ -151,8 +151,23 @@ export default function Infopaitent() {
             <div className="headerds">
                 <h3 style={{ fontSize: 24, fontWeight: 'bold', color: "White" }}>Danh sách bệnh nhân</h3>
             </div>
-            <Table dataSource={dataSource} columns={columns} size="small" />;
+            <Modal title="Thông tin bệnh nhân" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "flex-start", paddingLeft: 30, flexDirection: "column" }}>
+                    <label className="font-label">Họ tên:  </label><label>{patient.name}</label>
+                    <br></br>
+                    <label className="font-label">Địa chỉ:  </label><label>{patient.address}</label>
+                    <br></br>
+                    <label className="font-label">Số điện thoại:  </label><label>{patient.phone}</label>
+                    <br></br>
+                    <div>
+                        <label className="font-label">Lịch sử khám bệnh</label>
+                        <Table dataSource={examninationHistory} columns={columnsEx} size="small">
 
+                        </Table>
+                    </div>
+                </div>
+            </Modal>
+            <Table dataSource={data} columns={columns} size="small" />
         </div>
     )
 }

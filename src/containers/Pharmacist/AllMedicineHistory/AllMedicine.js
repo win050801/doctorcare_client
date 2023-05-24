@@ -103,7 +103,7 @@ const AllMedicinesHistory = () =>{
                 ),
       },
       {
-            title: 'Ngày thực hiện',
+            title: 'Tên thuốc',
             dataIndex: 'name',
             key: 'name',
       },
