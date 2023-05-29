@@ -3,7 +3,7 @@ import React, { Component,useState,useEffect } from "react";
 import { Button } from "reactstrap";
 import Navbar from "../../Menu/Navbar";
 import './MedicineDetail.scss';
-import { Input, Table,Select,DatePicker, message,Modal  } from 'antd';
+import { Input,DatePicker, message,Modal, Spin  } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 // import axios from "../../../axios";
 import axios from "axios";
@@ -12,6 +12,9 @@ import CommonUtils from "../../../utils/CommonUtils";
 
 
 function  MedicineDetail(){
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [previewImgUrl, setPreviewImgUrl] = useState("");
   
   const [modalVisible, setModalVisible] = useState(false);
@@ -130,8 +133,7 @@ function  MedicineDetail(){
 
   const handleConfirm = async () => {
     setModalVisible(false);
-    console.log(medicineData);
-    console.log(status);
+    setIsLoading(true);
     try {
       const response = await axios.post(`http://localhost:9000/api/medicines/${id}/update`, {
           category_id: categoryId,
@@ -151,6 +153,7 @@ function  MedicineDetail(){
     });
     if(response.data.status === 2){
         message.error(response.data.message);
+        setIsLoading(false);
         return;
     }
     const formData = new FormData();
@@ -162,7 +165,7 @@ function  MedicineDetail(){
           'Content-Type': 'multipart/form-data',
         }
     });
-  
+      setIsLoading(false);
       message.success('Cập nhật thành công');
     } catch (error) {  
       message.error('Có lỗi xảy ra');
@@ -443,13 +446,24 @@ function  MedicineDetail(){
                       </div>
                   </div>
             </div>
-            {/* {
-                isOpen === true && 
-                <Lightbox
-                    mainSrc={previewImgUrl}
-                    onCloseRequest={closeLightbox}
-                />
-              } */}
+            {isLoading && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100vw',
+                  height: '100vh',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  zIndex: 9999,
+                }}
+              >
+                <Spin size="large" />
+              </div>
+            )}
 
            </React.Fragment>
        );

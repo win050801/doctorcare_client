@@ -4,7 +4,7 @@ import Navbar from "../../Menu/Navbar";
 import './MedicineHistory.scss';
 import { Link } from 'react-router-dom';
 
-import { Input, Table,Select,DatePicker } from 'antd';
+import { Input, Table,Select,DatePicker, Empty} from 'antd';
 import { useParams } from 'react-router-dom';
 import axios from "../../../axios";
 // import axios from "axios";
@@ -148,7 +148,13 @@ const MedicineHistory = () =>{
                                                       </div>
                                                 </div>
                                                 <div className="medicine-history-table">
-                                                      <Table responsive  dataSource={medicineData} columns={columns}  >
+                                                      <Table 
+                                                            locale={{
+                                                                  emptyText: <Empty description="Không có dữ liệu" />,
+                                                            }} 
+                                                            responsive  
+                                                            dataSource={medicineData} 
+                                                            columns={columns}  >
                                                       </Table>
                                                       <Link to={"/pharmacist"}>
                                                             <Button  Button  color="warning" className="btn-back">Quay về kho thuốc</Button>

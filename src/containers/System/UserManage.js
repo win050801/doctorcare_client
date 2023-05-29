@@ -9,6 +9,9 @@ import { Alert } from 'antd';
 import UIdoctor from '../../components/UIDoctor/UIdoctor';
 import UISieuam from '../../components/UISieuam/UISieuam';
 import UILeTan from '../../components/UILeTan/UILeTan';
+import Warehouse from '../Pharmacist/Warehouse/Warehouse';
+import ManageUser from '../Admin/ManageUser';
+import Report from '../Report/Report';
 class UserManage extends Component {
 
     componentDidMount() {
@@ -38,10 +41,10 @@ class UserManage extends Component {
             <div style={{ display: 'flex' }}>
 
                 <Menu setdata={this.updateState} data={this.state.get}></Menu>
-                {this.state.get === 0 ? (<><UILeTan></UILeTan></>) : (<>
-                        {this.state.get === 3 ? (<><Infopaitent></Infopaitent></>) : (<>
-                            {this.state.get === 1 ? (<>
-                                <UIdoctor></UIdoctor>
+                {this.state.get === 3 ? (<><ManageUser></ManageUser></>) : (<>
+                        {this.state.get === 4 ? (<><Warehouse></Warehouse></>) : (<>
+                            {this.state.get === 5 ? (<>
+                                <Report></Report>
                             </>) : (<>
                                 <UISieuam></UISieuam>
                             </>)}

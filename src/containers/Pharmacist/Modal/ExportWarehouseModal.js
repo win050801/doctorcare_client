@@ -1,6 +1,6 @@
 
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import { Table, Input, Button, Popconfirm, Form ,Modal, Select, message,Typography } from 'antd';
+import { Table, Input, Button, Popconfirm, Form ,Modal, Select, message,Typography, Spin, Empty} from 'antd';
 import './ImportWarehouseModal.scss';
 import './ExportWarehouseModal.scss';
 import axios from 'axios';
@@ -9,9 +9,16 @@ import { Link } from 'react-router-dom';
 import ReactToPrint, { useReactToPrint } from 'react-to-print';
 import { AppContext } from "../Warehouse/AppContext";
 import { log } from '@antv/g2plot/lib/utils';
+import LoadingSpinner from '../../LoadingSpin/LoadingSpiner';
+
 const { Text } = Typography;
 
+
+
 const ExportWarehouse = () =>{
+
+  const [isLoading, setIsLoading] = useState(false);
+
   let [totalAmountSum,setTotalAmountSum] = useState(0);
 
   const { data, setData } = useContext(AppContext);
@@ -53,6 +60,10 @@ const ExportWarehouse = () =>{
   const [checkQuantityM, setCheckQuantityM] = useState(false);
 
   const [previousQuantity, setPreviousQuantity] = useState(0);
+
+  const [discountAmountVND, setDiscountAmountVND] = useState('');
+
+  
 
   useEffect(() => {
     const check = async () => {
@@ -98,6 +109,7 @@ const ExportWarehouse = () =>{
       fetchCategoryData();
   }, [searchMedicine]);
 
+
   const handleSelectChangeName = (value) => {
     setSearchMedicine(`${value}`)
     const selectedMedicine = medicineData.find((medicine) => medicine.name === `${value}`);
@@ -113,6 +125,16 @@ const ExportWarehouse = () =>{
       const isDiscountAmount = event.target.value;
       setIsDiscountAmount(isDiscountAmount !== '');
       setDiscountAmount(value);
+      const sanitizedValue = value.replace(/[^0-9.,]/g, '');
+      const numericValue = parseFloat(sanitizedValue.replace(/,/g, ''));
+      if (!isNaN(numericValue)) {
+        // Định dạng giá trị thành tiền Việt Nam
+        const formattedValue = numericValue.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        setDiscountAmountVND(formattedValue);
+        console.log(discountAmountVND);
+        // Cập nhật giá trị định dạng vào state hoặc làm các xử lý khác tại đây
+        // Ví dụ: setState(formattedValue);
+      }
       if (value === '') {
         setIsDiscountPercent(false);
       }
@@ -325,34 +347,20 @@ const ExportWarehouse = () =>{
     if (discountPercent === 0 && discountAmount === 0) {
       total = sum;
     } else if (discountPercent === 0) {
-      total = sum - discountAmount;
+      if(discountAmount > sum){
+        message.error("Số tiền giảm giá không được vượt số tiền thanh toán");
+        return;
+      }else{
+        total = sum - discountAmount;
+      }
+      
     } else {
-      total = sum - (sum * (100 - discountPercent) / 100);
+      total = sum - (sum * (discountPercent / 100));
     }
     setTotalAmountSum(total);
 
-  }, [dataExport])
+  }, [dataExport, discountAmount, discountPercent])
 
-
-  // const checkQuantity = async (_, value) => {
-  //   console.log(medicineData);
-  //   const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
-  //   const currentId = medicine ? medicine.id : 0;
-  //   const currentInventory = medicine ? medicine.inventory : 0;
-  //   const response = await axios.get(`http://localhost:9000/api/orders/check-quantity`, {
-  //     params:{
-  //       medicine_id: currentId,
-  //       quantity: parseFloat(quantity)
-  //     }
-  //   });
-  //   if(response.data.status === 400){
-  //      Promise.reject(`Số lượng không đủ, số lượng còn lại: ${currentInventory}`);
-  //      return false;
-  //   }else{
-  //     Promise.resolve();
-  //     setCheckQuantityM(true)
-  //   }
-  // };
 
   const checkDiscountPercent = (_, value) =>{
     if (value < 0 && value > 100) {
@@ -379,7 +387,9 @@ const ExportWarehouse = () =>{
       // if(!checkQuantity){
       //   return;
       // }
-      const response = await axios.post(`http://localhost:9000/api/orders/create-medicines`, {
+      setIsLoading(true);
+      try {
+        const response = await axios.post(`http://localhost:9000/api/orders/create-medicines`, {
           employee_id: 1,
           discount_percent: discountPercent,
           type: 1,
@@ -395,9 +405,16 @@ const ExportWarehouse = () =>{
     }
       );
       message.success('Thêm phiếu xuất kho thành công');
+      setIsLoading(false);
+      setDiscountAmount(0);
+      setDiscountPercent(0);
       updateQuantityByIds(dataExport.map(item => item.medicine_id), dataExport.map(item => item.quantity))
       setDataExport([]);
       form.resetFields();
+      } catch (error) {
+          setIsLoading(false);
+      }
+     
   }
 
 
@@ -506,7 +523,7 @@ const ExportWarehouse = () =>{
                               <div className='number-3-amount-discount'>
                                  <label className='label amount-discount'>Giảm giá(VND)</label>
                                  <Form.Item name ="discountAmount" >
-                                    <Input type="number" min={0} max={100000000}  name ="discountAmount" placeholder= 'Số tiền giảm giá' onChange={handleDiscountAmountChange} disabled={isDiscountPercent} className='input amount-discount' style ={{width:"271px"}}></Input>
+                                    <Input type="number" min={0} max={100000000} name="discountAmount" placeholder="Số tiền giảm giá" onChange={handleDiscountAmountChange} disabled={isDiscountPercent} className="input amount-discount" style={{ width: "271px" }} />
                                   </Form.Item>
 
                               </div>
@@ -561,6 +578,9 @@ const ExportWarehouse = () =>{
                <div  className='table-container'>
                   
                     <Table
+                        locale={{
+                          emptyText: <Empty description="Không có dữ liệu" />,
+                        }}
                         ref= {componentRef}
                         bordered
                         dataSource={dataExport}
@@ -573,18 +593,25 @@ const ExportWarehouse = () =>{
                       <Text>{totalAmountSum.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
                   </div>
               </div>
-              {/* <div style={{display:"none"}}>
-              <Table
-                        ref= {componentRef} 
-                        bordered
-                        dataSource={dataExport}
-                        columns={columns}
-                        pagination={pagination}
-                        onChange={handleChange}
-                    />
-              </div> */}
-
       </Modal>
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9999,
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
     </>
   );
 };

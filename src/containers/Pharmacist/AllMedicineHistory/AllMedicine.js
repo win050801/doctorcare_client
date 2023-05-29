@@ -4,7 +4,7 @@ import Navbar from "../../Menu/Navbar";
 import '../MedicineHistory/MedicineHistory.scss';
 import { Link } from 'react-router-dom';
 
-import { Input, Table,Select,DatePicker } from 'antd';
+import { Input, Table,Select,DatePicker, Empty  } from 'antd';
 import { useParams } from 'react-router-dom';
 import axios from "../../../axios";
 // import axios from "axios";
@@ -122,6 +122,11 @@ const AllMedicinesHistory = () =>{
             dataIndex: 'description',
             key: 'description',
       },
+      {
+            title: "Ngày thực hiện",
+            dataIndex: 'created_at',
+            key: 'description',
+      },
       
       ];
 
@@ -194,7 +199,10 @@ const AllMedicinesHistory = () =>{
                                                 
                                                 <div className="medicine-history-table">
                                                       <Table 
-                                                            responsive  
+                                                            responsive
+                                                            locale={{
+                                                                  emptyText: <Empty description="Không có dữ liệu" />,
+                                                            }}
                                                             dataSource={medicineData} 
                                                             columns={columns}  
                                                             pagination={{

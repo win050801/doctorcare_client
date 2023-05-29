@@ -1,19 +1,29 @@
 import React, { Component,useState,useEffect } from "react";
 import Navbar from "../Menu/Navbar";
 import {Line} from '@ant-design/charts'
-import { Table,DatePicker, Select} from "antd";
+import { Table,DatePicker, Select, Spin, Empty } from "antd";
 import './Report.scss';
 import Aside from "./Aside";
 import axios from 'axios';
+import LoadingSpinner from "../LoadingSpin/LoadingSpiner";
 
 
 function  Report(){
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [search, setSearch] = useState({
     report_type: 3,
     from_date: "2023-03-01",
     to_date: "2023-06-01"
   });
+
+  useEffect(() => {
+    // Giả lập thời gian chờ đợi
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
   const [report, setReport] = useState([]);
 
@@ -148,7 +158,10 @@ function  Report(){
     
    return (
            <React.Fragment>
-            <div className="report-type" style={{ display: 'flex' }}>
+            {isLoading ? (
+                <LoadingSpinner/>
+              ) : (
+              <div className="report-type" style={{ display: 'flex' }}>
                 <Navbar/>
                 <div className="getsick">
                   <div className="containergetsick">
@@ -187,7 +200,14 @@ function  Report(){
                                 <Line {...configuracion} />
                             </div>
                             <div style={{marginTop:50}}>
-                              <Table className="table-antd" dataSource={report} columns={columns} pagination={{ showPagination: false,pageSize :5 }} />
+                              <Table 
+                                    locale={{
+                                                emptyText: <Empty description="Không có dữ liệu" />,
+                                    }} 
+                                    className="table-antd" 
+                                    dataSource={report} 
+                                    columns={columns} 
+                                    pagination={{ showPagination: false,pageSize :5 }} />
 
                             </div>
                           </div>
@@ -200,7 +220,9 @@ function  Report(){
                    
                  </div>
                  <Aside/>
-            </div>
+              </div> )
+            }
+            
             
            </React.Fragment>
        );

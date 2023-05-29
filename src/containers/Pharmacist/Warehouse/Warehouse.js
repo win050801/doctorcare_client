@@ -3,7 +3,7 @@ import React, { Component,useEffect,useState, useRef, useContext } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
-import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'antd';
+import { Input, Table, Button,Select ,Form,DatePicker,message, Spin, Empty} from 'antd';
 import { connect } from "react-redux";
 import './Warehouse.scss'
 import ImportWarehouseModal from "../Modal/ImportWarehouseModal";
@@ -18,6 +18,8 @@ import { AppContext } from "./AppContext";
 
 
 function MyVerticallyCenteredModal(props) {
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -86,8 +88,10 @@ function MyVerticallyCenteredModal(props) {
 
   const handleSubmit = async (event) => {
     // event.preventDefault();
-    console.log(formValues);
-    const response = await axios.post(`http://localhost:9000/api/medicines/create`, {
+    
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`http://localhost:9000/api/medicines/create`, {
         category_id: categoryId,
         name: formValues.name,
         expiry_date: expiryDate,
@@ -100,47 +104,46 @@ function MyVerticallyCenteredModal(props) {
         note: formValues.note,
         method_of_use: formValues.method_of_use,
         status: 1
-    }).catch(error => console.error(error));
-    if(response.status === 2){
-      alert(response.message);
-      return;
+      }).catch(error => console.error(error));
+      if(response.status === 2){
+        alert(response.message);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('id', response.data[0].id);
+      formData.append('avatar', avatar);
+      const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
+          headers: {
+            Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
+            'Content-Type': 'multipart/form-data',
+          }
+      });
+      
+      const newRecord = {
+        id: response.data[0].id,
+        avatar: avatar,
+        retail_price: formValues.retail_price,
+        cost_price: formValues.cost_price,
+        inventory: 0,
+        inventory_quantity: 0,
+        name: formValues.name,
+        storage_unit: formValues.storage_unit,
+        stt: 5,
+      };
+      message.success("Thêm thuốc thành công");
+      setIsLoading(false);
+      setIsModalVisible(false);
+      setPreviewImgUrl("");
+      const updatedData = [...data, newRecord];
+      setData(updatedData);
+      form.resetFields();
+    } catch (error) {
+      message.error("Thêm thuốc thất bại");
+      setIsLoading(false);
     }
 
-    const formData = new FormData();
-    formData.append('id', response.data[0].id);
-    formData.append('avatar', avatar);
-    const res = await axios.post('http://localhost:9000/api/medicines/upload-avatar', formData, {
-        headers: {
-          Authorization: 'eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==',
-          'Content-Type': 'multipart/form-data',
-        }
-    });
-
-    // const lastItemId = 0;
-    // if (Array.isArray(data) && data.length > 0) {
-    //   const lastItem = data[data.length - 1];
-    //   lastItemId = lastItem.stt;
-    // }
-    // console.log(lastItemId);
     
-    const newRecord = {
-      id: response.data[0].id,
-      avatar: avatar,
-      retail_price: formValues.retail_price,
-      cost_price: formValues.cost_price,
-      inventory: 0,
-      inventory_quantity: 0,
-      name: formValues.name,
-      storage_unit: formValues.storage_unit,
-      stt: 5,
-    };
-    message.success("Thêm thuốc thành công");
-    setIsModalVisible(false);
-    setPreviewImgUrl("");
-    const updatedData = [...data, newRecord];
-    setData(updatedData);
-    console.log(data);
-    form.resetFields();
   };
 
   const openPreviewImage = () =>{
@@ -377,7 +380,24 @@ function MyVerticallyCenteredModal(props) {
                                              Thêm thuốc
     </Button>
       </Form>
-      
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9999,
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
       </Modal.Body>
     
     </Modal>
@@ -385,6 +405,8 @@ function MyVerticallyCenteredModal(props) {
 }
 
 const  Warehouse = () =>{
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const { data, setData } = useContext(AppContext);
 
@@ -401,8 +423,6 @@ const  Warehouse = () =>{
     const [open, setOpen] = useState(false);
 
     const [categoryId, setCategoryId] = useState(-1);
-
-    const [loading, setLoading] = useState(false);
 
     const [status, setStatus] = useState(-1);
 
@@ -427,7 +447,6 @@ const  Warehouse = () =>{
 
     useEffect(() => {
       const fetchMedicineData = async () => {
-        setLoading(true);
         const response = await axios.get(`http://localhost:9000/api/categories/`, {});
         setCategoryData(response.data);
       };
@@ -436,6 +455,7 @@ const  Warehouse = () =>{
 
     useEffect(() => {
       const fetchData = async () => {
+        setIsLoading(true);
         try {
           const response = await axios.get("http://localhost:9000/api/medicines/inventory/medicines", {
             params: {
@@ -454,7 +474,7 @@ const  Warehouse = () =>{
             ...medicine,
             stt: startIndex + index
           }));
-    
+          setIsLoading(false);
           setData(medicineDataWithStt);
           setTotal(response.data.total_record);
           const totalPages = Math.ceil(response.data.total_record / limit);
@@ -462,18 +482,15 @@ const  Warehouse = () =>{
             setPage(totalPages);
           }
           // setTotalPages(totalPages);
-          setLoading(false);
+          
         } catch (error) {
-          console.error(error);
+          setIsLoading(false);
+          message.error("Có lỗi xảy ra")
         }
       };
     
       fetchData();
     }, [search, page, categoryId, limit]);
-    
-    
-    
-    
   
 
     const handleOpenModal = () => {
@@ -707,6 +724,9 @@ const  Warehouse = () =>{
                                         </div>
                                         <div className="table-content">                                               
                                           <Table
+                                              locale={{
+                                                emptyText: <Empty description="Không có dữ liệu" />,
+                                              }}
                                               responsive
                                               dataSource={data}
                                               columns={columns}
@@ -725,7 +745,24 @@ const  Warehouse = () =>{
                             </div>
                         </div>
                     </div>
-                     
+                    {isLoading && (
+                      <div
+                        style={{
+                          position: 'fixed',
+                          top: 0,
+                          left: 0,
+                          width: '100vw',
+                          height: '100vh',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          background: 'rgba(0, 0, 0, 0.5)',
+                          zIndex: 9999,
+                        }}
+                      >
+                        <Spin size="large" />
+                      </div>
+                    )}
                 </div>
             </React.Fragment>
         );

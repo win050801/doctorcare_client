@@ -31,9 +31,21 @@ import ReportExportInventory from './Report/ReportExportInventory';
 import AppProvider from './Pharmacist/Warehouse/AppContext';
 import Warehouse from './Pharmacist/Warehouse/Warehouse';
 import ManageUser from './Admin/ManageUser';
+import LoadingSpinner from './LoadingSpin/LoadingSpiner';
 
 
 class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+          isLoading: true
+        };
+    }
+    
+      if (isLoading) {
+        return <LoadingSpinner />;
+      }
 
     handlePersistorState = () => {
         const { persistor } = this.props;
@@ -51,6 +63,9 @@ class App extends Component {
 
     componentDidMount() {
         this.handlePersistorState();
+        setTimeout(() => {
+            this.setState({ isLoading: false });
+        }, 2000);
     }
 
     render() {

@@ -1,6 +1,6 @@
 
 import React, { useState,useEffect, useContext } from 'react';
-import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message,Typography } from 'antd';
+import { Button, Input, Modal,Table,Select, Form, DatePicker, Popconfirm, message,Typography, Spin, Empty} from 'antd';
 import './ImportWarehouseModal.scss'
 import { Link } from 'react-router-dom';
 import ImportTable from './ImportTable';
@@ -10,6 +10,8 @@ import { AppContext } from "../Warehouse/AppContext";
 const { Text } = Typography;
 
 const ImportWarehouse = () =>{
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data, setData } = useContext(AppContext);
 
@@ -81,38 +83,41 @@ const ImportWarehouse = () =>{
       message.error('Vui lòng chọn ngày sản xuất ');
       return;
     }
-    const response = await axios.post('http://localhost:9000/api/medicines/create-warehouse', 
-          {
-            discount_percent: 0,
-            type: 0,
-            discount_amount: 0,
-            description: note,
-            expiry_date: expiry_date,
-            manufacture_date: manufacture_date,
-            warehouse_session_request:  dataImport
-          },
-          {
-            headers: {
-              'Authorization': `eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==`,
-              'Content-Type': 'application/json'
+    setIsLoading(true);
+    try {
+        const response = await axios.post('http://localhost:9000/api/medicines/create-warehouse', 
+            {
+                discount_percent: 0,
+                type: 0,
+                discount_amount: 0,
+                description: note,
+                expiry_date: expiry_date,
+                manufacture_date: manufacture_date,
+                warehouse_session_request:  dataImport
+            },
+            {
+                headers: {
+                  'Authorization': `eyJ1c2VyX2lkIjoxLCJwaG9uZSI6IjA5MTE3NjU3NjAiLCJwYXNzd29yZCI6IjEyMzQifQ==`,
+                  'Content-Type': 'application/json'
+            }
           }
-      }
-    );
-    
-    message.success("Thêm phiếu nhập kho thành công");
-    
-    setModalVisible(false);
-    const ids = dataImport.map(item => item.medicine_id);
-    console.log(dataImport);
-    console.log(ids); // In ra một mảng chứa các giá trị id
-    const quantity = dataImport.map(item => item.quantity);
-    console.log(quantity);
+        );
 
-    updateQuantityByIds(dataImport.map(item => item.medicine_id), dataImport.map(item => item.quantity))
-    console.log(data);
-    setOpen(false);
-    setDataImport([]);
-    form.resetFields();
+        message.success("Thêm phiếu nhập kho thành công");
+        setIsLoading(false);
+        setModalVisible(false);
+        const ids = dataImport.map(item => item.medicine_id);
+        const quantity = dataImport.map(item => item.quantity);
+
+        updateQuantityByIds(dataImport.map(item => item.medicine_id), dataImport.map(item => item.quantity))
+        setOpen(false);
+        setDataImport([]);
+        form.resetFields();
+    } catch (error) {
+      message.error("Thêm phiếu nhập kho thất bại");
+      setIsLoading(false);
+    }
+   
   }
 
   const updateQuantityByIds = (ids, quantities) => {
@@ -502,6 +507,9 @@ const ImportWarehouse = () =>{
                   </Form>
                   <br />
                   <Table
+                    locale={{
+                      emptyText: <Empty description="Không có dữ liệu" />,
+                    }}
                     bordered
                     dataSource={dataImport}
                     columns={columns}
@@ -517,6 +525,24 @@ const ImportWarehouse = () =>{
 
                </div>
       </Modal>
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9999,
+          }}
+        >
+          <Spin size="large" />
+        </div>
+      )}
     </>
   );
 };
