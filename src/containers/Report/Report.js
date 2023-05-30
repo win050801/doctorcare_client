@@ -125,6 +125,7 @@ function  Report(){
       console.log(report);
       console.log(type);
     }
+
     const configuracion = {
       data,
       title: {
@@ -132,8 +133,8 @@ function  Report(){
         text: "Gloves de Lionel Messi por Temporada"
       },
       xField: 'date',
-      yField: 'revenue',
-      // yField: type === 1 ? 'revenue' : (type === 2 ? 'cost' : 'profit'),
+      // yField: 'revenue',
+      yField: type === "1" ? 'revenue' : (type === "2" ? 'cost' : 'profit'),
       color: '#2593fc',
       point: {
         visible: true,
@@ -146,15 +147,6 @@ function  Report(){
         }
       }
     };
-    
-
-    // const onChangeFromDate = (date, dateString) => {
-    //   setSearch({ ...search, fromDate: dateString });
-    // };
-
-    // const onChangeToDate = (date, dateString) => {
-    //   setSearch({ ...search, toDate: dateString });
-    // };
     
    return (
            <React.Fragment>

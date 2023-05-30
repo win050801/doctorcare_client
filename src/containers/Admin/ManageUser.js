@@ -6,33 +6,40 @@ import { CommonUtils } from '../../utils';
 import './ManageUser.scss'
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; 
-import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'antd';
+import { Input, Table, Button,Select ,Form, Space,DatePicker,message, Spin   } from 'antd';
 import TableMangeUser from './TableMangeUser';
 import Navbar from '../Menu/Navbar';
+import { log } from '@antv/g2plot/lib/utils';
 
 class ManageUser extends Component {
     constructor(props){
         super(props);
         this.state = {
             roleArr: [],
+            specArr: [],
             input: "",
             email: "",
             name: "",
             phone:"",
             address: "",
             gender: 0,
-            roleId: 1,
+            roleId: "1",
             position: "",
             description: "",
             avatar: "",
             note: "",
             action: "",
-            currentUser: ""
+            currentUser: "",
+            specializationId: -1,
+            keySearch: "",
+            isLoading: false,
+            specId: 1
         }
     }
 
     componentDidMount() {
       this.fetchRolesData();
+      this.fetchSpecializationData();
     }
 
     async fetchRolesData() {
@@ -50,28 +57,32 @@ class ManageUser extends Component {
           });
         }
       } catch (error) {
-        console.log(error);
+        message.error(error)
       }
     }
 
-    // async componentDidMount() {
-    //     try {
-    //       const res = await axios.get(`http://localhost:9000/api/users/roles`,{
-    //           params:{
-    //             pre_name: this.state.input
-    //           }
-    //       })
-    //       if(res && res.data.status === 200){
-    //           this.setState({
-    //             roleArr: res.data.data,
-    //             previewImgUrl: "",
-    //             isOpen: false
-    //           })
-    //       }
-    //     } catch (error) {
-    //         console.log(error);
-    //     } 
-    // }
+    async fetchSpecializationData() {
+      try {
+        const res = await axios.get(`http://localhost:9000/api/medicines/get-specializations`, {
+          params: {
+            specialization_id: this.state.specializationId,
+            key_search: this.state.keySearch,
+            is_active: -1,
+            sort_by: -1,
+            limit: 1000,
+            page: 0
+          }
+        });
+        if (res && res.data.status === 200) {
+          this.setState({
+            specArr: res.data.data.list,
+            isLoading: false
+          });
+        }
+      } catch (error) {
+        message.error(error);
+      }
+    }
 
     async handleOnChangeImage(event) {
       const file = event.target.files[0];
@@ -86,7 +97,6 @@ class ManageUser extends Component {
     }
 
     openPreviewImage = () =>{
-      console.log(this.state.previewImgUrl);
       if(!this.state.previewImgUrl ) return;
         this.setState({
           isOpen: true
@@ -114,7 +124,6 @@ class ManageUser extends Component {
       this.setState({
           ...copyState
       },()=>{
-        console.log(this.state);
       })
     }
     
@@ -122,11 +131,11 @@ class ManageUser extends Component {
       e.preventDefault();
       this.checkValidateInput();
       const isValid = this.checkValidateInput();
-      const { name, email, phone, address, gender, roleId, position, description, avatar } = this.state;
+      const { name, email, phone, address, gender, roleId, position, description, avatar, specId } = this.state;
       const formData = new FormData();
-      console.log(this.state.roleId);
       formData.append('name', name);
       formData.append('email', email);
+      formData.append('specid', specId);
       formData.append('phone', phone);
       formData.append('address', address);
       formData.append('gender', gender);
@@ -208,7 +217,6 @@ class ManageUser extends Component {
     }
 
     handleEditUserFromParent = (user) =>{
-      console.log(user);
       this.setState({
           action: "edit"
       })
@@ -231,14 +239,13 @@ class ManageUser extends Component {
           previewImgUrl: user.avatar
           // avatar: imageBase64
       },()=>{
-          console.log(this.state.previewImgUrl);
-          console.log(user.avatar);
       });
 
     }
 
     render() {
         let role = this.state.roleArr;
+        let spec = this.state.specArr;
         let language = this.props.language;
         let {input, email, name, phone, address, gender, roleId, position, description, avatar,note} = this.state
         return (
@@ -299,7 +306,7 @@ class ManageUser extends Component {
                               <label htmlFor="genericName" className="inputSearch">
                                 Giới tính
                               </label>
-                              <select defaultValue={this.state.gender} type="text" className="form-control" id="gender"
+                              <select style={{height: "42px"}} defaultValue={this.state.gender} type="text" className="form-control" id="gender"
                                     onChange={(e) => { this.onChangeInput(e, 'gender') }}
                                   >
                                     <option value="0" selected={this.state.gender === 0}>Nam</option>
@@ -310,13 +317,7 @@ class ManageUser extends Component {
                             </div>
                           </div>
                           
-                          
-
-
                         </div>
-              
-                  
-
                         <div className="row mb-4 justify-content-between">
                           <div className="col-lg-3">
                             <div className="form-group">
@@ -324,9 +325,10 @@ class ManageUser extends Component {
                                 Quyền hạn
                               </label>
                               <select
-                                  onChange={(e) => { this.onChangeInput(e, 'role') }}
+                                  onChange={(e) => { this.onChangeInput(e, 'roleId') }}
                                   className="form-control"
                                   id="genericName"
+                                  style={{height:"42px"}}
                                 >
                                   {role && role.length > 0 && role.map((item) => (
                                     <option key={item.id} value={item.id} selected={item.id === this.state.role}>
@@ -336,8 +338,27 @@ class ManageUser extends Component {
                                 </select>
                             </div>
                           </div>
-                          
-
+                          {this.state.roleId === "1" ? (
+                              <div className="col-lg-3">
+                                <div className="form-group">
+                                  <label htmlFor="additionalSelect" className="inputSearch">
+                                    Chuyên khoa
+                                  </label>
+                                  <select
+                                    onChange={(e) => { this.onChangeInput(e, 'specId') }}
+                                    className="form-control"
+                                    id="additionalSelect"
+                                    style={{ height: "42px" }}
+                                  >
+                                    {spec && spec.length > 0 && spec.map((item) => (
+                                      <option key={item.id} value={item.id} selected={item.id === this.state.specId}>
+                                        {item.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            ) : null}
                           
                           <div className="col-lg-6 ">
                             <div className="form-group">
@@ -372,7 +393,6 @@ class ManageUser extends Component {
                           
                         </div>
                         <button onClick={(e)=> {this.handleSaveUser(e)}} type="submit" className={this.state.action === "edit" ? "btn btn-warning" : "btn btn-primary"}>{this.state.action === "edit" ? "Cập nhập" : "Thêm mới"}</button>
-                       
                         <div className='col-12'>
                             <TableMangeUser
                               handleEditUserFromParent = {this.handleEditUserFromParent}
@@ -392,6 +412,24 @@ class ManageUser extends Component {
                 />
               }
             </div>
+            {this.state.isLoading && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100vw',
+                  height: '100vh',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  zIndex: 9999,
+                }}
+              >
+                <Spin size="large" />
+              </div>
+            )}
          </div>
             
         )

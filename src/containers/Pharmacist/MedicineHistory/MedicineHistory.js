@@ -151,7 +151,7 @@ const MedicineHistory = () =>{
                                                       <Table 
                                                             locale={{
                                                                   emptyText: <Empty description="Không có dữ liệu" />,
-                                                            }} 
+                                                            }}
                                                             responsive  
                                                             dataSource={medicineData} 
                                                             columns={columns}  >

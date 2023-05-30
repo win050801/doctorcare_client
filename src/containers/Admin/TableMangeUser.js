@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import './TableManagerUser.scss';
 import axios from 'axios';
 import './ManageUser.scss';
-import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'antd';
+import { Input,Select ,message   } from 'antd';
 
 // import MarkdownIt from 'markdown-it';
 // import MdEditor from 'react-markdown-editor-lite';
@@ -18,9 +17,9 @@ import { Input, Table, Button,Select ,Form, Space,DatePicker,message   } from 'a
 // const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 // Finish!
-function handleEditorChange({ html, text }) {
-  console.log('handleEditorChange', html, text);
-}
+// function handleEditorChange({ html, text }) {
+//   console.log('handleEditorChange', html, text);
+// }
 
 class TableManageUser extends Component {
 
@@ -33,7 +32,7 @@ class TableManageUser extends Component {
             sort_by: -1,
             is_active: -1,
             user_define: 1,
-            limit: 6,
+            limit: 100,
             page: 0
          }
     }
@@ -182,7 +181,7 @@ class TableManageUser extends Component {
                               <td  style={{width:"80px"}}> <img style={{height:"60px",width:"60px"}} src={item.avatar} alt="Image"/></td>
                               <td style={{width:"300px"}}>{item.email}</td>
                               <td>{item.phone}</td>
-                              <td>{item.role}</td>
+                              <td>{item.description}</td>
                               <td>
                               <button  onClick={(e) => this.handleEditUser(e,item)} className='btn-edit'><i className='fas fa-pencil-alt'></i></button>
                               <button

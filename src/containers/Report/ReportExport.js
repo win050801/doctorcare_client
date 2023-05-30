@@ -24,6 +24,13 @@ function  ReportExport(){
 
     const [type, setType] = useState(1);
 
+    const [newData, setNewData] = useState([]);
+
+    const newArray = [
+      [],
+      []
+    ]
+
     const [typeReport, setTypeReport] = useState(1);
 
     useEffect(() => {
@@ -34,18 +41,37 @@ function  ReportExport(){
                   to_date: search.to_date,
                 }
             });
-            setReport(response.data.data);
-            console.log(report);
+            setReport(response.data.data.list);
           };
           fetchCategoryData();
     }, [search]);
 
-    const chartData = [["Name", "Quantity"], ...report.map(item => [item.name, item.total_quantity])];
-
-    const data = [
+    const data2 = [
         ["Panadol", "a", "Ho", "Cảm", "Đau đầu", "Đau bụng", "Buồn nôn", "Khó tiêu", "Sổ mũi", "Chóng mặt", "Ngạt mũi"],
         [ 1000, 400, 200, 566, 778, 675, 567, 456, 899, 456, 944],
     ];
+    
+    const data = [
+      [],
+      []
+    ]
+
+    report.forEach(item => {
+        data.push([
+          item.name,
+          item.total_quantity,
+        ])
+    })
+
+    for (let i = 2; i < data.length; i++) {
+      const element = data[i];
+      newArray[0].push(element[0]);
+      newArray[1].push(element[1]);
+    }
+
+    console.log(newArray);
+
+    console.log(data);
 
     const onChangeFromDate = (date, dateString) => {
         setSearch({ ...search, from_date: dateString });
@@ -100,7 +126,7 @@ function  ReportExport(){
                                                     chartType="Bar"
                                                     width="100%"
                                                     height="400px"
-                                                    data={data}
+                                                    data={newArray}
                                                     options={options}
                                 />
                             </div>

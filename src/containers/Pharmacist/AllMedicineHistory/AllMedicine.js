@@ -4,7 +4,7 @@ import Navbar from "../../Menu/Navbar";
 import '../MedicineHistory/MedicineHistory.scss';
 import { Link } from 'react-router-dom';
 
-import { Input, Table,Select,DatePicker, Empty  } from 'antd';
+import { Input, Table,Select,DatePicker, Empty} from 'antd';
 import { useParams } from 'react-router-dom';
 import axios from "../../../axios";
 // import axios from "axios";
