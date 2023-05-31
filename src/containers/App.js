@@ -32,6 +32,11 @@ import AppProvider from './Pharmacist/Warehouse/AppContext';
 import Warehouse from './Pharmacist/Warehouse/Warehouse';
 import ManageUser from './Admin/ManageUser';
 import LoadingSpinner from './LoadingSpin/LoadingSpiner';
+import UILeTan from '../components/UILeTan/UILeTan';
+import UIdoctor from '../components/UIDoctor/UIdoctor';
+import UIKhamSieuam from '../components/UIKhamsieuam/UIKhamsieuam';
+import UISieuam from '../components/UISieuam/UISieuam';
+import Infopaitent from '../components/Infopaitent/Infopaitent';
 
 
 class App extends Component {
@@ -87,8 +92,10 @@ class App extends Component {
                                     <Route path="/medicine/:id/history" component={(MedicineHistory)} />
                                     <Route path="/medicine/warning" component={(MedicineWarning)} />
                                     <Route path="/manage-user" component={(ManageUser)} />
-
-
+                                    <Route path="/info" component={(Infopaitent)} />
+                                    <Route path="/LeTan" component={(UILeTan)} />
+                                    <Route path="/Doctors" component={(UIdoctor)} />
+                                    <Route path="/DoctorsSA" component={(UISieuam)} />
                                     <Route path="/medicine/history" component={(AllMedicinesHistory)} />
                                     <Route path="/report" component={(Report)} />
                                     <Route path="/report-revenue-cost-profit" component={(ReportRevenueCostProfit)} />

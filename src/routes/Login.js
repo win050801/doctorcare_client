@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from "connected-react-router";
-
+import axios from "axios";
 import * as actions from "../store/actions";
 import { KeyCodeUtils, LanguageUtils } from "../utils";
 
@@ -48,30 +48,46 @@ class Login extends Component {
         navigate(`${redirectPath}`);
     }
 
-    processLogin = () => {
+    processLogin = async () => {
+
         const { username, password } = this.state;
-        console.log(username);
-        const { adminLoginSuccess, adminLoginFail } = this.props;
-        let loginBody = {
-            username: 'admin',
-            password: '123456'
-        }
-        //sucess
-        let adminInfo = {
-            "tlid": "0",
-            "tlfullname": "Administrator",
-            "custype": "A",
-            "accessToken": "eyJhbGciOiJIU"
+        try {
+            const respose = await axios.post(
+                "http://localhost:9000/api/users/login?email=" + username + "&password=" + password
+            );
+            if (respose.data) {
+                localStorage.setItem(
+                    "currentUser",
+                    JSON.stringify(respose.data)
+                );
+                const { adminLoginSuccess, adminLoginFail } = this.props;
+                let loginBody = {
+                    username: 'admin',
+                    password: '123456'
+                }
+            
+                let adminInfo = {
+                    "tlid": "0",
+                    "tlfullname": "Administrator",
+                    "custype": "A",
+                    "accessToken": "eyJhbGciOiJIU"
+                }
+
+                adminLoginSuccess(adminInfo);
+                this.refresh();
+                this.redirectToSystemPage();
+                // try {
+                //     adminService.login(loginBody)
+                // } catch (e) {
+                //     console.log('error login : ', e)
+                // }
+            }
+
+        } catch (error) {
+
         }
 
-        adminLoginSuccess(adminInfo);
-        this.refresh();
-        this.redirectToSystemPage();
-        try {
-            adminService.login(loginBody)
-        } catch (e) {
-            console.log('error login : ', e)
-        }
+
 
     }
 
@@ -110,7 +126,7 @@ class Login extends Component {
                         <div className="form-group icon-true">
                             <img className="icon" src={userIcon} alt="this" />
                             <input
-                                placeholder={"Số điện thoại"}
+                                placeholder={"Email"}
                                 id="username"
                                 name="username"
                                 type="text"

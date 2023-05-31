@@ -9,7 +9,7 @@ import axios from 'axios';
 export const options = {
     chart: {
       title: "Thống kê",
-      subtitle: "Xuất kho thuốc",
+      subtitle: "Thuốc được sử dụng nhiều",
     },
 };  
 
@@ -45,11 +45,6 @@ function  ReportExport(){
           };
           fetchCategoryData();
     }, [search]);
-
-    const data2 = [
-        ["Panadol", "a", "Ho", "Cảm", "Đau đầu", "Đau bụng", "Buồn nôn", "Khó tiêu", "Sổ mũi", "Chóng mặt", "Ngạt mũi"],
-        [ 1000, 400, 200, 566, 778, 675, 567, 456, 899, 456, 944],
-    ];
     
     const data = [
       [],
@@ -127,11 +122,8 @@ function  ReportExport(){
                                                       options={options}
                                                     />
                                                   </div>
-                                                </div>
 
-                              
-                              
-                        
+                                                </div> 
                       </div>
                       
                     </div>

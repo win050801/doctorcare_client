@@ -3,110 +3,166 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react"
 import { Input, Table, Button } from 'antd'
 import axios from "axios";
+import socketIO from 'socket.io-client';
 export default function MenuDoctor({ setPatient }) {
     const [dsbn, setDsbn] = useState([])
     const [buong, setBuong] = useState(0);
     const [dsbnut, setDsbnut] = useState([])
+    const [change, setchange] = useState(0)
+    const socket = global.socket
+    global.change = 0
     useEffect(() => {
-        const timer = setTimeout(() => {
-            async function fetchData() {
-                // You can await here
-                //   console.log("test");
-                const buongTam = 0
-                if (localStorage.getItem("buong")) {
-                    if (JSON.parse(localStorage.getItem("buong")) === 1) {
-                        try {
-                            const response = await axios.get(
-                                "http://localhost:9000/api/doctors/getBuong1"
-                            );
-                            // setDsbn(response.data);
-                            // if (localStorage.getItem("user")) {
-                            //     setCustomer(JSON.parse(localStorage.getItem("user")));
-                            // }
-                            if (response.data) {
-                                setDsbn(response.data)
-                            }
-                            const response1 = await axios.get(
-                                "http://localhost:9000/api/doctors/getBuong1UT"
-                            );
-                            // setDsbn(response.data);
-                            // if (localStorage.getItem("user")) {
-                            //     setCustomer(JSON.parse(localStorage.getItem("user")));
-                            // }
-                            if (response.data) {
-                                setDsbnut(response1.data)
-                            }
 
+        async function fetchData() {
+            // You can await here
+            //   console.log("test");
 
-                            // console.log(response);
-                        } catch (error) {
-                            console.log(error);
+            if (localStorage.getItem("buong")) {
+                if (JSON.parse(localStorage.getItem("buong")) === 1) {
+                    try {
+                        const response = await axios.get(
+                            "http://localhost:9000/api/doctors/getBuong1"
+                        );
+                        // setDsbn(response.data);
+                        // if (localStorage.getItem("user")) {
+                        //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                        // }
+                        if (response.data) {
+                            setDsbn(response.data)
                         }
-                    }
-                    else if (JSON.parse(localStorage.getItem("buong")) === 2) {
-                        try {
-                            const response = await axios.get(
-                                "http://localhost:9000/api/doctors/getBuong2"
-                            );
-                            // setDsbn(response.data);
-                            // if (localStorage.getItem("user")) {
-                            //     setCustomer(JSON.parse(localStorage.getItem("user")));
-                            // }
-                            if (response.data) {
-                                setDsbn(response.data)
-                            }
-                            const response1 = await axios.get(
-                                "http://localhost:9000/api/doctors/getBuong2UT"
-                            );
-                            // setDsbn(response.data);
-                            // if (localStorage.getItem("user")) {
-                            //     setCustomer(JSON.parse(localStorage.getItem("user")));
-                            // }
-                            if (response.data) {
-                                setDsbnut(response1.data)
-                            }
-
-
-                            // console.log(response);
-                        } catch (error) {
-                            console.log(error);
+                        const response1 = await axios.get(
+                            "http://localhost:9000/api/doctors/getBuong1UT"
+                        );
+                        // setDsbn(response.data);
+                        // if (localStorage.getItem("user")) {
+                        //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                        // }
+                        if (response.data) {
+                            setDsbnut(response1.data)
                         }
+
+
+                        // console.log(response);
+                    } catch (error) {
+                        console.log(error);
                     }
                 }
+                else if (JSON.parse(localStorage.getItem("buong")) === 2) {
+                    try {
+                        const response = await axios.get(
+                            "http://localhost:9000/api/doctors/getBuong2"
+                        );
+                        // setDsbn(response.data);
+                        // if (localStorage.getItem("user")) {
+                        //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                        // }
+                        if (response.data) {
+                            setDsbn(response.data)
+                        }
+                        const response1 = await axios.get(
+                            "http://localhost:9000/api/doctors/getBuong2UT"
+                        );
+                        // setDsbn(response.data);
+                        // if (localStorage.getItem("user")) {
+                        //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                        // }
+                        if (response.data) {
+                            setDsbnut(response1.data)
+                        }
 
 
-
-
-                // ...
+                        // console.log(response);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
             }
-            fetchData();
-        }, 300);
-        return () => clearTimeout(timer);
+
+
+
+
+            // ...
+        }
+        fetchData();
+
+    }, [global.change]);
+    useEffect(() => {
+        async function fetchData() {
+            console.log(socket);
+
+            if (socket) {
+
+                socket.current.on("send-ok",async (test) => {
+                    if (localStorage.getItem("buong")) {
+                        if (JSON.parse(localStorage.getItem("buong")) === 1) {
+                            try {
+                                const response = await axios.get(
+                                    "http://localhost:9000/api/doctors/getBuong1"
+                                );
+                                // setDsbn(response.data);
+                                // if (localStorage.getItem("user")) {
+                                //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                                // }
+                                if (response.data) {
+                                    setDsbn(response.data)
+                                }
+                                const response1 = await axios.get(
+                                    "http://localhost:9000/api/doctors/getBuong1UT"
+                                );
+                                // setDsbn(response.data);
+                                // if (localStorage.getItem("user")) {
+                                //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                                // }
+                                if (response.data) {
+                                    setDsbnut(response1.data)
+                                }
+
+
+                                // console.log(response);
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                        else if (JSON.parse(localStorage.getItem("buong")) === 2) {
+                            try {
+                                const response = await axios.get(
+                                    "http://localhost:9000/api/doctors/getBuong2"
+                                );
+                                // setDsbn(response.data);
+                                // if (localStorage.getItem("user")) {
+                                //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                                // }
+                                if (response.data) {
+                                    setDsbn(response.data)
+                                }
+                                const response1 = await axios.get(
+                                    "http://localhost:9000/api/doctors/getBuong2UT"
+                                );
+                                // setDsbn(response.data);
+                                // if (localStorage.getItem("user")) {
+                                //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                                // }
+                                if (response.data) {
+                                    setDsbnut(response1.data)
+                                }
+
+
+                                // console.log(response);
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }
+                    }
+                });
+
+            }
+
+
+
+
+        }
+        fetchData();
     }, []);
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         // You can await here
-    //         //   console.log("test");
-    //         try {
-    //             const response = await axios.get(
-    //                 "http://localhost:9000/getBuong1"
-    //             );
-    //             // setDsbn(response.data);
-    //             // if (localStorage.getItem("user")) {
-    //             //     setCustomer(JSON.parse(localStorage.getItem("user")));
-    //             // }
-    //             console.log(response.data);
-    //             setDsbn(response.data)
-
-    //             // console.log(response);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-
-    //         // ...
-    //     }
-    //     fetchData();
-    // }, []);
     const setPatients = (item, index) => {
 
         setPatient(item)
@@ -168,7 +224,7 @@ export default function MenuDoctor({ setPatient }) {
                 }
             }
         }
-        
+
     };
     const openBuong = async () => {
         try {
@@ -202,7 +258,7 @@ export default function MenuDoctor({ setPatient }) {
                                             <span style={{ fontSize: 13, fontWeight: "inherit" }}>{index + 1}. {item.name}</span>
                                             <div style={{ display: "flex", width: 50, justifyContent: "space-between", paddingTop: 3, cursor: "pointer" }}>
                                                 <CheckOutlined onClick={() => { setPatients(item, index); getBN(index) }} />
-                                              
+
                                             </div>
                                         </div>
                                         <hr style={{ marginLeft: 15 }}></hr>

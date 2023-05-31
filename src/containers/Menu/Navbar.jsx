@@ -5,25 +5,42 @@ import "../Users/User"
 import User from "../Users/User";
 
 import { Divider, Menu, Switch } from "antd";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 // import { set } from "lodash";
 import { Avatar, Dropdown, Space, Modal } from "antd";
 export default function Navbar(props) {
     const [mode, setMode] = useState('inline');
     const [theme, setTheme] = useState('light');
+    const [user, setUser] = useState({ avatar: "", name: "" });
 
-    
     const setdata1 = (index) => {
         props.setdata(index);
     }
-    
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            async function fetchData() {
+                if (localStorage.getItem("currentUser")) {
+                    setUser(JSON.parse(localStorage.getItem("currentUser")))
+                    //  setAvatar(new Buffer(JSON.parse(localStorage.getItem("currentUser")).avatar, 'base64').toString('binary'))
+                }
+
+                else {
+                    // navigate(`${redirectPath}`);
+                }
+            }
+            fetchData();
+        }, 0);
+        return () => clearTimeout(timer);
+    }, []);
+
+
     const items = [
-        { label: "Tiếp nhận bệnh nhân", icon: <ImportOutlined style={{ color: "white", paddingLeft: 5 }}></ImportOutlined> },
-        { label: "Khám bệnh", icon: <CalendarOutlined style={{ color: "white", paddingLeft: 5 }} /> },
-        { label: "Siêu âm", icon: <MessageOutlined style={{ color: "white", paddingLeft: 5 }} /> },
-        { label: "Hồ sơ bệnh nhân", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} /> },
-        { label: "Quản lý người dùng", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} /> },
-        { label: "Kho thuốc", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} /> },
+        { label: "Tiếp nhận bệnh nhân", icon: <ImportOutlined style={{ color: "white", paddingLeft: 5 }}></ImportOutlined> ,link:"LeTan"},
+        { label: "Khám bệnh", icon: <CalendarOutlined style={{ color: "white", paddingLeft: 5 }} /> ,link:"Doctors"},
+        { label: "Siêu âm", icon: <MessageOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"DoctorsSA" },
+        { label: "Hồ sơ bệnh nhân", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/info" },
+        { label: "Quản lý người dùng", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/manage-user"  },
+        { label: "Kho thuốc", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/pharmacist"  },
         {
             menucon: <>
                 <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />
@@ -33,22 +50,17 @@ export default function Navbar(props) {
                             <ul class="dropdown" style={{ width: 200 }}>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Bệnh nhân</a>
+                                        <a href="http://localhost:3000/report-patient-list" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Bệnh nhân</a>
                                     </div>
                                 </li>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Kho thuốc</a>
+                                        <a href="http://localhost:3000/report-export" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Thuốc sử dụng nhiều</a>
                                     </div>
                                 </li>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Thuốc sử dụng nhiều</a>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Báo cáo thu chi</a>
+                                        <a href="http://localhost:3000/report" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Báo cáo thu chi</a>
                                     </div>
                                 </li>
                                 <li>
@@ -74,15 +86,13 @@ export default function Navbar(props) {
                 {items.map((item, index) => {
                     return (
                         <div>
-                            <div className="submenu" onClick={() => setdata1(index)}>
+                            <div className="submenu" >
+                                
                                 {item.icon}
                                 {item.menucon}
-
-
-                                <span style={{ fontSize: 15, color: 'white', paddingLeft: 10 }}>
+                                <a href={item.link} style={{ fontSize: 15, color: 'white', paddingLeft: 10 }}>
                                     {item.label}
-
-                                </span>
+                                </a>
 
                             </div>
 
@@ -93,4 +103,4 @@ export default function Navbar(props) {
 
         </div>
     )
-}
+}                          

@@ -70,7 +70,7 @@ const ExportWarehouse = () =>{
       if (quantity !== previousQuantity) {
         const medicine = medicineData.find((medicine) => medicine.id === medicine_id);
         const currentId = medicine ? medicine.id : 0;
-        const currentInventory = medicine ? medicine.inventory_quantity : 0;
+        const currentInventory = medicine ? medicine.inventory : 0;
         const response = await axios.get('http://localhost:9000/api/orders/check-quantity', {
           params: {
             medicine_id: currentId,
@@ -93,17 +93,19 @@ const ExportWarehouse = () =>{
 
   useEffect(() => {
     const fetchCategoryData = async () => {
-      const response = await axios.get(`http://localhost:9000/api/medicines/`, {
+      const response = await axios.get(`http://localhost:9000/api/medicines/inventory/medicines`, {
             params:{
               category_id: -1,
               medicine_id: -1,
               key_search: searchMedicine,
+              is_expiry: 0,
               status: 1,
               sort_by: 0,
-              limit:"",
-              offset:""
+              limit:100,
+              offset:0
             }
         });
+        console.log(response);
         setMedicineData(response.data.data.list);
       };
       fetchCategoryData();

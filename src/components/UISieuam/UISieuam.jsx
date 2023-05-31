@@ -1,4 +1,5 @@
 
+import Navbar from "../../containers/Menu/Navbar"
 import MenuDoctor from "../MenuDoctor/MenuDoctor"
 import MenuDoctorSieuAm from "../MenuDoctorSieuAm/MenuDoctorSieuAm"
 import UIKham from "../UIKham/UIKham"
@@ -10,7 +11,7 @@ export default function UISieuam()
     const [patient,setPatient]=useState({name:"",address:"",phone:"",weight:"",height:""})
     return(
         <div className="doctorSieuam">
-            
+                <Navbar></Navbar>
                <MenuDoctorSieuAm patient={patient} setPatient={setPatient}></MenuDoctorSieuAm>
                <UIKhamSieuam patient={patient} setPatient={setPatient}></UIKhamSieuam>
             
