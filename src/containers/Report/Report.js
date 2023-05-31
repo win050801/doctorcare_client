@@ -6,6 +6,7 @@ import './Report.scss';
 import Aside from "./Aside";
 import axios from 'axios';
 import LoadingSpinner from "../LoadingSpin/LoadingSpiner";
+import Navbar from "../Menu/Navbar";
 
 
 function Report() {
@@ -154,9 +155,9 @@ function Report() {
         <LoadingSpinner />
       ) : (
         <div className="report-type" style={{ display: 'flex' }}>
-
+          <Navbar/>
           <div className="getsick">
-            <div className="containergetsick">
+            <div className="containergetsick report">
               <div className="info">
 
                 <div style={{ display: 'flex', marginTop: '0px', alignItems: 'center' }}>
@@ -211,7 +212,7 @@ function Report() {
             </div>
 
           </div>
-          {/* <Aside /> */}
+          <Aside />
         </div>)
       }
 

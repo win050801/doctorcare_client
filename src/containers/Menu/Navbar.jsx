@@ -40,7 +40,7 @@ export default function Navbar(props) {
         { label: "Siêu âm", icon: <MessageOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"DoctorsSA" },
         { label: "Hồ sơ bệnh nhân", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/info" },
         { label: "Quản lý người dùng", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/manage-user"  },
-        { label: "Kho thuốc", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/medicine"  },
+        { label: "Kho thuốc", icon: <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />,link:"/pharmacist"  },
         {
             menucon: <>
                 <ProfileOutlined style={{ color: "white", paddingLeft: 5 }} />
@@ -55,18 +55,12 @@ export default function Navbar(props) {
                                 </li>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Kho thuốc</a>
-                                    </div>
-                                </li>
-                                
-                                <li>
-                                    <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Thuốc sử dụng nhiều</a>
+                                        <a href="http://localhost:3000/report-export" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Thuốc sử dụng nhiều</a>
                                     </div>
                                 </li>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Báo cáo thu chi</a>
+                                        <a href="http://localhost:3000/report" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Báo cáo thu chi</a>
                                     </div>
                                 </li>
                                 <li>
