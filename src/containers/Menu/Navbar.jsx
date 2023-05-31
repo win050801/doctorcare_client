@@ -50,7 +50,7 @@ export default function Navbar(props) {
                             <ul class="dropdown" style={{ width: 200 }}>
                                 <li>
                                     <div style={{ width: 200, height: 30 }}>
-                                        <a href="#" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Bệnh nhân</a>
+                                        <a href="http://localhost:3000/report-patient-list" style={{ fontSize: 15, color: "white", textDecoration: "none" }}>Bệnh nhân</a>
                                     </div>
                                 </li>
                                 <li>
