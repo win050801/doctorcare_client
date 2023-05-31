@@ -1,11 +1,12 @@
 import { Button, Table, Space, Switch, notification, Modal, Input, Image } from "antd"
 import "../../components/UIKham/UIKham.scss"
 import axios from "axios";
-import { useState } from "react";
+import { useState,useRef } from "react";
+import { io } from "socket.io-client";
 export default function UIKham({ patient, setPatient }) {
     const [api, contextHolder] = notification.useNotification();
     const key = 'updatable';
-
+    const [error,seterror] = useState(false)
     const [checkStrictly, setCheckStrictly] = useState(false);
     const [songay, setsongay] = useState(1)
     const [name, setName] = useState(patient.name)
@@ -17,6 +18,10 @@ export default function UIKham({ patient, setPatient }) {
     const [chieuCao, setchieuCao] = useState(patient.height)
     const [canNang, setcanNang] = useState(patient.weight)
     const [dataLSThuoc, setDataLSThuoc] = useState([])
+    const [date,setDate] = useState(1)
+    const user = JSON.parse(localStorage.getItem("currentUser"))
+    const socket = useRef();
+    socket.current = io('http://localhost:5000');
     // const dataSource = [
 
     //     // {
@@ -180,7 +185,7 @@ export default function UIKham({ patient, setPatient }) {
                     bloodType:null
 
             });
-
+            socket.current.emit("send", "ok")
         } catch (error) {
 
             console.log("fail");
@@ -315,8 +320,16 @@ export default function UIKham({ patient, setPatient }) {
             const dataTam = []
             data.forEach(element => {
                 element.key = element.id
-                element.tc = songay * element.costPrice * 2 * element.useUnit
-                element.sl = songay * 2 * element.useUnit
+                
+                if(element.storageUnit==="Viên")
+                {
+                    element.tc = songay * element.costPrice * 2 * element.useUnit
+                    element.sl = songay * 2 * element.useUnit
+                }
+                else{
+                    element.tc = element.costPrice
+                    element.sl = 1
+                }
                 dataTam.push(element)
             });
             setdataSource(dataTam)
@@ -342,7 +355,7 @@ export default function UIKham({ patient, setPatient }) {
         const orderDetailTams = [...orderDetails]
         const or = {}
         dataChon.forEach(element => {
-            const or = { name: element.name, price: element.costPrice, price: element.costPrice, quantity: element.sl, medicine: element }
+            const or = { name: element.name, price: element.costPrice,useUnit:element.useUnit, price: element.costPrice, quantity: element.sl, medicine: element }
             dataTam.push(element)
             orderDetailTams.push(or)
         });
@@ -353,8 +366,24 @@ export default function UIKham({ patient, setPatient }) {
         setDataChon([])
 
     }
+    const Ktraquantiy = async (id, quantity)=>{
+        try {
+             const { data } = await axios.get("http://localhost:9000/api/orders/check-quantity?medicine_id="+id+"&quantity="+quantity, {})
+             if(data.status===200)
+             {
+                seterror(true)
+             }
+             seterror(false)
+          
+        } catch (error) {
+            
+        }
+    }
     const KetThucKham = async () => {
         try {
+            
+            
+           
             const { data } = await axios.post("http://localhost:9000/api/doctors/saveEx", {
                 code: "1",
                 amount: 1.0,
@@ -374,7 +403,7 @@ export default function UIKham({ patient, setPatient }) {
                     },
                     doctor:
                     {
-                        id: 27
+                        id: user.id
                     }
                 },
                 services: [],
@@ -407,6 +436,28 @@ export default function UIKham({ patient, setPatient }) {
         const value = parseInt(event.target.value);
         setSelectValue(value);
     };
+    const onChangeDate = (e)=>{
+        
+        const DataTam = [...dataThuoc]
+        const datTam = []
+        DataTam.forEach(element => {
+            if(element.storageUnit==="Viên")
+            {
+                element.sl = element.useUnit*2*e
+                element.tc = e * element.costPrice * 2 * element.useUnit
+                datTam.push(element)
+                
+            }
+            else{
+                datTam.push(element)
+            }
+            
+            setDataThuoc(datTam)
+            
+        });
+        console.log(datTam);
+        
+    }
     return (
         <div className="UIKhamcontainer">
             {contextHolder}
@@ -537,7 +588,7 @@ export default function UIKham({ patient, setPatient }) {
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", flex: 0.22, paddingRight: 15, alignItems: "center" }}>
                             <label className="font-label">Số ngày thuốc</label>
-                            <input type="text" className="input3"></input>
+                            <input type="number" className="input3" onChange={(e) => onChangeDate(e.target.value)} ></input>
                         </div>
 
                         <div style={{ display: "flex", justifyContent: "space-between", flex: 0.22, paddingRight: 15, alignItems: "center" }}>

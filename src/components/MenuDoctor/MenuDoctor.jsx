@@ -1,15 +1,17 @@
 import "../../components/MenuDoctor/MenuDoctor.scss"
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import { Input, Table, Button } from 'antd'
 import axios from "axios";
 import socketIO from 'socket.io-client';
+import { io } from "socket.io-client";
 export default function MenuDoctor({ setPatient }) {
     const [dsbn, setDsbn] = useState([])
     const [buong, setBuong] = useState(0);
     const [dsbnut, setDsbnut] = useState([])
     const [change, setchange] = useState(0)
-    const socket = global.socket
+    const socket = useRef();
+    socket.current = io('http://localhost:5000');
     global.change = 0
     useEffect(() => {
 
@@ -279,9 +281,9 @@ export default function MenuDoctor({ setPatient }) {
                                         <div>
                                             <div style={{ display: "flex", flexDirection: "row", paddingLeft: 15, height: 13, justifyContent: "space-between" }}>
                                                 <span style={{ fontSize: 13, fontWeight: "inherit" }}>{index + 1}. {item.name}</span>
-                                                <div style={{ display: "flex", width: 50, justifyContent: "space-between", paddingTop: 3, cursor: "pointer" }}>
+                                                <div style={{ display: "flex", width: 30, justifyContent: "space-between", paddingTop: 3, cursor: "pointer" }}>
                                                     <CheckOutlined onClick={() => { setPatients(item, index); getBNUT(index) }} />
-                                                    <CloseOutlined />
+                                                   
                                                 </div>
                                             </div>
                                             <hr style={{ marginLeft: 15 }}></hr>

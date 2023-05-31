@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "../../containers/Users/User.scss"
 import { Avatar, Dropdown, Space, Modal,Image } from "antd";
+// import { redirect } from "react-router-dom";
 // const {  DownOutlined, SmileOutlined  } = icons;
 export default function User() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +21,12 @@ export default function User() {
     };
     const handleCancel = () => {
         setIsModalOpen(false);
+    };
+    const logout = () => {
+        localStorage.setItem(
+            "currentUser",
+            "logout"
+        );
     };
     const redirectPath = '/login';
     
@@ -68,9 +75,7 @@ export default function User() {
         {
             key: '2',
             label: (
-                <span>
-                    Đăng xuất
-                </span>
+                <a style={{textDecoration:"none"}} href="/login" onClick={logout}>Đăng xuất</a>
             ),
             // disabled: true,
         },

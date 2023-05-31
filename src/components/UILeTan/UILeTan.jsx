@@ -9,14 +9,29 @@ import "../UISieuam/UISieuam.scss"
 import { useState } from "react"
 import "../UILeTan/UILetan.scss"
 import Navbar from "../../containers/Menu/Navbar"
+import { Redirect } from 'react-router-dom';
 export default function UILeTan() {
-    const [patient,setPatient] = useState()
+    const user = localStorage.getItem("currentUser")
+    console.log(user);
+    console.log("alo");
+    const [patient, setPatient] = useState()
     return (
-        
-        <div className="containerLetan">
-            <Navbar></Navbar>
-            <Search setPatient={setPatient}></Search>
-            <Getsick patient={patient}></Getsick>
-        </div>
+        <>
+            {
+                user !== "logout" ? (<>
+                    <div className="containerLetan">
+                        <Navbar></Navbar>
+                        <Search setPatient={setPatient}></Search>
+                        <Getsick patient={patient}></Getsick>
+                    </div>
+
+                </>) : (<>
+                    <Redirect to="/login" />
+                    
+                </>)
+            }
+            
+        </>
+
     )
 }

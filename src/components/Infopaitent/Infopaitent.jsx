@@ -5,7 +5,9 @@ import "../../components/Infopaitent/Infopaitent.scss"
 import { Input, Table, Button, Modal } from 'antd'
 import axios from "axios";
 import Navbar from "../../containers/Menu/Navbar";
+import { Redirect } from 'react-router-dom';
 export default function Infopaitent() {
+    const user = localStorage.getItem("currentUser")
     const [data, setData] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [patient, setPatient] = useState({ name: "", address: "", phone: "" })
@@ -148,33 +150,42 @@ export default function Infopaitent() {
         },
     ];
     return (
-        <div className="InfoContainer">
-            <Navbar></Navbar>
-            <div className="InfoContainer1">
-                <div className="headerds">
-                    <h3 style={{ fontSize: 24, fontWeight: 'bold', color: "White" }}>Danh sách bệnh nhân</h3>
-                </div>
-                <div>
-                <Modal title="Thông tin bệnh nhân" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "flex-start", paddingLeft: 30, flexDirection: "column" }}>
-                        <label className="font-label">Họ tên:  </label><label>{patient.name}</label>
-                        <br></br>
-                        <label className="font-label">Địa chỉ:  </label><label>{patient.address}</label>
-                        <br></br>
-                        <label className="font-label">Số điện thoại:  </label><label>{patient.phone}</label>
-                        <br></br>
-                        <div>
-                            <label className="font-label">Lịch sử khám bệnh</label>
-                            <Table dataSource={examninationHistory} columns={columnsEx} size="small">
+        <>
+            {
+                user !== null ? (<>
 
-                            </Table>
+                    <div className="InfoContainer">
+                        <Navbar></Navbar>
+                        <div className="InfoContainer1">
+                            <div className="headerds">
+                                <h3 style={{ fontSize: 24, fontWeight: 'bold', color: "White" }}>Danh sách bệnh nhân</h3>
+                            </div>
+                            <div>
+                                <Modal title="Thông tin bệnh nhân" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                                    <div style={{ width: "100%", display: "flex", justifyContent: "flex-start", alignItems: "flex-start", paddingLeft: 30, flexDirection: "column" }}>
+                                        <label className="font-label">Họ tên:  </label><label>{patient.name}</label>
+                                        <br></br>
+                                        <label className="font-label">Địa chỉ:  </label><label>{patient.address}</label>
+                                        <br></br>
+                                        <label className="font-label">Số điện thoại:  </label><label>{patient.phone}</label>
+                                        <br></br>
+                                        <div>
+                                            <label className="font-label">Lịch sử khám bệnh</label>
+                                            <Table dataSource={examninationHistory} columns={columnsEx} size="small">
+
+                                            </Table>
+                                        </div>
+                                    </div>
+                                </Modal>
+                                <Table dataSource={data} columns={columns} size="small" />
+                            </div>
                         </div>
-                    </div>
-                </Modal>
-                <Table dataSource={data} columns={columns} size="small" />
-                </div>
-            </div>
 
-        </div>
+                    </div>
+                </>) : (<>
+                    <Redirect to="/login" />
+                </>)
+            }
+        </>
     )
 }

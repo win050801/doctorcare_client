@@ -94,6 +94,7 @@ class App extends Component {
                                     <Route path="/manage-user" component={(ManageUser)} />
                                     <Route path="/info" component={(Infopaitent)} />
                                     <Route path="/LeTan" component={(UILeTan)} />
+                                    
                                     <Route path="/Doctors" component={(UIdoctor)} />
                                     <Route path="/DoctorsSA" component={(UISieuam)} />
                                     <Route path="/medicine/history" component={(AllMedicinesHistory)} />

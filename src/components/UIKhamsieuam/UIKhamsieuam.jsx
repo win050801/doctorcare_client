@@ -8,6 +8,7 @@ export default function UIKhamSieuam({ patient,setPatient }) {
     const [previewImgUrl, setPreviewImgUrl] = useState("");
     const [avatar, setAvatar] = useState('');
     const [ketLuan,setKetLuan] = new useState('')
+    const user = JSON.parse(localStorage.getItem("currentUser"))
     const handleOnChangeImage = async (event) => {
         const file = event.target.files[0];
         console.log(file);
@@ -40,7 +41,7 @@ export default function UIKhamSieuam({ patient,setPatient }) {
                     },
                     doctor:
                     {
-                        id: 27
+                        id: user.id
                     }
                 },
                 services: [],
