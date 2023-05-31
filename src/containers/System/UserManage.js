@@ -41,17 +41,34 @@ class UserManage extends Component {
             <div style={{ display: 'flex' }}>
 
                 <Menu setdata={this.updateState} data={this.state.get}></Menu>
-                {this.state.get === 3 ? (<><ManageUser></ManageUser></>) : (<>
-                        {this.state.get === 4 ? (<><Warehouse></Warehouse></>) : (<>
-                            {this.state.get === 5 ? (<>
-                                <Report></Report>
-                            </>) : (<>
+                {this.state.get === 0 ? (<><UILeTan></UILeTan></>) : (<>
+                    {this.state.get === 3 ? (<><Infopaitent></Infopaitent></>) : (<>
+                        {this.state.get === 1 ? (<>
+                            <UIdoctor></UIdoctor>
+                        </>) : (<>
+                            {this.state.get === 2 ? (<>
                                 <UISieuam></UISieuam>
+                            </>) : (<>
+                                {this.state.get === 4 ? (<>
+                                    <ManageUser></ManageUser>
+                                </>) : (<>
+                                    {this.state.get === 5 ? (<>
+                                        <Warehouse></Warehouse>
+                                    </>) : (<>
+                                        {this.state.get === 6 ? (<>
+                                            <Report></Report>
+                                           
+                                        </>) : (<>
+
+                                        </>)}
+                                    </>)}
+                                </>)}
                             </>)}
-
-
                         </>)}
+
+
                     </>)}
+                </>)}
 
 
 

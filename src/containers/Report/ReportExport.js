@@ -94,7 +94,7 @@ function  ReportExport(){
    return (
            <React.Fragment>
             <div className="report-type" style={{ display: 'flex' }}>
-                <Navbar/>
+                
                 <div className="getsick">
                   <div className="containergetsick">
                       <div className="info">

@@ -30,7 +30,7 @@ function  ReportExportInventory(){
    return (
            <React.Fragment>
             <div style={{ display: 'flex' }}>
-                <Navbar/>
+               
                 <div style={{width:1000,height:500,marginLeft:150,marginTop:50}}>
                 <Chart
                     chartType="Bar"

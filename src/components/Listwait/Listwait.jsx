@@ -97,8 +97,10 @@ export default function Listwait() {
             <div style={{ display: "flex", flex: 0.1, width: "100%", height: "100%", alignItems: "flex-end", paddingLeft: 20 }}>
                 <span style={{ color: "red", fontSize: 14, fontWeight: "bold" }}>Danh sách bệnh nhân đang chờ</span>
             </div>
-            <div style={{display:"flex",flex:0.9,width:"100%",height:"100%",padding:20}}>
-                <Table style={{width:"100%",height:"100%"}} dataSource={dataSource} columns={columns} size="small" />
+            <div style={{ display: "flex", flex: 0.9, width: "100%", height: "100%", padding: 20 }}>
+                <Table style={{ width: "100%", height: "100%" }} dataSource={data} columns={columns} size="small" pagination={{
+                    pageSize: 7,
+                }} />
             </div>
         </div>
     )

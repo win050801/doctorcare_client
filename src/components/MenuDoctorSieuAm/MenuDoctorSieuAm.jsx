@@ -6,7 +6,7 @@ import axios from "axios";
 import CommonUtils from "../../../src/utils/CommonUtils";
 export default function MenuDoctorSieuAm({ setPatient }) {
     const [dsbn, setDsbn] = useState([])
-    
+    const socket = global.socket
     const [dsbnut, setDsbnut] = useState([{ stt: 4, name: "Tan Trong" }, { stt: 5, name: "Minh Quang" }])
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -38,6 +38,43 @@ export default function MenuDoctorSieuAm({ setPatient }) {
             fetchData();
         }, 300);
         return () => clearTimeout(timer);
+    }, []);
+    useEffect(() => {
+        async function fetchData() {
+            console.log(socket);
+
+            if (socket) {
+
+                socket.current.on("send-ok",async (test) => {
+                    try {
+                        const response = await axios.get(
+                            "http://localhost:9000/api/doctors/getBuong1SA"
+                        );
+                        // setDsbn(response.data);
+                        // if (localStorage.getItem("user")) {
+                        //     setCustomer(JSON.parse(localStorage.getItem("user")));
+                        // }
+    
+                        if (response.data !== "") {
+                            setDsbn(response.data)
+                        }
+    
+    
+    
+                        // console.log(response);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    
+                });
+
+            }
+
+
+
+
+        }
+        fetchData();
     }, []);
     
     const setPatients = (item, index) => {

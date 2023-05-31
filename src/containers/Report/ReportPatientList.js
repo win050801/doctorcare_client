@@ -49,7 +49,7 @@ function  ReportPatientList(){
    return (
            <React.Fragment>
             <div style={{ display: 'flex' }}>
-                <Navbar/>
+                
                 <div style={{width:1200,height:500,marginLeft:50 ,marginTop:50}}>
                 <Chart
                     chartType="Bar"

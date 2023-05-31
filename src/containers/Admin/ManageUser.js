@@ -250,7 +250,6 @@ class ManageUser extends Component {
         let {input, email, name, phone, address, gender, roleId, position, description, avatar,note} = this.state
         return (
          <div style={{ display: 'flex' }}>
-            <Navbar/>
             <div className="user-redux-container">
                <div className='title'>
                      Quản lí người dùng
