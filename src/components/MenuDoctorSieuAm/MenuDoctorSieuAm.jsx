@@ -1,12 +1,14 @@
 import "../../components/MenuDoctor/MenuDoctor.scss"
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import { Input, Table, Button } from 'antd'
 import axios from "axios";
 import CommonUtils from "../../../src/utils/CommonUtils";
+import { io } from "socket.io-client";
 export default function MenuDoctorSieuAm({ setPatient }) {
     const [dsbn, setDsbn] = useState([])
-    const socket = global.socket
+    const socket = useRef();
+    socket.current = io('http://localhost:5000');
     const [dsbnut, setDsbnut] = useState([{ stt: 4, name: "Tan Trong" }, { stt: 5, name: "Minh Quang" }])
     useEffect(() => {
         const timer = setTimeout(() => {

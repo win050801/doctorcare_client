@@ -44,7 +44,7 @@ class Login extends Component {
 
     redirectToSystemPage = () => {
         const { navigate } = this.props;
-        const redirectPath = '/system/user-manage';
+        const redirectPath = '/Letan';
         navigate(`${redirectPath}`);
     }
 
@@ -73,8 +73,8 @@ class Login extends Component {
                     "accessToken": "eyJhbGciOiJIU"
                 }
 
-                adminLoginSuccess(adminInfo);
-                this.refresh();
+                // adminLoginSuccess(adminInfo);
+                // this.refresh();
                 this.redirectToSystemPage();
                 // try {
                 //     adminService.login(loginBody)
