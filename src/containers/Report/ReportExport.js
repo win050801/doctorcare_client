@@ -69,9 +69,6 @@ function  ReportExport(){
       newArray[1].push(element[1]);
     }
 
-    console.log(newArray);
-
-    console.log(data);
 
     const onChangeFromDate = (date, dateString) => {
         setSearch({ ...search, from_date: dateString });
@@ -94,12 +91,12 @@ function  ReportExport(){
    return (
            <React.Fragment>
             <div className="report-type" style={{ display: 'flex' }}>
-                <Navbar/>
+                {/* <Navbar/> */}
                 <div className="getsick">
                   <div className="containergetsick">
                       <div className="info">
                           
-                          <div style={{display:'flex', marginTop: '0px', alignItems:'center' }}>
+                          <div style={{display:'flex', marginTop: '30px', alignItems:'center' }}>
                      
                                                       <div style={{marginLeft:'50px'}}>
                                                             <label><h5>Từ: </h5></label>
@@ -120,17 +117,18 @@ function  ReportExport(){
                                                       </div>
                                                     
                                                 </div>
-                          <div style={{marginTop:"5px"}} className="report" >
-                            <div style={{width:1000,height:250}}>
-                                            <Chart
-                                                    chartType="Bar"
-                                                    width="100%"
-                                                    height="400px"
-                                                    data={newArray}
-                                                    options={options}
-                                />
-                            </div>
-                          </div>
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                  <div style={{ width: 1000, height: 250, marginTop:'5%' }}>
+                                                    <Chart
+                                                      chartType="Bar"
+                                                      width="100%"
+                                                      height="400px"
+                                                      data={newArray}
+                                                      options={options}
+                                                    />
+                                                  </div>
+                                                </div>
+
                               
                               
                         
@@ -141,17 +139,6 @@ function  ReportExport(){
                  </div>
                  <Aside/>
                 </div>  
-                {/* <div style={{width:1000,height:500,marginLeft:150,marginTop:50}}>
-                <Chart
-                    chartType="Bar"
-                    width="100%"
-                    height="400px"
-                    data={data}
-                    options={options}
-                />
-                </div> */}
-       
-            
            </React.Fragment>
        );
   
